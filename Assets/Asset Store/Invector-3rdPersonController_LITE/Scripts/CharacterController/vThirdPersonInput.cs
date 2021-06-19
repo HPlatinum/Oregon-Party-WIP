@@ -39,6 +39,7 @@ namespace Invector.vCharacterController
 
         protected virtual void Update()
         {
+            CheckInteractState();
             InputHandle();                  // update the input methods
             cc.UpdateAnimator();            // updates the Animator Parameters
         }
@@ -46,6 +47,33 @@ namespace Invector.vCharacterController
         public virtual void OnAnimatorMove()
         {
             cc.ControlAnimatorRootMotion(); // handle root motion animations 
+        }
+
+        public virtual void CheckInteractState() {
+
+            //if the interact animation has not been started
+            if (cc.isInteracting) {
+                if (!cc.interactAnimationStarted) {
+                    if (cc.animator.GetCurrentAnimatorStateInfo(0).IsTag("Interact")) {
+                        
+                        cc.interactAnimationStarted = true;
+
+                        //add any code you want run when the animation starts here
+                    }
+                }
+                else {
+                    if (!cc.animator.GetCurrentAnimatorStateInfo(0).IsTag("Interact")) {
+                        
+                        cc.interactAnimationStarted = false;
+                        cc.isInteracting = false;
+                        cc.lockMovement = false;
+                        cc.lockRotation = false;
+
+                        //add any code you want run when the animation ends here
+                    }
+                }
+            }
+
         }
 
         #region Basic Locomotion Inputs
@@ -73,8 +101,8 @@ namespace Invector.vCharacterController
             }
         }
 
-        protected virtual void InputHandle()
-        {
+        protected virtual void InputHandle() {
+
             MoveInput();
             CameraInput();
             SprintInput();
