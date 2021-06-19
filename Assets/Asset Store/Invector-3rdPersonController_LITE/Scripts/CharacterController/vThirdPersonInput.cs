@@ -9,9 +9,10 @@ namespace Invector.vCharacterController
         [Header("Controller Input")]
         public string horizontalInput = "Horizontal";
         public string verticallInput = "Vertical";
-        public KeyCode jumpInput = KeyCode.Space;
+        public KeyCode jumpInput = KeyCode.J;
         public KeyCode strafeInput = KeyCode.Tab;
         public KeyCode sprintInput = KeyCode.LeftShift;
+        public KeyCode interactInput = KeyCode.Space;
 
         [Header("Camera Input")]
         public string rotateCameraXInput = "Mouse X";
@@ -79,6 +80,7 @@ namespace Invector.vCharacterController
             SprintInput();
             StrafeInput();
             JumpInput();
+            InteractInput();
         }
 
         public virtual void MoveInput()
@@ -143,6 +145,14 @@ namespace Invector.vCharacterController
         {
             if (Input.GetKeyDown(jumpInput) && JumpConditions())
                 cc.Jump();
+        }
+
+        /// <summary>
+        /// Input to trigger interaction
+        /// /// </summary>
+        protected virtual void InteractInput() {
+            if (Input.GetKeyDown(interactInput))
+                cc.Interact();
         }
 
         #endregion       

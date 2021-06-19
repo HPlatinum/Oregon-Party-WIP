@@ -1095,7 +1095,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 960374777}
   m_LocalRotation: {x: 0.3826832, y: -0, z: -0, w: 0.9238797}
-  m_LocalPosition: {x: 0.1297693, y: 8.58731, z: -6.1375303}
+  m_LocalPosition: {x: 0.04556813, y: 8.58731, z: -6.1375303}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1162390224}
@@ -1181,7 +1181,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0.3826832, y: 0, z: 0, w: 0.9238797}
-  m_LocalPosition: {x: 0.1297693, y: 8.58731, z: -6.1375303}
+  m_LocalPosition: {x: 0.04556813, y: 8.58731, z: -6.1375303}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2335,7 +2335,7 @@ GameObject:
   - component: {fileID: 1731123447}
   - component: {fileID: 1731123446}
   m_Layer: 0
-  m_Name: vBasicController_Man Dude@Walking
+  m_Name: Man Dude
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2385,9 +2385,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   horizontalInput: Horizontal
   verticallInput: Vertical
-  jumpInput: 32
+  jumpInput: 106
   strafeInput: 9
   sprintInput: 304
+  interactInput: 32
   rotateCameraXInput: Mouse X
   rotateCameraYInput: Mouse Y
   cc: {fileID: 0}

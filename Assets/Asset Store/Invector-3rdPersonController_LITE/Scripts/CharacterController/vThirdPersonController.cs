@@ -124,5 +124,10 @@ namespace Invector.vCharacterController
             else
                 animator.CrossFadeInFixedTime("JumpMove", .2f);
         }
+
+        public virtual void Interact() {
+            //interact with the minigame
+            animator.CrossFadeInFixedTime("Lifting", 0.1f);
+        }
     }
 }
