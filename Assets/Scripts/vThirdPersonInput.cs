@@ -22,12 +22,16 @@ namespace Invector.vCharacterController
         [HideInInspector] public vThirdPersonCamera tpCamera;
         [HideInInspector] public Camera cameraMain;
 
+        private Interact interactScript;
+
         #endregion
 
         protected virtual void Start()
         {
             InitilizeController();
             InitializeTpCamera();
+            interactScript = gameObject.transform.Find("Collider").GetComponent<Interact>();
+            cc.interactScript = interactScript;
         }
 
         protected virtual void FixedUpdate()
@@ -59,6 +63,7 @@ namespace Invector.vCharacterController
                         cc.interactAnimationStarted = true;
 
                         //add any code you want run when the animation starts here
+                        interactScript.StartInteract();
                     }
                 }
                 else {
@@ -70,6 +75,7 @@ namespace Invector.vCharacterController
                         cc.lockRotation = false;
 
                         //add any code you want run when the animation ends here
+                        interactScript.EndInteract();
                     }
                 }
             }
@@ -179,7 +185,7 @@ namespace Invector.vCharacterController
         /// Input to trigger interaction
         /// /// </summary>
         protected virtual void InteractInput() {
-            if (Input.GetKeyDown(interactInput))
+            if (Input.GetKeyDown(interactInput) && !cc.isInteracting)
                 cc.Interact();
         }
 

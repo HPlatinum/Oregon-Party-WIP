@@ -127,13 +127,21 @@ namespace Invector.vCharacterController
 
         public virtual void Interact() {
             //interact with the minigame
-            animator.CrossFadeInFixedTime("Lifting", 0.2f);
+            if (interactScript.interactSubject == null) {
+                return;
+            }
+            if (interactScript.interactSubject.tag == "Interact (Lifting)") {
 
-            isInteracting = true;
-            lockMovement = true;
-            lockRotation = true;
-            interactAnimationStarted = false;
-            HaltVelocity();
+                animator.CrossFadeInFixedTime("Lifting", 0.2f);
+
+                isInteracting = true;
+                lockMovement = true;
+                lockRotation = true;
+                interactAnimationStarted = false;
+                HaltVelocity();
+
+            }
+            
         }
     }
 }
