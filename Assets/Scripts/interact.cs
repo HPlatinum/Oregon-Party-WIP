@@ -53,10 +53,9 @@ public class Interact : MonoBehaviour
         // validates we can pick up item and adds it to the inventory
         bool attemptPickup = Inventory.instance.Add(item);
 
-        //if we 
-        if(attemptPickup) {
+        // If able Destroy object
+        if (attemptPickup) {
             Destroy(interactSubject);
         }
-        Debug.Log(item.name + " Picked up");
     }
 }
