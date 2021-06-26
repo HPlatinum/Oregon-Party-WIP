@@ -30,7 +30,7 @@ namespace Invector.vCharacterController
         {
             InitilizeController();
             InitializeTpCamera();
-            interactScript = gameObject.transform.Find("Collider").GetComponent<Interact>();
+            interactScript = gameObject.transform.Find("InteractCollider").GetComponent<Interact>();
             cc.interactScript = interactScript;
         }
 

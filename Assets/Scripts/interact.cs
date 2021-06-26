@@ -40,9 +40,19 @@ public class Interact : MonoBehaviour
     }
 
     public void EndInteract() {
-        if (interactSubject.tag.Contains("Lifting")) {
-            Destroy(interactSubject);
+        if (interactSubject.tag.Contains("Lifting"))
+        {
+            pickup();
         }
-        
+
+    }
+
+    private void pickup()
+    {
+        Item item = interactSubject.GetComponent<Interactable>().item;
+        int count = 0;
+        Inventory.instance.Add (item, count);
+        Debug.Log(item.name + " Picked up");
+        Destroy(interactSubject);
     }
 }
