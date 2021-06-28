@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641258, b: 0.5748172, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1198,7 +1198,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 960374777}
   m_LocalRotation: {x: 0.3826832, y: -0, z: -0, w: 0.9238797}
-  m_LocalPosition: {x: 0.11182387, y: 8.58731, z: -6.1375303}
+  m_LocalPosition: {x: 0.10962547, y: 8.58731, z: -6.1375303}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1162390224}
@@ -1284,7 +1284,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0.3826832, y: 0, z: 0, w: 0.9238797}
-  m_LocalPosition: {x: 0.11182387, y: 8.58731, z: -6.1375303}
+  m_LocalPosition: {x: 0.10962547, y: 8.58731, z: -6.1375303}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1649,7 +1649,7 @@ GameObject:
   - component: {fileID: 1139185215}
   - component: {fileID: 1139185220}
   m_Layer: 0
-  m_Name: TestOBject
+  m_Name: TestObject - Interactable (Pickup)
   m_TagString: Interact (Lifting)
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1703,7 +1703,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 78eb5717f823fd745aceb107ddb6183d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1759,6 +1759,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac4899ea643310c4a9ff2efedb59b6d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactType: 0
   item: {fileID: 11400000, guid: e811d6c047f27e6418949ec62755e168, type: 2}
 --- !u!1 &1144901530
 GameObject:
@@ -2076,27 +2077,13 @@ GameObject:
   - component: {fileID: 1320178440}
   - component: {fileID: 1320178439}
   - component: {fileID: 1320178438}
-  - component: {fileID: 1320178437}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Test Object - Non-Interactable
   m_TagString: Interact (Lifting)
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1320178437
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1320178436}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac4899ea643310c4a9ff2efedb59b6d9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item: {fileID: 11400000, guid: fa303049d04c98b4a9d692178f04cbba, type: 2}
 --- !u!65 &1320178438
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2129,7 +2116,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 78eb5717f823fd745aceb107ddb6183d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
