@@ -20,22 +20,41 @@ public class Interact : MonoBehaviour
 
     private void OnTriggerEnter(Collider obj) {
 
+        //check if the object is interactable
         Interactable interactable = obj.GetComponent<Interactable>();
         if (interactable == null) return;
+
+        //if it is, remove the previous interactable object
+        RemoveInteractable();
+        
+        //then add the new interactable object
         interactSubject = interactable;
         //update the UI interact description
+
+
+        //add an outline to the interactable object
+        interactable.GetComponent<Outline>().enabled = true;
 
 
     }
 
     private void OnTriggerExit(Collider obj) {
         Interactable interactable = obj.GetComponent<Interactable>();
+        if (interactable == null) return;
 
         if (interactable == interactSubject) {
-            interactSubject = null;
-
-            //update the UI interact description
+            RemoveInteractable();
         }
+    }
+
+    private void RemoveInteractable() {
+        //clears the interactable object
+        //used when exiting interact range, or when entering interact range with a new object
+        if (interactSubject == null) return;
+        interactSubject.GetComponent<Outline>().enabled = false;
+        interactSubject = null;
+
+        //update the UI interact description
     }
 
     public void StartInteract() {
