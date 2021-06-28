@@ -44,7 +44,6 @@ public class Interact : MonoBehaviour
         {
             pickup();
         }
-
     }
 
     public void pickup()
