@@ -130,7 +130,7 @@ namespace Invector.vCharacterController
             if (interactScript.interactSubject == null) {
                 return;
             }
-            if (interactScript.interactSubject.tag == "Interact (Lifting)") {
+            if (interactScript.interactSubject.interactType == Interactable.InteractTypes.Pickup) {
 
                 animator.CrossFadeInFixedTime("Lifting", 0.2f);
 

@@ -5,7 +5,7 @@ using UnityEngine;
 public class Interact : MonoBehaviour
 {
 
-    public GameObject interactSubject;
+    public Interactable interactSubject;
 
     // Start is called before the first frame update
     
@@ -19,16 +19,19 @@ public class Interact : MonoBehaviour
     }
 
     private void OnTriggerEnter(Collider obj) {
-        //if (obj.gameObject.tag == "Interact (Lifting)") {
-        if (obj.gameObject.tag.Contains("Interact")) {
-            interactSubject = obj.gameObject;
 
-            //update the UI interact description
-        }
+        Interactable interactable = obj.GetComponent<Interactable>();
+        if (interactable == null) return;
+        interactSubject = interactable;
+        //update the UI interact description
+
+
     }
 
     private void OnTriggerExit(Collider obj) {
-        if (obj.gameObject == interactSubject) {
+        Interactable interactable = obj.GetComponent<Interactable>();
+
+        if (interactable == interactSubject) {
             interactSubject = null;
 
             //update the UI interact description
@@ -36,26 +39,28 @@ public class Interact : MonoBehaviour
     }
 
     public void StartInteract() {
+        //called by vThirdPersonInput.CheckInteractState
+        //any code that should be run as soon as the interaction animation starts playing
 
     }
 
     public void EndInteract() {
-        if (interactSubject.tag.Contains("Lifting"))
-        {
-            pickup();
+        //called by vThirdPersonInput.CheckInteractState
+        //any code that should be run as soon as the interaction animation stops playing
+        if (interactSubject.interactType == Interactable.InteractTypes.Pickup) {
+            Pickup();
         }
 
     }
 
-    public void pickup()
-    {
-        Item item = interactSubject.GetComponent<Interactable>().item;
+    public void Pickup() {
+        Item item = interactSubject.item;
         // validates we can pick up item and adds it to the inventory
         bool attemptPickup = Inventory.instance.Add(item);
 
         // If able Destroy object
         if (attemptPickup) {
-            Destroy(interactSubject);
+            Destroy(interactSubject.gameObject);
         }
     }
 }
