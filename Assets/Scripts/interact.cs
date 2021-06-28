@@ -50,7 +50,6 @@ public class Interact : MonoBehaviour
         if (interactSubject.interactType == Interactable.InteractTypes.Pickup) {
             Pickup();
         }
-
     }
 
     public void Pickup() {
