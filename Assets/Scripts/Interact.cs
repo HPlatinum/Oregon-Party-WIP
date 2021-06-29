@@ -16,7 +16,6 @@ public class Interact : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
-        
     }
 
     private void OnTriggerEnter(Collider obj) {
@@ -70,6 +69,17 @@ public class Interact : MonoBehaviour
         if (interactSubject.interactType == Interactable.InteractTypes.Pickup) {
             Pickup();
         }
+  
+        #region Discard Items Test Application
+        // The discard function works, however, I have no method attached for selecting and deleting. 
+        // Leaving the functionality here for now. I assume this will be attached to UI buttons.
+
+        // if (interactSubject.interactType == Interactable.InteractTypes.Discard) {
+        //     Debug.Log("We are here.");
+        //     int yield = 1; 
+        //     bool attemptDiscard = inventory.RemoveItem(itemTest, yield, inventory);
+        // }
+        #endregion
     }
 
     public void Pickup() {
@@ -88,5 +98,5 @@ public class Interact : MonoBehaviour
     private void OnApplicationQuit() {
         inventory.inventorySlot.Clear();
         inventory.currentWeight = 0;
-}
+    }
 } 
