@@ -77,15 +77,16 @@ public class Interact : MonoBehaviour
         int yield = 1; //need better logic for how quantity is yielded. right now set to 1
 
         // validates we can pick up item and adds it to the inventory
-        bool attemptPickup = inventory.AddItem(item, yield);
+        bool attemptPickup = inventory.AddItem(item, yield, inventory);
         // If able Destroy object
         if (attemptPickup) {
             Destroy(interactSubject.gameObject);
         }
     }
 
-    // clears inventory on application quit. Otherwise it's static.
+    // clears inventory and inventory weight on application quit
     private void OnApplicationQuit() {
         inventory.inventorySlot.Clear();
+        inventory.currentWeight = 0;
 }
 } 

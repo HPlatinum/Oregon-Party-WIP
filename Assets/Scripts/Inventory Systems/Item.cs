@@ -12,4 +12,5 @@ public class Item : ScriptableObject {
     [TextArea(15,20)]
     public string description;
     public int stackLimit;
+    public float weight; // by kg
 }
