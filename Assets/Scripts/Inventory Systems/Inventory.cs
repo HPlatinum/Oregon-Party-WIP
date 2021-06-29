@@ -28,6 +28,7 @@ public class Inventory : ScriptableObject
             if(!containsItem) {
                 inventorySlot.Add(new InventorySlot(_item, _quantity));
                 AddWeight(_item);
+                containsItem = true;
                 return containsItem;
             }
         }
