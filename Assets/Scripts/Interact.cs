@@ -90,6 +90,7 @@ public class Interact : MonoBehaviour
         bool attemptPickup = inventory.AddItem(item, yield, inventory);
         // If able Destroy object
         if (attemptPickup) {
+            //print("picked up");
             Destroy(interactSubject.gameObject);
         }
     }
