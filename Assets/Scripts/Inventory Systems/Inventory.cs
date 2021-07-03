@@ -8,6 +8,7 @@ public class Inventory : ScriptableObject
     // Event which we can subscribe different methods to -- Trigger calls all attached events
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallback;
+    
     public float maxWeight; // max inventory weight
     public float currentWeight; // current weight
 
@@ -22,6 +23,8 @@ public class Inventory : ScriptableObject
                     containsItem = true;
                     inventorySlot[i].AddQuantity(_quantity);
                     AddWeight(_item);
+                    if(onItemChangedCallback != null)
+                        onItemChangedCallback.Invoke();
                     return containsItem;
                 }
             }
@@ -29,6 +32,8 @@ public class Inventory : ScriptableObject
                 inventorySlot.Add(new InventorySlot(_item, _quantity));
                 AddWeight(_item);
                 containsItem = true;
+                if(onItemChangedCallback != null)
+                        onItemChangedCallback.Invoke();
                 return containsItem;
             }
         }
@@ -46,10 +51,14 @@ public class Inventory : ScriptableObject
                 }
                 if(_quantity == inventorySlot[i].quantity) {
                     inventorySlot.RemoveAt(i);
+                    if(onItemChangedCallback != null)
+                        onItemChangedCallback.Invoke();
                     return containsItem;
                 }
                 else {
                     inventorySlot[i].RemoveQuantity(_quantity);
+                    if(onItemChangedCallback != null)
+                        onItemChangedCallback.Invoke();
                     return containsItem;
                 }
             }
