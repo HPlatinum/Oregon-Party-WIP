@@ -92,11 +92,13 @@ public class Interact : MonoBehaviour
     public void Pickup() {
         Item item = interactSubject.item;
         int yield = 1; //need better logic for how quantity is yielded. right now set to 1
+
         // validates we can pick up item and adds it to the inventory
         bool attemptPickup = inventory.AddItem(item, yield, inventory);
         //print(attemptPickup);
         // If able Destroy object
         if (attemptPickup) {
+            //print("picked up");
             Destroy(interactSubject.gameObject);
         }
     }
@@ -106,7 +108,7 @@ public class Interact : MonoBehaviour
         inventory.inventorySlot.Clear();
         inventory.currentWeight = 0;
     }
-
+    
     public bool IsInteractAllowed() {
         //returns if interaction with the current interactSubject is allowed
         if (interactSubject.interactType == Interactable.InteractTypes.Pickup) {

@@ -17,15 +17,15 @@ public class Inventory : ScriptableObject
     // Adds an item to the List<InventorySlot>
     public bool AddItem(Item _item, int _quantity, Inventory _inventory) {
         bool containsItem = false;
-        if(_quantity <= _item.stackLimit && CanAdd(_inventory, _item)) {
+        if(_quantity < _item.stackLimit && CanAdd(_inventory, _item)) {
             for(int i = 0; i < inventorySlot.Count; i++) {
                 if(inventorySlot[i].item == _item) {
                     containsItem = true;
                     inventorySlot[i].AddQuantity(_quantity);
                     AddWeight(_item);
-                if(onItemChangedCallback != null)
-                    onItemChangedCallback.Invoke();
-                return containsItem;
+                    if(onItemChangedCallback != null)
+                        onItemChangedCallback.Invoke();
+                    return containsItem;
                 }
             }
             if(!containsItem) {

@@ -11,6 +11,6 @@ public class Item : ScriptableObject {
     public bool defaultItem = false;  
     [TextArea(15,20)]
     public string description;
-    public int stackLimit = 1;
-    public float weight = 1; // by kg
+    public int stackLimit;
+    public float weight; // by kg
 }
