@@ -98,7 +98,6 @@ public class Interact : MonoBehaviour
         //print(attemptPickup);
         // If able Destroy object
         if (attemptPickup) {
-            //print("picked up");
             Destroy(interactSubject.gameObject);
         }
     }
