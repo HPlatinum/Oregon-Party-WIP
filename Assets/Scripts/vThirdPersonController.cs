@@ -130,23 +130,7 @@ namespace Invector.vCharacterController
             if (interactScript.interactSubject == null) {
                 return;
             }
-            if (!interactScript.IsInteractAllowed()) {
-                print("you cannot perform the " + interactScript.interactSubject.interactType.ToString() + " action");
-                return;
-            }
             if (interactScript.interactSubject.interactType == Interactable.InteractTypes.Pickup) {
-
-                animator.CrossFadeInFixedTime("Lifting", 0.2f);
-
-                isInteracting = true;
-                lockMovement = true;
-                lockRotation = true;
-                interactAnimationStarted = false;
-                HaltVelocity();
-
-            }
-            
-            if (interactScript.interactSubject.interactType == Interactable.InteractTypes.Fishing) {
 
                 animator.CrossFadeInFixedTime("Lifting", 0.2f);
 

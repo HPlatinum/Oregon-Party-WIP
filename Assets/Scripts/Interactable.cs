@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class Interactable : MonoBehaviour
 {
-    public enum InteractTypes { Pickup, Fishing };
+    public enum InteractTypes { Pickup };
     public InteractTypes interactType;
     public Item item;
-    public Item requiredItem; //only allow interaction if the required item is in the inventory
 
     public void Start() {
 
