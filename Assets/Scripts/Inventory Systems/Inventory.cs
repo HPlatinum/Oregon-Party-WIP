@@ -85,6 +85,17 @@ public class Inventory : ScriptableObject
     public void SubtractWeight(Item _item) {
         currentWeight -= _item.weight;
     }
+
+    public int ItemQuantity(Item item) {
+        //returns the amount of a specified item held in the inventory
+        foreach (InventorySlot i in inventorySlot) {
+            if (i.item == item) {
+                return i.quantity;
+            }
+        }
+        
+        return 0;
+    }
 }
 
 // Allows us to add or remove items to our inventory.

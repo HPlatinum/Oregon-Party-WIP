@@ -66,10 +66,17 @@ public class Interact : MonoBehaviour
     public void EndInteract() {
         //called by vThirdPersonInput.CheckInteractState
         //any code that should be run as soon as the interaction animation stops playing
+        //print("ending");
         if (interactSubject.interactType == Interactable.InteractTypes.Pickup) {
+            //print("about to pickup");
             Pickup();
         }
-  
+
+        if (interactSubject.interactType == Interactable.InteractTypes.Fishing) {
+            //print("about to pickup");
+            Pickup();
+        }
+
         #region Discard Items Test Application
         // The discard function works, however, I have no method attached for selecting and deleting. 
         // Leaving the functionality here for now. I assume this will be attached to UI buttons.
@@ -88,6 +95,7 @@ public class Interact : MonoBehaviour
 
         // validates we can pick up item and adds it to the inventory
         bool attemptPickup = inventory.AddItem(item, yield, inventory);
+        //print(attemptPickup);
         // If able Destroy object
         if (attemptPickup) {
             Destroy(interactSubject.gameObject);
@@ -98,5 +106,22 @@ public class Interact : MonoBehaviour
     private void OnApplicationQuit() {
         inventory.inventorySlot.Clear();
         inventory.currentWeight = 0;
+    }
+
+    public bool IsInteractAllowed() {
+        //returns if interaction with the current interactSubject is allowed
+        if (interactSubject.interactType == Interactable.InteractTypes.Pickup) {
+            if (inventory.CanAdd(inventory, interactSubject.item)) { //check if the player can carry the new item
+                return true;
+            }
+        }
+        if (interactSubject.interactType == Interactable.InteractTypes.Fishing) {
+            if (inventory.ItemQuantity(interactSubject.requiredItem) > 0) { //check for required item (probably will be fishing rod)
+                if (inventory.CanAdd(inventory, interactSubject.item)) { //check if the player can carry the new item
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 } 
