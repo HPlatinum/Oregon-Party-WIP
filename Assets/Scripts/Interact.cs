@@ -108,7 +108,7 @@ public class Interact : MonoBehaviour
         inventory.inventorySlot.Clear();
         inventory.currentWeight = 0;
     }
-
+    
     public bool IsInteractAllowed() {
         //returns if interaction with the current interactSubject is allowed
         if (interactSubject.interactType == Interactable.InteractTypes.Pickup) {
