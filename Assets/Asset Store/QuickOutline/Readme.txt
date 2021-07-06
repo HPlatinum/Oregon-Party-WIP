@@ -24,9 +24,3 @@ re-adding the component if possible.
 
 For large meshes, you may also like to enable 'Precompute Outline' in the
 editor. This will reduce the amount of work performed in Awake().
-
-
-
-Note added later by Cole:
-to have this script work for objects with multiple meshes, check out
-https://answers.unity.com/questions/1737691/quick-outline-does-not-work-with-multiple-material.html
