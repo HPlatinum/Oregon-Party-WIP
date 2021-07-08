@@ -1,4 +1,4 @@
-﻿using UnityEngine.EventSystems;
+using UnityEngine.EventSystems;
 using UnityEngine;
 
 namespace Invector.vCharacterController
@@ -46,7 +46,14 @@ namespace Invector.vCharacterController
         protected virtual void Update()
         {
             if(EventSystem.current.IsPointerOverGameObject()){ // help me fix plz
+                cc.lockMovement = true;
+                cc.lockRotation = true;
+                cc.HaltVelocity();
                 return;
+            }
+            else {
+                cc.lockMovement = false;
+                cc.lockRotation = false;
             }
             CheckInteractState();
             InputHandle();                  // update the input methods
