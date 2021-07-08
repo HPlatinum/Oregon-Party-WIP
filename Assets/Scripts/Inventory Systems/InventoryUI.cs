@@ -19,9 +19,7 @@ public class InventoryUI : MonoBehaviour
     // // Update is called once per frame
     void Update()
     {
-        if(Input.GetButtonDown("Inventory")){
-            inventoryUI.SetActive(!inventoryUI.activeSelf);
-        }
+        inventoryState();
     }
 
     void UpdateUI() {
@@ -34,5 +32,13 @@ public class InventoryUI : MonoBehaviour
             }
         }
         Debug.Log("Updating UI");
+    }
+
+    public bool inventoryState(){
+        if(Input.GetButtonDown("Inventory")){
+            inventoryUI.SetActive(!inventoryUI.activeSelf);
+            return(inventoryUI.activeSelf);
+        }
+        return(inventoryUI.activeSelf);
     }
 }

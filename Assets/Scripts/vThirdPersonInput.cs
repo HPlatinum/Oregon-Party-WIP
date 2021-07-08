@@ -32,6 +32,7 @@ namespace Invector.vCharacterController
             InitilizeController();
             InitializeTpCamera();
             interactScript = gameObject.transform.Find("InteractCollider").GetComponent<Interact>();
+
             cc.interactScript = interactScript;
         }
 
@@ -44,6 +45,9 @@ namespace Invector.vCharacterController
 
         protected virtual void Update()
         {
+            if(EventSystem.current.IsPointerOverGameObject()){ // help me fix plz
+                return;
+            }
             CheckInteractState();
             InputHandle();                  // update the input methods
             cc.UpdateAnimator();            // updates the Animator Parameters
@@ -120,9 +124,6 @@ namespace Invector.vCharacterController
 
         public virtual void MoveInput()
         {
-            if(EventSystem.current.IsPointerOverGameObject()){
-                return;
-            }
             cc.input.x = Input.GetAxis(horizontalInput);
             cc.input.z = Input.GetAxis(verticallInput);
         }

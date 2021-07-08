@@ -22,7 +22,7 @@ public class Inventory : ScriptableObject
                 if(inventorySlot[i].item == _item) {
                     containsItem = true;
                     inventorySlot[i].AddQuantity(_quantity);
-                    AddWeight(_item);
+                    AddWeight(_item, _quantity);
                 if(onItemChangedCallback != null)
                     onItemChangedCallback.Invoke();
                 return containsItem;
@@ -30,7 +30,7 @@ public class Inventory : ScriptableObject
             }
             if(!containsItem) {
                 inventorySlot.Add(new InventorySlot(_item, _quantity));
-                AddWeight(_item);
+                AddWeight(_item, _quantity);
                 containsItem = true;
                 if(onItemChangedCallback != null)
                     onItemChangedCallback.Invoke();
@@ -65,7 +65,6 @@ public class Inventory : ScriptableObject
                 }
             }
         }
-        Debug.Log("3");
         return containsItem;
     }
 
@@ -80,13 +79,13 @@ public class Inventory : ScriptableObject
     }
 
     // adds to inventory weight total
-    public void AddWeight(Item _item) {
-        currentWeight += _item.weight;
+    public void AddWeight(Item _item, int _quantity) {
+        currentWeight += _item.weight * _quantity;
     }
 
     // subtracts from inventory weight total
     public void SubtractWeight(Item _item, int quantity) {
-        currentWeight -= _item.weight;
+        currentWeight -= _item.weight * quantity;
     }
 
     public int ItemQuantity(Item item) {
