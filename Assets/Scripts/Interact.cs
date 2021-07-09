@@ -22,28 +22,50 @@ public class Interact : MonoBehaviour
 
         //check if the object is interactable
         Interactable interactable = obj.GetComponent<Interactable>();
-        if (interactable == null) return;
+        if (interactable != null) {
+            
+            //if it is, remove the previous interactable object
+            RemoveInteractable();
 
-        //if it is, remove the previous interactable object
-        RemoveInteractable();
-        
-        //then add the new interactable object
-        interactSubject = interactable;
-        //update the UI interact description
+            //then add the new interactable object
+            interactSubject = interactable;
+            //update the UI interact description
 
 
-        //add an outline to the interactable object
-        interactable.GetComponent<Outline>().enabled = true;
+            //add an outline to the interactable object
+            interactable.GetComponent<Outline>().enabled = true;
+        }
 
+        //check if the object is the car inventory
+        //CarInventory carInventory = obj.GetComponent<CarInventory>(); //something like this?
+        //if (carInventory != null){
+
+        //for now, just use some other lame arbitrary logic
+        if (obj.name == "Car Inventory") {
+            print("show inventory here");
+        }
 
     }
 
     private void OnTriggerExit(Collider obj) {
-        Interactable interactable = obj.GetComponent<Interactable>();
-        if (interactable == null) return;
 
-        if (interactable == interactSubject) {
-            RemoveInteractable();
+        //check if the object is interactable
+        Interactable interactable = obj.GetComponent<Interactable>();
+        if (interactable != null) {
+            //if it is, remove it as the interact subject
+            //we only want to remove the interact subject if it is this object in particular! dont just clear the interact subject reference willy-nilly
+            if (interactable == interactSubject) {
+                RemoveInteractable();
+            }
+        }
+
+        //check if the object is the car inventory
+        //CarInventory carInventory = obj.GetComponent<CarInventory>(); //something like this?
+        //if (carInventory != null){
+
+        //for now, just use some other lame arbitrary logic
+        if (obj.name == "Car Inventory") {
+            print("hide inventory here");
         }
     }
 
