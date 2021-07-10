@@ -1,11 +1,9 @@
-﻿using UnityEngine.EventSystems;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Invector.vCharacterController
 {
     public class vThirdPersonController : vThirdPersonAnimator
     {
-
         public virtual void ControlAnimatorRootMotion()
         {
             if (!this.enabled) return;
@@ -150,7 +148,7 @@ namespace Invector.vCharacterController
             
             if (interactScript.interactSubject.interactType == Interactable.InteractTypes.Fishing) {
 
-                animator.CrossFadeInFixedTime("Lifting", 0.2f);
+                animator.CrossFadeInFixedTime("Fishing", 0.2f);
 
                 isInteracting = true;
                 lockMovement = true;
