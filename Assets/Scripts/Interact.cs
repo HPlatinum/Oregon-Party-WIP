@@ -8,6 +8,10 @@ public class Interact : MonoBehaviour {
     public Inventory inventory;
     public List<Interactable> objectsInRange = new List<Interactable>(); //all of the objects that are within interact range of the player
     private bool currentlyInteracting = false;
+    public Transform rightHand;
+    public Transform leftHand;
+    public GameObject temp;
+    private GameObject objectInHand;
 
     // Start is called before the first frame update
     
@@ -62,7 +66,7 @@ public class Interact : MonoBehaviour {
         Interactable interactable = obj.GetComponent<Interactable>();
         if (interactable != null) {
             //if the object you just left was the interact subject, unhighlight it
-            if (interactable == interactSubject) {
+            if ((interactable == interactSubject) && !currentlyInteracting) {
                 RemoveInteractable();
             }
 
@@ -135,6 +139,11 @@ public class Interact : MonoBehaviour {
         //called by vThirdPersonInput.CheckInteractState
         //any code that should be run as soon as the interaction animation starts playing
         currentlyInteracting = true;
+
+        //add any relevant objects to the player's hand
+        if (interactSubject.interactType == Interactable.InteractTypes.Fishing) {
+            PutObjectInHand(temp, false);
+        }
     }
 
     public void EndInteract() {
@@ -151,6 +160,7 @@ public class Interact : MonoBehaviour {
         else if (interactSubject.interactType == Interactable.InteractTypes.Fishing) {
             //print("about to pickup");
             Pickup();
+            RemoveObjectFromHand();
         }
 
         #region Discard Items Test Application
@@ -201,4 +211,53 @@ public class Interact : MonoBehaviour {
         }
         return false;
     }
+
+    public void PutObjectInHand(GameObject go, bool useRightHand) {
+        //creates an instance of a gameobject and puts it in the players hand
+
+        //only allow one object in the hand at a time - may need to revisit later
+        if (objectInHand != null) {
+            print("you already have something in your hands!");
+            return;
+        }
+
+        //use the correct hand
+        Transform hand = leftHand;
+        if (useRightHand) hand = rightHand;
+
+        //create the gameobject and parent it to the hand
+        GameObject newObj = Instantiate(temp);
+        newObj.transform.SetParent(hand);
+        //move it to the center of the hand
+        newObj.transform.localPosition = Vector3.zero;
+
+        //rotate the object to be pointing the right way
+        Vector3 newRotation;
+        if (useRightHand) newRotation = new Vector3(0, -90, 180); //could need some work once we add more objects?
+        else newRotation = new Vector3(0, 90, 180); //could need some work once we add more objects?
+        newObj.transform.localEulerAngles = newRotation;
+
+        //position the object so the handle is in the center of the hand
+        Vector3 posDiff = newObj.transform.Find("Handle").position - hand.position;
+        Vector3 newPos = newObj.transform.position;
+        newPos -= posDiff;
+        newObj.transform.position = newPos;
+
+        //turn off all colliders
+        CapsuleCollider cc = newObj.GetComponent<CapsuleCollider>();
+        SphereCollider sc = newObj.GetComponent<SphereCollider>();
+        BoxCollider bc = newObj.GetComponent<BoxCollider>();
+        if (cc != null) cc.enabled = false;
+        if (sc != null) sc.enabled = false;
+        if (bc != null) bc.enabled = false;
+
+        //assumes we only have one object in the hand at a time
+        objectInHand = newObj;
+    }
+
+    public void RemoveObjectFromHand() {
+        //removes the current object from the hand, nothin special
+        if (objectInHand != null) Destroy(objectInHand);
+    }
+
 } 
