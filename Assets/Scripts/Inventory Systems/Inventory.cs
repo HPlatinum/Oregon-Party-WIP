@@ -22,11 +22,7 @@ public class Inventory : ScriptableObject
                 if(inventorySlot[i].item == _item) {
                     containsItem = true;
                     inventorySlot[i].AddQuantity(_quantity);
-<<<<<<< HEAD
                     AddWeight(_item, _quantity);
-=======
-                    AddWeight(_item);
->>>>>>> working-on-fishing-minigame-probably
                 if(onItemChangedCallback != null)
                     onItemChangedCallback.Invoke();
                 return containsItem;
@@ -37,11 +33,7 @@ public class Inventory : ScriptableObject
                 AddWeight(_item, _quantity);
                 containsItem = true;
                 if(onItemChangedCallback != null)
-<<<<<<< HEAD
                     onItemChangedCallback.Invoke();
-=======
-                        onItemChangedCallback.Invoke();
->>>>>>> working-on-fishing-minigame-probably
                 return containsItem;
             }
         }
@@ -70,10 +62,6 @@ public class Inventory : ScriptableObject
                     inventorySlot[i].RemoveQuantity(_quantity);
                     if(onItemChangedCallback != null)
                         onItemChangedCallback.Invoke();
-<<<<<<< HEAD
-=======
-                    return containsItem;
->>>>>>> working-on-fishing-minigame-probably
                 }
             }
         }
@@ -98,17 +86,6 @@ public class Inventory : ScriptableObject
     // subtracts from inventory weight total
     public void SubtractWeight(Item _item, int quantity) {
         currentWeight -= _item.weight * quantity;
-    }
-
-    public int ItemQuantity(Item item) {
-        //returns the amount of a specified item held in the inventory
-        foreach (InventorySlot i in inventorySlot) {
-            if (i.item == item) {
-                return i.quantity;
-            }
-        }
-        
-        return 0;
     }
 
     public int ItemQuantity(Item item) {
