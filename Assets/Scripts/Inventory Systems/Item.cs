@@ -13,7 +13,6 @@ public class Item : ScriptableObject {
     public string description;
     public int stackLimit = 1;
     public float weight = 1; // by kg
-<<<<<<< HEAD
 
     public virtual void Use() {
         // Use item
@@ -21,6 +20,4 @@ public class Item : ScriptableObject {
 
         Debug.Log("Using " + name);
     }
-=======
->>>>>>> working-on-fishing-minigame-probably
 }

@@ -150,11 +150,7 @@ namespace Invector.vCharacterController
             
             if (interactScript.interactSubject.interactType == Interactable.InteractTypes.Fishing) {
 
-<<<<<<< HEAD
                 animator.CrossFadeInFixedTime("Lifting", 0.2f);
-=======
-                animator.CrossFadeInFixedTime("Fishing", 0.2f);
->>>>>>> working-on-fishing-minigame-probably
 
                 isInteracting = true;
                 lockMovement = true;
