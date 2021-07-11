@@ -13,4 +13,9 @@ public class Item : ScriptableObject {
     public string description;
     public int stackLimit = 1;
     public float weight = 1; // by kg
+    public virtual void Use() {
+        Debug.Log("Using " + name);
+        // Use item
+        // Trigger possibly
+    }
 }

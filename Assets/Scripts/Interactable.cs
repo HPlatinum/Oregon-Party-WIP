@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class Interactable : MonoBehaviour
 {
-    public enum InteractTypes { Pickup, Fishing };
+    public enum InteractTypes { Pickup, Fishing, Chest };
     public InteractTypes interactType;
     public Item item;
     public Item requiredItem; //only allow interaction if the required item is in the inventory
+    public Inventory inventory;
+    public GameObject interactableUI;
+
+    public bool destroyParentAlso = false;
 
     public void Start() {
 
@@ -21,5 +25,10 @@ public class Interactable : MonoBehaviour
 
         //by default, hide the outline
         outline.enabled = false;
+    }
+
+    public bool inventoryState() {
+        interactableUI.SetActive(!interactableUI.activeSelf);
+        return(interactableUI.activeSelf);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 namespace Invector.vCharacterController
 {
@@ -126,6 +127,7 @@ namespace Invector.vCharacterController
         }
 
         public virtual void Interact() {
+
             //interact with the minigame
             if (interactScript.interactSubject == null) {
                 return;
@@ -135,29 +137,61 @@ namespace Invector.vCharacterController
                 return;
             }
             if (interactScript.interactSubject.interactType == Interactable.InteractTypes.Pickup) {
-
-                animator.CrossFadeInFixedTime("Lifting", 0.2f);
-
-                isInteracting = true;
-                lockMovement = true;
-                lockRotation = true;
-                interactAnimationStarted = false;
-                HaltVelocity();
-
+                StartAnimation("Lifting", 0.2f);
             }
             
             if (interactScript.interactSubject.interactType == Interactable.InteractTypes.Fishing) {
-
-                animator.CrossFadeInFixedTime("Lifting", 0.2f);
-
-                isInteracting = true;
-                lockMovement = true;
-                lockRotation = true;
-                interactAnimationStarted = false;
-                HaltVelocity();
-
+                StartAnimation("Fishing", 0.2f);
             }
+
+            if (interactScript.interactSubject.interactType == Interactable.InteractTypes.Chest) {
+                StartAnimation("Fishing", 0.2f);
+            }
+
             
         }
+
+        private void StartAnimation(string animationName, float transitionDuration) {
+            //plays the specified animation. transitions to the desired animation over the specified transitionDuration (in seconds)
+
+            //set flags for the controller and input scripts
+            isInteracting = true;
+            interactAnimationStarted = false;
+
+            //freeze player's position and rotation, and reduce momentum to zero
+            lockMovement = true;
+            lockRotation = true;
+            HaltVelocity();
+            
+            //face toward the interacted object
+            FaceTo(interactScript.interactSubject.gameObject, transitionDuration);
+            //start the animation
+            animator.CrossFadeInFixedTime(animationName, transitionDuration);
+
+
+        }
+
+        
+        private void FaceTo(GameObject go, float duration) {
+            //rotates the player towards the specified gameobject over duration time in seconds
+            //only rotates in the x-z plane
+            Vector3 pos = new Vector3(go.transform.position.x, transform.position.y, go.transform.position.z);
+
+            var rotation = Quaternion.LookRotation(pos - gameObject.transform.position);
+            StartCoroutine(RotatePlayer(duration, rotation));
+        }
+
+        private IEnumerator RotatePlayer(float lerpTime, Quaternion rotation) {
+            //carries out player rotation
+            float elapsedTime = 0f;
+
+            while (elapsedTime <= lerpTime) {
+                gameObject.transform.rotation = Quaternion.Lerp(gameObject.transform.rotation, rotation, elapsedTime / lerpTime);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+        }
+        
     }
+
 }

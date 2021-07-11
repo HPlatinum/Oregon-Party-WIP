@@ -17,12 +17,12 @@ public class Inventory : ScriptableObject
     // Adds an item to the List<InventorySlot>
     public bool AddItem(Item _item, int _quantity, Inventory _inventory) {
         bool containsItem = false;
-        if(_quantity <= _item.stackLimit && CanAdd(_inventory, _item)) {
+        if(CanAdd(_inventory, _item)) {
             for(int i = 0; i < inventorySlot.Count; i++) {
-                if(inventorySlot[i].item == _item) {
+                if(inventorySlot[i].item == _item && inventorySlot[i].quantity < _item.stackLimit) {
                     containsItem = true;
                     inventorySlot[i].AddQuantity(_quantity);
-                    AddWeight(_item);
+                    AddWeight(_item, _quantity);
                 if(onItemChangedCallback != null)
                     onItemChangedCallback.Invoke();
                 return containsItem;
@@ -30,36 +30,40 @@ public class Inventory : ScriptableObject
             }
             if(!containsItem) {
                 inventorySlot.Add(new InventorySlot(_item, _quantity));
-                AddWeight(_item);
+                AddWeight(_item, _quantity);
                 containsItem = true;
                 if(onItemChangedCallback != null)
-                        onItemChangedCallback.Invoke();
+                    onItemChangedCallback.Invoke();
                 return containsItem;
             }
         }
+
         return containsItem;
     }
 
     // function for removing an item from an inventory
     public bool RemoveItem(Item _item, int _quantity, Inventory _inventory) {
         bool containsItem = false;
+        Debug.Log(_item);
+        Debug.Log(_quantity);
         for(int i = 0; i < inventorySlot.Count; i++) {
             if(inventorySlot[i].item = _item) {
                 containsItem = true;
                 if(_quantity > inventorySlot[i].quantity) {
                     return containsItem;
                 }
-                if(_quantity == inventorySlot[i].quantity) {
+                else if(_quantity == inventorySlot[i].quantity) {
+                    SubtractWeight(_item, inventorySlot[i].quantity);
                     inventorySlot.RemoveAt(i);
                     if(onItemChangedCallback != null)
                         onItemChangedCallback.Invoke();
                     return containsItem;
                 }
                 else {
+                    SubtractWeight(_item, inventorySlot[i].quantity);
                     inventorySlot[i].RemoveQuantity(_quantity);
                     if(onItemChangedCallback != null)
                         onItemChangedCallback.Invoke();
-                    return containsItem;
                 }
             }
         }
@@ -77,13 +81,13 @@ public class Inventory : ScriptableObject
     }
 
     // adds to inventory weight total
-    public void AddWeight(Item _item) {
-        currentWeight += _item.weight;
+    public void AddWeight(Item _item, int _quantity) {
+        currentWeight += _item.weight * _quantity;
     }
 
     // subtracts from inventory weight total
-    public void SubtractWeight(Item _item) {
-        currentWeight -= _item.weight;
+    public void SubtractWeight(Item _item, int quantity) {
+        currentWeight -= _item.weight * quantity;
     }
 
     public int ItemQuantity(Item item) {
