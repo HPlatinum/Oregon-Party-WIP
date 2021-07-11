@@ -185,7 +185,10 @@ public class Interact : MonoBehaviour {
         if (attemptPickup) {
             //print("picked up");
             objectsInRange.Remove(interactSubject);
-            Destroy(interactSubject.gameObject);
+            if (interactSubject.destroyParentAlso)
+                Destroy(interactSubject.transform.parent.gameObject);
+            else
+                Destroy(interactSubject.gameObject);
         }
     }
 

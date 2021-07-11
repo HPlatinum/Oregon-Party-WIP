@@ -8,6 +8,7 @@ public class Interactable : MonoBehaviour
     public InteractTypes interactType;
     public Item item;
     public Item requiredItem; //only allow interaction if the required item is in the inventory
+    public bool destroyParentAlso = false;
 
     public void Start() {
 
