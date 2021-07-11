@@ -10,11 +10,13 @@ public class Interact : MonoBehaviour {
     private bool currentlyInteracting = false;
     public Transform rightHand;
     public Transform leftHand;
-    public GameObject temp;
     private GameObject objectInHand;
 
+    [Header("Tools")]
+    public GameObject fishingRod;
+
     // Start is called before the first frame update
-    
+
     void Start() {
 
     }
@@ -142,7 +144,7 @@ public class Interact : MonoBehaviour {
 
         //add any relevant objects to the player's hand
         if (interactSubject.interactType == Interactable.InteractTypes.Fishing) {
-            PutObjectInHand(temp, false);
+            PutObjectInHand(fishingRod, false);
         }
     }
 
@@ -229,7 +231,7 @@ public class Interact : MonoBehaviour {
         if (useRightHand) hand = rightHand;
 
         //create the gameobject and parent it to the hand
-        GameObject newObj = Instantiate(temp);
+        GameObject newObj = Instantiate(go);
         newObj.transform.SetParent(hand);
         //move it to the center of the hand
         newObj.transform.localPosition = Vector3.zero;
