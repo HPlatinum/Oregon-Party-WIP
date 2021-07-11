@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace Invector.vCharacterController
 {
@@ -158,6 +158,18 @@ namespace Invector.vCharacterController
 
             }
             
+             if (interactScript.interactSubject.interactType == Interactable.InteractTypes.Chest) {
+
+                animator.CrossFadeInFixedTime("Fishing", 0.2f);
+
+                isInteracting = true;
+                lockMovement = true;
+                lockRotation = true;
+                interactAnimationStarted = false;
+                HaltVelocity();
+
+            }
+
         }
     }
 }

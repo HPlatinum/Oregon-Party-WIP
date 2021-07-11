@@ -45,15 +45,6 @@ public class Interact : MonoBehaviour {
                 interactSubject.GetComponent<Outline>().enabled = true;
             }
         }
-
-        //check if the object is the car inventory
-        //CarInventory carInventory = obj.GetComponent<CarInventory>(); //something like this?
-        //if (carInventory != null){
-        //for now, just use some other lame arbitrary logic
-        if (obj.name == "Car Inventory") {
-            print("show inventory here");
-        }
-
     }
 
     private void OnTriggerExit(Collider obj) {
@@ -74,14 +65,6 @@ public class Interact : MonoBehaviour {
             if (interactSubject != null) {
                 interactSubject.GetComponent<Outline>().enabled = true;
             }
-        }
-
-        //check if the object is the car inventory
-        //CarInventory carInventory = obj.GetComponent<CarInventory>(); //something like this?
-        //if (carInventory != null){
-        //for now, just use some other lame arbitrary logic
-        if (obj.name == "Car Inventory") {
-            print("hide inventory here");
         }
     }
 
@@ -153,6 +136,11 @@ public class Interact : MonoBehaviour {
             Pickup();
         }
 
+        else if (interactSubject.interactType == Interactable.InteractTypes.Chest) {
+            //print("about to pickup");
+            Open();
+        }
+
         #region Discard Items Test Application
         // The discard function works, however, I have no method attached for selecting and deleting. 
         // Leaving the functionality here for now. I assume this will be attached to UI buttons.
@@ -179,6 +167,11 @@ public class Interact : MonoBehaviour {
         }
     }
 
+    public void Open() {
+        if(!interactSubject.inventoryState())
+            interactSubject.inventoryState();
+    }
+
     // clears inventory and inventory weight on application quit
     private void OnApplicationQuit() {
         inventory.inventorySlot.Clear();
@@ -198,6 +191,9 @@ public class Interact : MonoBehaviour {
                     return true;
                 }
             }
+        }
+        if (interactSubject.interactType == Interactable.InteractTypes.Chest) {
+                return true; // return true since it's a chest
         }
         return false;
     }
