@@ -185,7 +185,7 @@ namespace Invector.vCharacterController
         /// Input to trigger interaction
         /// /// </summary>
         protected virtual void InteractInput() {
-            if (Input.GetKeyDown(interactInput) && !cc.isInteracting)
+            if (Input.GetKeyDown(interactInput))
                 cc.Interact();
         }
 

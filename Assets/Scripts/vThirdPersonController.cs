@@ -128,6 +128,11 @@ namespace Invector.vCharacterController
 
         public virtual void Interact() {
 
+            if (isInteracting) {
+                InteractCeption();
+                return;
+            }
+
             //interact with the minigame
             if (interactScript.interactSubject == null) {
                 return;
@@ -138,18 +143,36 @@ namespace Invector.vCharacterController
             }
             if (interactScript.interactSubject.interactType == Interactable.InteractTypes.Pickup) {
                 StartAnimation("Lifting", 0.2f);
+                return;
             }
             
             if (interactScript.interactSubject.interactType == Interactable.InteractTypes.Fishing) {
-                StartAnimation("Fishing", 0.2f);
+                StartAnimation("Fishing - Cast", 0.2f);
+                return;
             }
 
             if (interactScript.interactSubject.interactType == Interactable.InteractTypes.Chest) {
                 StartAnimation("Fishing", 0.2f);
+                return;
             }
 
             
         }
+
+        private void InteractCeption() {
+            //checks to see if the player can do any interaction during a minigame
+            if (interactScript.interactSubject == null)
+                return;
+            //is the player fishing, and at the idle fishing animation?
+            if (interactScript.interactSubject.interactType == Interactable.InteractTypes.Fishing) {
+                if (animator.GetCurrentAnimatorStateInfo(0).IsName("Fishing - Idle")){
+                    animator.CrossFadeInFixedTime("Fishing - Reeling", 0.2f);
+                    return;
+                }
+            }
+
+        }
+
 
         private void StartAnimation(string animationName, float transitionDuration) {
             //plays the specified animation. transitions to the desired animation over the specified transitionDuration (in seconds)
