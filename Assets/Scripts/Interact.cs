@@ -32,7 +32,12 @@ public class Interact : MonoBehaviour {
                 interactSubject.GetComponent<Outline>().enabled = true;
             }
         }
-
+        if (Input.GetKeyDown(KeyCode.O)) {
+            inventory.Save();
+        }
+        if (Input.GetKeyDown(KeyCode.L)) {
+            inventory.Load();
+        }
     }
 
     private void OnTriggerEnter(Collider obj) {

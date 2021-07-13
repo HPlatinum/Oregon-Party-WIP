@@ -1,10 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+using UnityEditor;
 
 [CreateAssetMenu(fileName = "New Inventory", menuName = "Inventory System/Inventory")]
-public class Inventory : ScriptableObject
+public class Inventory : ScriptableObject, ISerializationCallbackReceiver
 {
+    public string savePath;
+    private ItemDatabaseObject database;
     // Event which we can subscribe different methods to -- Trigger calls all attached events
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallback;
@@ -13,6 +18,14 @@ public class Inventory : ScriptableObject
     public float currentWeight; // current weight
 
     public List<InventorySlot> inventorySlot = new List<InventorySlot>();
+
+    public void OnEnable() {
+#if UNITY_EDITOR
+        database = (ItemDatabaseObject)AssetDatabase.LoadAssetAtPath("Assets/Resources/Database.asset", typeof(ItemDatabaseObject));
+#else
+        database = Resources.Load<ItemDatabaseObject>("Database");
+#endif
+    }
 
     // Adds an item to the List<InventorySlot>
     public bool AddItem(Item _item, int _quantity, Inventory _inventory) {
@@ -29,7 +42,7 @@ public class Inventory : ScriptableObject
                 }
             }
             if(!containsItem) {
-                inventorySlot.Add(new InventorySlot(_item, _quantity));
+                inventorySlot.Add(new InventorySlot(database.GetId[_item], _item, _quantity));
                 AddWeight(_item, _quantity);
                 containsItem = true;
                 if(onItemChangedCallback != null)
@@ -37,8 +50,36 @@ public class Inventory : ScriptableObject
                 return containsItem;
             }
         }
-
         return containsItem;
+    }
+
+    //Adds the ability to save the inventory state to the given path
+    public void Save() {
+        string saveData = JsonUtility.ToJson(this, true);
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Create(string.Concat(Application.persistentDataPath, savePath));
+        bf.Serialize(file, saveData);
+        file.Close();
+    }
+
+    //Adds the ability to load the inventory state from the given path
+    public void Load() {
+        if(File.Exists(string.Concat(Application.persistentDataPath, savePath))){
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(string.Concat(Application.persistentDataPath, savePath), FileMode.Open);
+            JsonUtility.FromJsonOverwrite(bf.Deserialize(file).ToString(), this);
+            file.Close();
+            onItemChangedCallback.Invoke();
+        }
+    }
+
+    public void OnAfterDeserialize() {
+        for(int i = 0; i < inventorySlot.Count; i++) {
+            inventorySlot[i].item = database.GetItem[inventorySlot[i].ID];
+        }
+    }
+
+    public void OnBeforeSerialize() {
     }
 
     // function for removing an item from an inventory
@@ -105,9 +146,11 @@ public class Inventory : ScriptableObject
 // Allows us to add or remove items to our inventory.
 [System.Serializable]
 public class InventorySlot {
+    public int ID;
     public Item item;
     public int quantity;
-    public InventorySlot(Item _item, int _quantity) {
+    public InventorySlot(int _id, Item _item, int _quantity) {
+        ID = _id;
         item = _item;
         quantity = _quantity;
     }
