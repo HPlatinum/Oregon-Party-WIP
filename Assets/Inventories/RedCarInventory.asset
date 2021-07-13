@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db44ff85c2ce5624daffcb327f9a1c9f, type: 3}
   m_Name: RedCarInventory
   m_EditorClassIdentifier: 
+  savePath: /vehicleInventory.Save
+  database: {fileID: 11400000, guid: 9c780f3b1ba58a14097baff383bd0b4e, type: 2}
   maxWeight: 545
   currentWeight: 0
   inventorySlot: []

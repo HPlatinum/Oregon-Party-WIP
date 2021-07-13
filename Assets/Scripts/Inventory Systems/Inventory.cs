@@ -9,7 +9,7 @@ using UnityEditor;
 public class Inventory : ScriptableObject, ISerializationCallbackReceiver
 {
     public string savePath;
-    private ItemDatabaseObject database;
+    public ItemDatabaseObject database;
     // Event which we can subscribe different methods to -- Trigger calls all attached events
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallback;
@@ -18,14 +18,6 @@ public class Inventory : ScriptableObject, ISerializationCallbackReceiver
     public float currentWeight; // current weight
 
     public List<InventorySlot> inventorySlot = new List<InventorySlot>();
-
-    public void OnEnable() {
-#if UNITY_EDITOR
-        database = (ItemDatabaseObject)AssetDatabase.LoadAssetAtPath("Assets/Resources/Database.asset", typeof(ItemDatabaseObject));
-#else
-        database = Resources.Load<ItemDatabaseObject>("Database");
-#endif
-    }
 
     // Adds an item to the List<InventorySlot>
     public bool AddItem(Item _item, int _quantity, Inventory _inventory) {
