@@ -7,14 +7,21 @@ public class Item : ScriptableObject {
 
     new public string name = "New Item"; 
     public ItemType type;
-    public Sprite icon = null; 
-    public bool defaultItem = false;  
+    public Sprite icon = null;
+    public bool defaultItem = false;
     [TextArea(15,20)]
     public string description;
     public int stackLimit = 1;
     public float weight = 1; // by kg
+
+    [Header("Item Details Model")]
+    public GameObject model = null;
+    public float modelScale = 1f;
+    public Vector3 modelRotation = Vector3.zero;
+    public Vector2 modelPosition = Vector2.zero;
     public virtual void Use() {
         Debug.Log("Using " + name);
+        FindObjectOfType<ItemDetails>().DisplayItem(this);
         // Use item
         // Trigger possibly
     }
