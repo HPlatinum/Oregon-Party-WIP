@@ -1,16 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ItemDetails : MonoBehaviour { 
     private Item item;
-    private Transform itemModelParent;
     public float rotationSpeed = 50f;
     private Vector2 originalModelParentPos;
-    
+
+    //gameobject references
+    private Transform itemModelParent;
+    private Text descriptionText;
+    private Text nameText;
+
     void Start(){
+        //declare the gameobject references
         itemModelParent = transform.Find("Item Model").Find("Object Parent");
+        descriptionText = transform.Find("Description").Find("Text").GetComponent<Text>();
+        nameText = transform.Find("Name").Find("Text").GetComponent<Text>();
+
+        //set the starting position of the 3d model UI element
         originalModelParentPos = new Vector2(itemModelParent.localPosition.x, itemModelParent.localPosition.y);
+
+        //hide the item details popup
         ShowContents(false);
     }
 
@@ -40,6 +52,12 @@ public class ItemDetails : MonoBehaviour {
         newModel.transform.Rotate(item.modelRotation);
         itemModelParent.localPosition = new Vector3 (originalModelParentPos.x + item.modelPosition.x, originalModelParentPos.y + item.modelPosition.y, itemModelParent.localPosition.z);
 
+        //add the description text
+        descriptionText.text = item.description;
+
+        //add the item name
+        nameText.text = item.name;
+
         //show the ItemDetails UI
         ShowContents(true);
 
@@ -48,10 +66,16 @@ public class ItemDetails : MonoBehaviour {
     public void Close() {
         //closes the window
         ShowContents(false);
-        item = null;
-        foreach (Transform t in itemModelParent) {
+
+        //clear the UI elements
+        foreach (Transform t in itemModelParent)
             GameObject.Destroy(t.gameObject);
-        }
+        descriptionText.text = "";
+        nameText.text = "";
+
+        //clear the item reference
+
+        item = null;
     }
 
     private void SetLayerRecursively(GameObject obj, int newLayer) {
@@ -66,6 +90,21 @@ public class ItemDetails : MonoBehaviour {
             }
             SetLayerRecursively(child.gameObject, newLayer);
         }
+    }
+
+    public  void Trash() {
+        //prompt the user if they want to destroy the item
+        print("trash item");
+    }
+
+    public void BreakDown() {
+        //prompt the user if they want to break down the item for components
+        print("break down item");
+    }
+
+    public void MainAction() {
+        //use the item's main action
+        print("main action");
     }
 
 }
