@@ -1465,9 +1465,11 @@ MonoBehaviour:
   interactSubject: {fileID: 0}
   inventory: {fileID: 11400000, guid: 2bc05075b34179940bb487cba622012c, type: 2}
   objectsInRange: []
+  currentlyInteracting: 0
   rightHand: {fileID: 8147239266399355231}
   leftHand: {fileID: 8353189296552790741}
-  fishingRod: {fileID: 9172372029443849441, guid: 8356b4027fc0f2c41afc468da7196a24, type: 3}
+  objectInHand: {fileID: 0}
+  fishingRod: {fileID: 11400000, guid: b2f757954ad222f458fff8100c5aefd6, type: 2}
 --- !u!1 &8560800492045140676
 GameObject:
   m_ObjectHideFlags: 0

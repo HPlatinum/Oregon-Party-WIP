@@ -7,17 +7,24 @@ public class ItemDetails : MonoBehaviour {
     private Item item;
     public float rotationSpeed = 50f;
     private Vector2 originalModelParentPos;
+    private enum ItemAction { Equip, Eat, Unequip };
+    private ItemAction mainAction;
+    private Interact interactScript;
 
     //gameobject references
     private Transform itemModelParent;
     private Text descriptionText;
     private Text nameText;
+    private Text mainActionText;
 
     void Start(){
         //declare the gameobject references
         itemModelParent = transform.Find("Item Model").Find("Object Parent");
         descriptionText = transform.Find("Description").Find("Text").GetComponent<Text>();
         nameText = transform.Find("Name").Find("Text").GetComponent<Text>();
+        mainActionText = transform.Find("Main Action").Find("Text").GetComponent<Text>();
+        interactScript = FindObjectOfType<Interact>();
+
 
         //set the starting position of the 3d model UI element
         originalModelParentPos = new Vector2(itemModelParent.localPosition.x, itemModelParent.localPosition.y);
@@ -57,6 +64,14 @@ public class ItemDetails : MonoBehaviour {
 
         //add the item name
         nameText.text = item.name;
+
+        //set the main action function
+        if (item.type == ItemType.Tool) mainAction = ItemAction.Equip;
+        if (item.type == ItemType.Food) mainAction = ItemAction.Eat;
+
+        //set the main action text
+        SetMainActionText();
+
 
         //show the ItemDetails UI
         ShowContents(true);
@@ -104,7 +119,50 @@ public class ItemDetails : MonoBehaviour {
 
     public void MainAction() {
         //use the item's main action
-        print("main action");
+        if (mainActionText.text == "Equip") {
+            interactScript.PutObjectInHand(item, false);
+        }
+        else if (mainActionText.text == "Unequip") {
+            interactScript.RemoveObjectFromHand();
+        }
+        else if (mainActionText.text == "") {
+            //do nothing
+        }
+        else if (mainActionText.text == "Eat") {
+            //do nothing
+        }
+
+        SetMainActionText();
+    }
+
+    private void SetMainActionText() {
+        //set the interact button text for the currently-examined item
+        if (mainAction == ItemAction.Equip) {
+            Item equippedItem = interactScript.itemInHand;
+            bool isEquippedItemInUse = interactScript.currentlyInteracting;
+
+            //if there is no equipped item
+            if (equippedItem == null) {
+                mainActionText.text = "Equip";
+            }
+            //if there is an equipped item and it is in use
+            else if (isEquippedItemInUse) {
+                //grey out the interact box?
+                mainActionText.text = "";
+            }
+            //if the equipped item is the same as the selected item, and it is not in use
+            else if (equippedItem == item) {
+                mainActionText.text = "Unequip";
+            }
+            //if the eqipped item is not the same as the selected item, and it is not in use
+            else {
+                mainActionText.text = "Equip";
+            }
+        }
+
+        else if (mainAction == ItemAction.Eat) {
+            mainActionText.text = "Eat";
+        }
     }
 
 }

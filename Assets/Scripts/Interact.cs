@@ -7,13 +7,14 @@ public class Interact : MonoBehaviour {
     public Interactable interactSubject; //which object is closest to the player. null means no object is within interact range
     public Inventory inventory;
     public List<Interactable> objectsInRange = new List<Interactable>(); //all of the objects that are within interact range of the player
-    private bool currentlyInteracting = false;
+    public bool currentlyInteracting = false;
     public Transform rightHand;
     public Transform leftHand;
-    private GameObject objectInHand;
+    public GameObject objectInHand;
+    public Item itemInHand;
 
     [Header("Tools")]
-    public GameObject fishingRod;
+    public Item fishingRod;
 
     // Start is called before the first frame update
 
@@ -206,13 +207,12 @@ public class Interact : MonoBehaviour {
         return false;
     }
 
-    public void PutObjectInHand(GameObject go, bool useRightHand) {
+    public void PutObjectInHand(Item item, bool useRightHand) {
         //creates an instance of a gameobject and puts it in the players hand
 
         //only allow one object in the hand at a time - may need to revisit later
         if (objectInHand != null) {
-            print("you already have something in your hands!");
-            return;
+            RemoveObjectFromHand();
         }
 
         //use the correct hand
@@ -220,7 +220,7 @@ public class Interact : MonoBehaviour {
         if (useRightHand) hand = rightHand;
 
         //create the gameobject and parent it to the hand
-        GameObject newObj = Instantiate(go);
+        GameObject newObj = Instantiate(item.model);
         newObj.transform.SetParent(hand);
         //move it to the center of the hand
         newObj.transform.localPosition = Vector3.zero;
@@ -247,11 +247,15 @@ public class Interact : MonoBehaviour {
 
         //assumes we only have one object in the hand at a time
         objectInHand = newObj;
+        itemInHand = item;
     }
 
     public void RemoveObjectFromHand() {
         //removes the current object from the hand, nothin special
-        if (objectInHand != null) Destroy(objectInHand);
+        if (objectInHand != null) {
+            DestroyImmediate(objectInHand);
+            itemInHand = null;
+        }
     }
 
 } 
