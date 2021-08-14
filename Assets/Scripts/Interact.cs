@@ -12,6 +12,7 @@ public class Interact : MonoBehaviour {
     public Transform leftHand;
     public GameObject objectInHand;
     public Item itemInHand;
+    private bool removeItemWhenFinished = true; //if the item should be removed from the player's hand when their interact action ends
 
     [Header("Tools")]
     public Item fishingRod;
@@ -130,10 +131,14 @@ public class Interact : MonoBehaviour {
         //called by vThirdPersonInput.CheckInteractState
         //any code that should be run as soon as the interaction animation starts playing
         currentlyInteracting = true;
+        removeItemWhenFinished = true;
 
         //add any relevant objects to the player's hand
         if (interactSubject.interactType == Interactable.InteractTypes.Fishing) {
+            if (itemInHand == fishingRod)
+                removeItemWhenFinished = false;
             PutObjectInHand(fishingRod, false);
+
         }
     }
 
@@ -151,7 +156,8 @@ public class Interact : MonoBehaviour {
         else if (interactSubject.interactType == Interactable.InteractTypes.Fishing) {
             //print("about to pickup");
             Pickup();
-            RemoveObjectFromHand();
+            if (removeItemWhenFinished)
+                RemoveObjectFromHand();
         }
 
         else if (interactSubject.interactType == Interactable.InteractTypes.Chest) {
