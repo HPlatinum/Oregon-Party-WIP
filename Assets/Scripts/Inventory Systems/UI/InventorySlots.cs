@@ -6,27 +6,32 @@ using UnityEngine.UI;
 public class InventorySlots : MonoBehaviour
 {
     public Image icon;
-    public Button removeButton;
     public Inventory inventory;
+    public GameObject quantityUI;
     Item item;
+    private Text quantity;
+
+    void Start() {
+        quantity = transform.Find("Quantity").Find("Text").GetComponent<Text>();
+        quantityUI.SetActive(false);
+    }
 
     public void AddItem(Item newItem){
         item = newItem;
         icon.sprite = item.icon;
         icon.enabled = true;
-        removeButton.interactable = true;
+        quantityUI.SetActive(true);
+        quantity.text = "" + inventory.ItemQuantity(item);
     }
 
     public void ClearSlot(){
         item = null;
         icon.sprite = null;
         icon.enabled = false;
-        removeButton.interactable = false;
+        quantityUI.SetActive(false);
+        quantity.text = "";
     }
 
-    public void OnRemoveButton(){
-        inventory.RemoveItem(item, inventory.ItemQuantity(item), inventory);
-    }
 
     public void UseItem (){
         if(item != null){
