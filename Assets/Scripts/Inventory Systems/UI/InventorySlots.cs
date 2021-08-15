@@ -11,9 +11,8 @@ public class InventorySlots : MonoBehaviour
     Item item;
     private Text quantity;
 
-    // sets the quantity UI active in order to get the text component from it. Then deactivates. If you know a better way, feel free to tell me.
+    // Deactivates the quantity UI
     void Start() {
-        quantityUI.SetActive(true);
         quantity = transform.Find("Quantity").Find("Text").GetComponent<Text>();
         quantityUI.SetActive(false);
     }

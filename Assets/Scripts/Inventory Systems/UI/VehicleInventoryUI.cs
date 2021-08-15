@@ -19,6 +19,7 @@ public class VehicleInventoryUI : MonoBehaviour
         inventory.onItemChangedCallback += UpdateInventoryUI;
         slots = itemsParent.GetComponentsInChildren<InventorySlots>();
         UpdateInventoryUI();
+        inventoryUI.SetActive(false);
     }
 
     // // Update is called once per frame
