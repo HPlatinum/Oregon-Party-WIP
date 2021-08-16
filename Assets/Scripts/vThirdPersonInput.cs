@@ -21,6 +21,7 @@ namespace Invector.vCharacterController
         [HideInInspector] public vThirdPersonController cc;
         [HideInInspector] public vThirdPersonCamera tpCamera;
         [HideInInspector] public Camera cameraMain;
+        private Joystick joystick;
 
         private Interact interactScript;
 
@@ -28,6 +29,7 @@ namespace Invector.vCharacterController
 
         protected virtual void Start()
         {
+            joystick = FindObjectOfType<FixedJoystick>();
             InitilizeController();
             InitializeTpCamera();
             interactScript = gameObject.transform.Find("InteractCollider").GetComponent<Interact>();
@@ -119,8 +121,12 @@ namespace Invector.vCharacterController
 
         public virtual void MoveInput()
         {
-            cc.input.x = Input.GetAxis(horizontalInput);
-            cc.input.z = Input.GetAxis(verticallInput);
+
+            Vector2 joystickInput = joystick.Direction;
+            cc.input.x = joystickInput.x;
+            cc.input.z = joystickInput.y;
+            //cc.input.x = Input.GetAxis(horizontalInput);
+            //cc.input.z = Input.GetAxis(verticallInput);
         }
 
         protected virtual void CameraInput()
