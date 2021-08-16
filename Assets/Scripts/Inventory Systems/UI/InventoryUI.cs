@@ -14,6 +14,7 @@ public class InventoryUI : MonoBehaviour
     {
         inventory.onItemChangedCallback += UpdateUI;
         slots = itemsParent.GetComponentsInChildren<InventorySlots>();
+        //UpdateUI();
         inventoryUI.SetActive(false);
     }
 
@@ -32,7 +33,8 @@ public class InventoryUI : MonoBehaviour
                 slots[i].ClearSlot();
             }
         }
-        Debug.Log("Updating UI");
+        //Debug.Log("Updating UI");
+        //print(slots.Length);
     }
 
     public bool inventoryState() {

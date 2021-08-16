@@ -16,6 +16,9 @@ public class ItemDetails : MonoBehaviour {
     private Text descriptionText;
     private Text nameText;
     private Text mainActionText;
+    private PauseMenu pauseMenu;
+    private GameObject quantityGO;
+    private Text quantityText;
 
     void Start(){
         //declare the gameobject references
@@ -24,7 +27,9 @@ public class ItemDetails : MonoBehaviour {
         nameText = transform.Find("Name").Find("Text").GetComponent<Text>();
         mainActionText = transform.Find("Main Action").Find("Text").GetComponent<Text>();
         interactScript = FindObjectOfType<Interact>();
-
+        pauseMenu = FindObjectOfType<PauseMenu>();
+        quantityGO = transform.Find("Quantity").gameObject;
+        quantityText = quantityGO.transform.Find("Text").GetComponent<Text>();
 
         //set the starting position of the 3d model UI element
         originalModelParentPos = new Vector2(itemModelParent.localPosition.x, itemModelParent.localPosition.y);
@@ -34,7 +39,7 @@ public class ItemDetails : MonoBehaviour {
     }
 
     private void Update() {
-        itemModelParent.Rotate(0, (rotationSpeed * Time.deltaTime), 0);
+        itemModelParent.Rotate(0, (rotationSpeed * Time.unscaledDeltaTime), 0);
     }
 
     private void ShowContents(bool show) {
@@ -44,7 +49,7 @@ public class ItemDetails : MonoBehaviour {
         }
     }
 
-    public void DisplayItem(Item item) {
+    public void DisplayItem(Item item, int quantity) {
         //called when the player taps an item in the inventory
         //shows the item info and a close-up of the 3d model
 
@@ -71,10 +76,17 @@ public class ItemDetails : MonoBehaviour {
 
         //set the main action text
         SetMainActionText();
-
-
+        
         //show the ItemDetails UI
         ShowContents(true);
+
+        //display the item quantity - has to go after showing all UI
+        quantityGO.SetActive(true);
+        quantityText.text = "x" + quantity;
+        if (quantity <= 1) quantityGO.SetActive(false);
+
+        //hide the pause menu UI
+        pauseMenu.ShowMenu(false);
 
     }
 
@@ -89,8 +101,10 @@ public class ItemDetails : MonoBehaviour {
         nameText.text = "";
 
         //clear the item reference
-
         item = null;
+
+        //show the pause menu UI again
+        pauseMenu.ShowMenu(true);
     }
 
     private void SetLayerRecursively(GameObject obj, int newLayer) {

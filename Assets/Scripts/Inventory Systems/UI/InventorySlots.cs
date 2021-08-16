@@ -40,10 +40,9 @@ public class InventorySlots : MonoBehaviour
         quantity.text = "";
     }
 
-
-    public void UseItem (){
-        if(item != null){
-            item.Use();
+    public void TapItem() {
+        if (item != null) {
+            FindObjectOfType<ItemDetails>().DisplayItem(item, inventory.ItemQuantity(item));
         }
     }
 }

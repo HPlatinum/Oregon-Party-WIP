@@ -19,10 +19,4 @@ public class Item : ScriptableObject {
     public float modelScale = 1f;
     public Vector3 modelRotation = Vector3.zero;
     public Vector2 modelPosition = Vector2.zero;
-    public virtual void Use() {
-        Debug.Log("Using " + name);
-        FindObjectOfType<ItemDetails>().DisplayItem(this);
-        // Use item
-        // Trigger possibly
-    }
 }
