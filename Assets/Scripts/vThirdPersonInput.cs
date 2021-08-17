@@ -125,8 +125,14 @@ namespace Invector.vCharacterController
             Vector2 joystickInput = joystick.Direction;
             cc.input.x = joystickInput.x;
             cc.input.z = joystickInput.y;
-            //cc.input.x = Input.GetAxis(horizontalInput);
-            //cc.input.z = Input.GetAxis(verticallInput);
+            if (joystickInput == Vector2.zero) {
+                cc.input.x = Input.GetAxis(horizontalInput);
+                cc.input.z = Input.GetAxis(verticallInput);
+            }
+;
+            
+
+
         }
 
         protected virtual void CameraInput()

@@ -7,7 +7,6 @@ public class Item : ScriptableObject {
 
     new public string name = "New Item"; 
     public ItemType type;
-    public Sprite icon = null;
     public bool defaultItem = false;
     [TextArea(15,20)]
     public string description;
