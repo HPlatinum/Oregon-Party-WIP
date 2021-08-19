@@ -140,6 +140,14 @@ public class Interact : MonoBehaviour {
             PutObjectInHand(fishingRod, false);
 
         }
+
+        /*
+        //start any ui popups - move to when the idle animation starts
+        if (interactSubject.interactType == Interactable.InteractTypes.Fishing) {
+            GameObject.Find("Essentials").transform.Find("Canvas").Find("Fishing Popup").gameObject.SetActive(true);
+
+        }
+        */
     }
 
     public void EndInteract() {
@@ -155,13 +163,26 @@ public class Interact : MonoBehaviour {
 
         else if (interactSubject.interactType == Interactable.InteractTypes.Fishing) {
             //print("about to pickup");
-            Pickup();
+            if (FindObjectOfType<FishingPopup>().playerGotFish) {
+                Pickup();
+            }
+            else {
+                DestroyInteractable();
+            }
+            //Pickup();
             if (removeItemWhenFinished)
                 RemoveObjectFromHand();
         }
 
         else if (interactSubject.interactType == Interactable.InteractTypes.Chest) {
             Open();
+        }
+
+
+        //close any ui popups - move to when the player interacts again
+        if (interactSubject.interactType == Interactable.InteractTypes.Fishing) {
+            FindObjectOfType<FishingPopup>().EndFishing();
+
         }
     }
 
@@ -174,12 +195,16 @@ public class Interact : MonoBehaviour {
         // If able Destroy object
         if (attemptPickup) {
             //print("picked up");
-            objectsInRange.Remove(interactSubject);
-            if (interactSubject.destroyParentAlso)
-                Destroy(interactSubject.transform.parent.gameObject);
-            else
-                Destroy(interactSubject.gameObject);
+            DestroyInteractable();
         }
+    }
+
+    public void DestroyInteractable() {
+        objectsInRange.Remove(interactSubject);
+        if (interactSubject.destroyParentAlso)
+            Destroy(interactSubject.transform.parent.gameObject);
+        else
+            Destroy(interactSubject.gameObject);
     }
 
     public void Open() {

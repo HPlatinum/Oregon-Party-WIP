@@ -148,11 +148,12 @@ namespace Invector.vCharacterController
             
             if (interactScript.interactSubject.interactType == Interactable.InteractTypes.Fishing) {
                 StartAnimation("Fishing - Cast", 0.2f);
+                FindObjectOfType<Essentials>().waitToShowFishingCanvas = true;
                 return;
             }
 
             if (interactScript.interactSubject.interactType == Interactable.InteractTypes.Chest) {
-                StartAnimation("Fishing", 0.2f);
+                //StartAnimation("Fishing", 0.2f);
                 return;
             }
 
@@ -160,13 +161,13 @@ namespace Invector.vCharacterController
         }
 
         private void InteractCeption() {
-            //checks to see if the player can do any interaction during a minigame
+            //checks to see if the player can do any interaction while already interacting during a minigame
             if (interactScript.interactSubject == null)
                 return;
             //is the player fishing, and at the idle fishing animation?
             if (interactScript.interactSubject.interactType == Interactable.InteractTypes.Fishing) {
                 if (animator.GetCurrentAnimatorStateInfo(0).IsName("Fishing - Idle")){
-                    animator.CrossFadeInFixedTime("Fishing - Reeling", 0.2f);
+                    FindObjectOfType<FishingPopup>().ReelIn();
                     return;
                 }
             }
@@ -214,6 +215,7 @@ namespace Invector.vCharacterController
                 yield return null;
             }
         }
+        
         
     }
 

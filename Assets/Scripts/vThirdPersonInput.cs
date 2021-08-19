@@ -25,6 +25,9 @@ namespace Invector.vCharacterController
 
         private Interact interactScript;
 
+        //thirdpersoncontroller variables
+        public Transform essentialsCanvas;
+
         #endregion
 
         protected virtual void Start()
@@ -33,6 +36,7 @@ namespace Invector.vCharacterController
             InitilizeController();
             InitializeTpCamera();
             interactScript = gameObject.transform.Find("InteractCollider").GetComponent<Interact>();
+            essentialsCanvas = GameObject.Find("Essentials").transform;
             cc.interactScript = interactScript;
         }
 
