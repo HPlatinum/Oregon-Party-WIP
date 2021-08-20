@@ -40,6 +40,11 @@ public class FishingPopup : MonoBehaviour {
     
 
     public void BeginFishing() {
+        //reset end condition values
+        fishHooked = false;
+        playerReeled = false;
+        playerGotFish = false;
+
         //set child active
         transform.Find("Fish Circle").gameObject.SetActive(true);
 
@@ -77,6 +82,10 @@ public class FishingPopup : MonoBehaviour {
         //3 is moving fish 2 out
         //4 is moving fish 3 in
         //5 is moving fish 3 out
+
+        if (playerReeled) {
+            return;
+        }
 
         if(bobsRemaining == 0) {
             fishHooked = true;
@@ -116,7 +125,7 @@ public class FishingPopup : MonoBehaviour {
         //if the player does not reel in the fish in time, end the minigame
         if (!playerReeled) {
             fishHooked = false;
-            animator.CrossFadeInFixedTime("Fishing - Reeling", 0.2f);
+            animator.CrossFadeInFixedTime("Shrugging", 0.2f);
             EndFishing();
             //FindObjectOfType<Interact>().DestroyInteractable();
             //gameObject.SetActive(false);
@@ -135,7 +144,7 @@ public class FishingPopup : MonoBehaviour {
         }
         else {
             //FindObjectOfType<Interact>().DestroyInteractable();
-            animator.CrossFadeInFixedTime("Fishing - Reeling", 0.2f);
+            animator.CrossFadeInFixedTime("Shrugging", 0.2f);
             EndFishing();
             //gameObject.SetActive(false);
         }
