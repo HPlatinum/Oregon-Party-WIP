@@ -26,14 +26,17 @@ public class InventoryUI : MonoBehaviour
 
     void UpdateUI() {
         for(int i = 0; i < slots.Length; i++) {
-            if(i < inventory.inventorySlot.Count) {
-                slots[i].AddItem(inventory.inventorySlot[i].item);
+            print(inventory.inventorySlot.Count + " " + i);
+            if (i == inventory.inventorySlot.Count) {
+                print("here");
+                slots[i-1].AddItem(inventory.inventorySlot[i-1].item);
+                print("here2");
             }
-            else {
+            if(i > inventory.inventorySlot.Count) {
                 slots[i].ClearSlot();
             }
         }
-        //Debug.Log("Updating UI");
+        Debug.Log("Updating UI");
         //print(slots.Length);
     }
 
