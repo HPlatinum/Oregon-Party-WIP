@@ -22,24 +22,25 @@ public class Inventory : ScriptableObject, ISerializationCallbackReceiver
     // Adds an item to the List<InventorySlot>
     public bool AddItem(Item _item, int _quantity, Inventory _inventory) {
         bool containsItem = false;
+        // checks to see if it's possible to add the item, then adds it if it is and returns True or False.
         if(CanAdd(_inventory, _item)) {
             for(int i = 0; i < inventorySlot.Count; i++) {
+                // if the item exists in that inventory and the quantity is not greater than the stack limit, add quantity of item and return true.
                 if(inventorySlot[i].item == _item && inventorySlot[i].quantity < _item.stackLimit) {
                     containsItem = true;
                     inventorySlot[i].AddQuantity(_quantity);
                     AddWeight(_item, _quantity);
                 if(onItemChangedCallback != null)
                     onItemChangedCallback.Invoke();
-                return containsItem;
                 }
             }
+                // if the item is not contained within the inventory, adds it to the inventory
             if(!containsItem) {
                 inventorySlot.Add(new InventorySlot(database.GetId[_item], _item, _quantity));
                 AddWeight(_item, _quantity);
                 containsItem = true;
                 if(onItemChangedCallback != null)
                     onItemChangedCallback.Invoke();
-                return containsItem;
             }
         }
         return containsItem;
@@ -105,6 +106,7 @@ public class Inventory : ScriptableObject, ISerializationCallbackReceiver
 
     // Checks to see if the current weight plus the new item's weight is within the 
     // inventory scope
+    // may be obsolete with our new design change (slots fill vs weight)
     public bool CanAdd(Inventory _inventory, Item _item) { 
         if(_inventory.currentWeight + _item.weight <= _inventory.maxWeight) {
             return true;

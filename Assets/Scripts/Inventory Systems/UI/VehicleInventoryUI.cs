@@ -13,7 +13,8 @@ public class VehicleInventoryUI : MonoBehaviour
     public Button transferFrom;
 
     InventorySlots[] slots;
-    // // Start is called before the first frame update
+    // allows you to add an inventory to an object and gives functionality for updating a UI. This should probably just be merged with the
+    // other inventory UI script.
     void Start()
     {
         inventory.onItemChangedCallback += UpdateInventoryUI;
@@ -28,10 +29,11 @@ public class VehicleInventoryUI : MonoBehaviour
         
     }
 
+    // updates the inventory UI -- same code as updateUI -- same bug
     void UpdateInventoryUI() {
         for(int i = 0; i < slots.Length; i++) {
             if(i < inventory.inventorySlot.Count) {
-                slots[i].AddItem(inventory.inventorySlot[i].item);
+                slots[i].AddItem(inventory.inventorySlot[i].item); // bug
             }
             else {
                 slots[i].ClearSlot();
@@ -40,6 +42,7 @@ public class VehicleInventoryUI : MonoBehaviour
         Debug.Log("Updating UI");
     }
 
+    // enables inventory showing
     public bool InventoryState() {
         inventoryUI.SetActive(!inventoryUI.activeSelf);
         return(inventoryUI.activeSelf);
@@ -53,6 +56,7 @@ public class VehicleInventoryUI : MonoBehaviour
         InventoryState();
     }
 
+    // function to transfer items from player inventory to stash, store, etc.-- needs to be updated to play with Item.Id's instead.
     public void TransferTo() {
         Debug.Log("attempting to p inven below");
         Debug.Log(playerInventory.inventorySlot.Count);
@@ -66,6 +70,8 @@ public class VehicleInventoryUI : MonoBehaviour
         else
             print("Transfer inventory empty");
     }
+
+    // function to transfer items from one inventory to player inventory -- needs to be updated to play with Item.Id's instead.
     public void TransferFrom() {
         Debug.Log("attempting from");
         if(inventory.inventorySlot.Count > 0) {

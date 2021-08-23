@@ -16,6 +16,7 @@ public class TownUI : MonoBehaviour
         townState();
     }
 
+    // currently allows you to open the town menu by pressing T. Functionality to be added later
     public bool townState() {
         if(Input.GetButtonDown("TestOpenTown")){
             townUI.SetActive(!townUI.activeSelf);
