@@ -17,7 +17,7 @@ public class Interact : MonoBehaviour {
     [Header("Tools")]
     public Item fishingRod;
 
-    private Minigame currentMinigame;
+    //private Minigame currentMinigame;
 
     // Start is called before the first frame update
 

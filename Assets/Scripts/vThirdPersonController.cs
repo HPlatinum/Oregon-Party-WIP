@@ -135,29 +135,30 @@ namespace Invector.vCharacterController
             }
 
             //interact with the minigame
-            if (interactScript.interactSubject == null) {
+            if (StaticVariables.interactScript.interactSubject == null) {
                 return;
             }
             if (StaticVariables.currentMinigame != null) {
                 StaticVariables.currentMinigame.InteractAction();
                 return;
             }
-            if (!interactScript.IsInteractAllowed()) {
-                print("you cannot perform the " + interactScript.interactSubject.interactType.ToString() + " action");
+            if (!StaticVariables.interactScript.IsInteractAllowed()) {
+                print("you cannot perform the " + StaticVariables.interactScript.interactSubject.interactType.ToString() + " action");
+                StartAnimation("Shrugging", 0.2f);
                 return;
             }
-            if (interactScript.interactSubject.interactType == Interactable.InteractTypes.Pickup) {
+            if (StaticVariables.interactScript.interactSubject.interactType == Interactable.InteractTypes.Pickup) {
                 StartAnimation("Lifting", 0.2f);
                 return;
             }
             
-            if (interactScript.interactSubject.interactType == Interactable.InteractTypes.Fishing) {
+            if (StaticVariables.interactScript.interactSubject.interactType == Interactable.InteractTypes.Fishing) {
                 StaticVariables.currentMinigame = StaticVariables.fishingMinigame;
                 StaticVariables.currentMinigame.InteractAction();
                 return;
             }
 
-            if (interactScript.interactSubject.interactType == Interactable.InteractTypes.Chest) {
+            if (StaticVariables.interactScript.interactSubject.interactType == Interactable.InteractTypes.Chest) {
                 //StartAnimation("Fishing", 0.2f);
                 return;
             }
@@ -188,7 +189,7 @@ namespace Invector.vCharacterController
             HaltVelocity();
             
             //face toward the interacted object
-            FaceTo(interactScript.interactSubject.gameObject, transitionDuration);
+            FaceTo(StaticVariables.interactScript.interactSubject.gameObject, transitionDuration);
             //start the animation
             animator.CrossFadeInFixedTime(animationName, transitionDuration);
 

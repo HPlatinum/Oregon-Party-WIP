@@ -18,15 +18,15 @@ namespace Invector.vCharacterController
         public string rotateCameraXInput = "Mouse X";
         public string rotateCameraYInput = "Mouse Y";
 
-        [HideInInspector] public vThirdPersonController cc;
+        //[HideInInspector] public vThirdPersonController cc;
         [HideInInspector] public vThirdPersonCamera tpCamera;
         [HideInInspector] public Camera cameraMain;
         private Joystick joystick;
 
-        private Interact interactScript;
+        //private Interact interactScript;
 
         //thirdpersoncontroller variables
-        public Transform essentialsCanvas;
+        //public Transform essentialsCanvas;
 
         #endregion
 
@@ -35,38 +35,38 @@ namespace Invector.vCharacterController
             joystick = FindObjectOfType<FixedJoystick>();
             InitilizeController();
             InitializeTpCamera();
-            interactScript = gameObject.transform.Find("InteractCollider").GetComponent<Interact>();
-            essentialsCanvas = GameObject.Find("Essentials").transform;
-            cc.interactScript = interactScript;
+            //interactScript = gameObject.transform.Find("InteractCollider").GetComponent<Interact>();
+            //essentialsCanvas = GameObject.Find("Essentials").transform;
+            //cc.interactScript = interactScript;
         }
 
         protected virtual void FixedUpdate()
         {
-            cc.UpdateMotor();               // updates the ThirdPersonMotor methods
-            cc.ControlLocomotionType();     // handle the controller locomotion type and movespeed
-            cc.ControlRotationType();       // handle the controller rotation type
+            StaticVariables.controller.UpdateMotor();               // updates the ThirdPersonMotor methods
+            StaticVariables.controller.ControlLocomotionType();     // handle the controller locomotion type and movespeed
+            StaticVariables.controller.ControlRotationType();       // handle the controller rotation type
         }
 
         protected virtual void Update()
         {
             CheckInteractState();
             InputHandle();                  // update the input methods
-            cc.UpdateAnimator();            // updates the Animator Parameters
+            StaticVariables.controller.UpdateAnimator();            // updates the Animator Parameters
         }
 
         public virtual void OnAnimatorMove()
         {
-            cc.ControlAnimatorRootMotion(); // handle root motion animations 
+            StaticVariables.controller.ControlAnimatorRootMotion(); // handle root motion animations 
         }
 
         public virtual void CheckInteractState() {
 
             //if the interact animation has not been started
-            if (cc.isInteracting) {
-                if (!cc.interactAnimationStarted) {
-                    if (cc.animator.GetCurrentAnimatorStateInfo(0).IsTag("Interact")) {
-                        
-                        cc.interactAnimationStarted = true;
+            if (StaticVariables.controller.isInteracting) {
+                if (!StaticVariables.controller.interactAnimationStarted) {
+                    if (StaticVariables.controller.animator.GetCurrentAnimatorStateInfo(0).IsTag("Interact")) {
+
+                        StaticVariables.controller.interactAnimationStarted = true;
 
                         //add any code you want run when the animation starts here
                         //at the moment, animations start when the interact button is pushed
@@ -74,15 +74,15 @@ namespace Invector.vCharacterController
                     }
                 }
                 else {
-                    if (!cc.animator.GetCurrentAnimatorStateInfo(0).IsTag("Interact")) {
-                        
-                        cc.interactAnimationStarted = false;
-                        cc.isInteracting = false;
-                        cc.lockMovement = false;
-                        cc.lockRotation = false;
+                    if (!StaticVariables.controller.animator.GetCurrentAnimatorStateInfo(0).IsTag("Interact")) {
+
+                        StaticVariables.controller.interactAnimationStarted = false;
+                        StaticVariables.controller.isInteracting = false;
+                        StaticVariables.controller.lockMovement = false;
+                        StaticVariables.controller.lockRotation = false;
 
                         //add any code you want run when the animation ends here
-                        interactScript.EndInteract();
+                        StaticVariables.interactScript.EndInteract();
                     }
                 }
             }
@@ -93,10 +93,10 @@ namespace Invector.vCharacterController
 
         protected virtual void InitilizeController()
         {
-            cc = GetComponent<vThirdPersonController>();
+            //cc = GetComponent<vThirdPersonController>();
 
-            if (cc != null)
-                cc.Init();
+            if (StaticVariables.controller != null)
+                StaticVariables.controller.Init();
         }
 
         protected virtual void InitializeTpCamera()
@@ -128,11 +128,11 @@ namespace Invector.vCharacterController
         {
 
             Vector2 joystickInput = joystick.Direction;
-            cc.input.x = joystickInput.x;
-            cc.input.z = joystickInput.y;
+            StaticVariables.controller.input.x = joystickInput.x;
+            StaticVariables.controller.input.z = joystickInput.y;
             if (joystickInput == Vector2.zero) {
-                cc.input.x = Input.GetAxis(horizontalInput);
-                cc.input.z = Input.GetAxis(verticallInput);
+                StaticVariables.controller.input.x = Input.GetAxis(horizontalInput);
+                StaticVariables.controller.input.z = Input.GetAxis(verticallInput);
             }
 ;
             
@@ -148,13 +148,13 @@ namespace Invector.vCharacterController
                 else
                 {
                     cameraMain = Camera.main;
-                    cc.rotateTarget = cameraMain.transform;
+                    StaticVariables.controller.rotateTarget = cameraMain.transform;
                 }
             }
 
             if (cameraMain)
             {
-                cc.UpdateMoveDirection(cameraMain.transform);
+                StaticVariables.controller.UpdateMoveDirection(cameraMain.transform);
             }
 
             if (tpCamera == null)
@@ -169,15 +169,15 @@ namespace Invector.vCharacterController
         protected virtual void StrafeInput()
         {
             if (Input.GetKeyDown(strafeInput))
-                cc.Strafe();
+                StaticVariables.controller.Strafe();
         }
 
         protected virtual void SprintInput()
         {
             if (Input.GetKeyDown(sprintInput))
-                cc.Sprint(true);
+                StaticVariables.controller.Sprint(true);
             else if (Input.GetKeyUp(sprintInput))
-                cc.Sprint(false);
+                StaticVariables.controller.Sprint(false);
         }
 
         /// <summary>
@@ -186,7 +186,7 @@ namespace Invector.vCharacterController
         /// <returns></returns>
         protected virtual bool JumpConditions()
         {
-            return cc.isGrounded && cc.GroundAngle() < cc.slopeLimit && !cc.isJumping && !cc.stopMove;
+            return StaticVariables.controller.isGrounded && StaticVariables.controller.GroundAngle() < StaticVariables.controller.slopeLimit && !StaticVariables.controller.isJumping && !StaticVariables.controller.stopMove;
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace Invector.vCharacterController
         protected virtual void JumpInput()
         {
             if (Input.GetKeyDown(jumpInput) && JumpConditions())
-                cc.Jump();
+                StaticVariables.controller.Jump();
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace Invector.vCharacterController
         /// /// </summary>
         protected virtual void InteractInput() {
             if (Input.GetKeyDown(interactInput))
-                cc.Interact();
+                StaticVariables.controller.Interact();
         }
 
         #endregion       

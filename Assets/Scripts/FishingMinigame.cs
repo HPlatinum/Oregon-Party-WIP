@@ -144,7 +144,8 @@ public class FishingMinigame : Minigame {
         //if the player does not reel in the fish in time, end the minigame
         if (!playerReeled) {
             fishHooked = false;
-            StaticVariables.playerAnimator.CrossFadeInFixedTime("Shrugging", 0.2f);
+            //StaticVariables.playerAnimator.CrossFadeInFixedTime("Shrugging", 0.2f);
+            StaticVariables.playerAnimator.CrossFadeInFixedTime("Shake Fist", 0.2f);
             EndFishingUI();
             //FindObjectOfType<Interact>().DestroyInteractable();
             //gameObject.SetActive(false);
@@ -163,7 +164,8 @@ public class FishingMinigame : Minigame {
         }
         else {
             //FindObjectOfType<Interact>().DestroyInteractable();
-            StaticVariables.playerAnimator.CrossFadeInFixedTime("Shrugging", 0.2f);
+            //StaticVariables.playerAnimator.CrossFadeInFixedTime("Shrugging", 0.2f);
+            StaticVariables.playerAnimator.CrossFadeInFixedTime("Shake Fist", 0.2f);
             EndFishingUI();
             //gameObject.SetActive(false);
         }
