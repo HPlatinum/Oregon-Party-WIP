@@ -12,6 +12,7 @@ public class InventoryUI : MonoBehaviour
     // // Start is called before the first frame update
     void Start()
     {
+        // when an item is added or removed, the updateUI function is also called (adds updateUI to onItemChangedCallback function)
         inventory.onItemChangedCallback += UpdateUI;
         slots = itemsParent.GetComponentsInChildren<InventorySlots>();
         //UpdateUI();
@@ -24,28 +25,16 @@ public class InventoryUI : MonoBehaviour
         inventoryState();
     }
 
+    // updates the UI (currently intensively goes through and recreates each item to simulate new items being added -- bug needs squashed)
     void UpdateUI() {
         for(int i = 0; i < slots.Length; i++) {
-            print(inventory.inventorySlot.Count + " " + i);
-            if (i == inventory.inventorySlot.Count) {
-                print("here");
-                slots[i-1].AddItem(inventory.inventorySlot[i-1].item);
-                print("here2");
+            if(i < inventory.inventorySlot.Count) {
+                slots[i].AddItem(inventory.inventorySlot[i].item); // bug re-adds items each time the updateUI function is called
             }
-            if(i > inventory.inventorySlot.Count) {
+            else
                 slots[i].ClearSlot();
-            }
         }
         Debug.Log("Updating UI");
         //print(slots.Length);
     }
-
-    public bool inventoryState() {
-        if(Input.GetButtonDown("Inventory")){
-            inventoryUI.SetActive(!inventoryUI.activeSelf);
-            return(inventoryUI.activeSelf);
-        }
-        return(inventoryUI.activeSelf);
-    }
-
 }
