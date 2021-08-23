@@ -128,6 +128,7 @@ namespace Invector.vCharacterController
 
         public virtual void Interact() {
 
+            //if you are already interacting, see if you can interact again
             if (isInteracting) {
                 InteractCeption();
                 return;
@@ -135,6 +136,10 @@ namespace Invector.vCharacterController
 
             //interact with the minigame
             if (interactScript.interactSubject == null) {
+                return;
+            }
+            if (StaticVariables.currentMinigame != null) {
+                StaticVariables.currentMinigame.InteractAction();
                 return;
             }
             if (!interactScript.IsInteractAllowed()) {
@@ -147,8 +152,8 @@ namespace Invector.vCharacterController
             }
             
             if (interactScript.interactSubject.interactType == Interactable.InteractTypes.Fishing) {
-                StartAnimation("Fishing - Cast", 0.2f);
-                FindObjectOfType<Essentials>().waitToShowFishingCanvas = true;
+                StaticVariables.currentMinigame = StaticVariables.fishingMinigame;
+                StaticVariables.currentMinigame.InteractAction();
                 return;
             }
 
@@ -156,28 +161,23 @@ namespace Invector.vCharacterController
                 //StartAnimation("Fishing", 0.2f);
                 return;
             }
-
             
         }
-
-        private void InteractCeption() {
+        private void InteractCeption() {           
             //checks to see if the player can do any interaction while already interacting during a minigame
-            if (interactScript.interactSubject == null)
+
+            //if there is a current minigame, pass along the interaction request to the minigame
+            if (StaticVariables.currentMinigame != null) {
+                StaticVariables.currentMinigame.InteractAction();
                 return;
-            //is the player fishing, and at the idle fishing animation?
-            if (interactScript.interactSubject.interactType == Interactable.InteractTypes.Fishing) {
-                if (animator.GetCurrentAnimatorStateInfo(0).IsName("Fishing - Idle")){
-                    FindObjectOfType<FishingPopup>().ReelIn();
-                    return;
-                }
             }
 
+            //if there is no minigame (eg, pickup interaction), do not process the interact request
         }
 
-
-        private void StartAnimation(string animationName, float transitionDuration) {
+            public void StartAnimation(string animationName, float transitionDuration) {
             //plays the specified animation. transitions to the desired animation over the specified transitionDuration (in seconds)
-
+            //print(animationName);
             //set flags for the controller and input scripts
             isInteracting = true;
             interactAnimationStarted = false;

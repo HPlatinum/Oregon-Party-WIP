@@ -12,10 +12,12 @@ public class Interact : MonoBehaviour {
     public Transform leftHand;
     public GameObject objectInHand;
     public Item itemInHand;
-    private bool removeItemWhenFinished = true; //if the item should be removed from the player's hand when their interact action ends
+    public bool removeItemWhenFinished = true; //if the item should be removed from the player's hand when their interact action ends
 
     [Header("Tools")]
     public Item fishingRod;
+
+    private Minigame currentMinigame;
 
     // Start is called before the first frame update
 
@@ -127,62 +129,24 @@ public class Interact : MonoBehaviour {
         //update the UI interact description?
     }
 
-    public void StartInteract() {
-        //called by vThirdPersonInput.CheckInteractState
-        //any code that should be run as soon as the interaction animation starts playing
-        currentlyInteracting = true;
-        removeItemWhenFinished = true;
-
-        //add any relevant objects to the player's hand
-        if (interactSubject.interactType == Interactable.InteractTypes.Fishing) {
-            if (itemInHand == fishingRod)
-                removeItemWhenFinished = false;
-            PutObjectInHand(fishingRod, false);
-
-        }
-
-        /*
-        //start any ui popups - move to when the idle animation starts
-        if (interactSubject.interactType == Interactable.InteractTypes.Fishing) {
-            GameObject.Find("Essentials").transform.Find("Canvas").Find("Fishing Popup").gameObject.SetActive(true);
-
-        }
-        */
-    }
-
     public void EndInteract() {
         //called by vThirdPersonInput.CheckInteractState
         //any code that should be run as soon as the interaction animation stops playing
 
         currentlyInteracting = false;
 
+        //pass along the function call to the current minigame
+        if (StaticVariables.currentMinigame != null)
+            StaticVariables.currentMinigame.EndInteractAnimation();
+
         if (interactSubject.interactType == Interactable.InteractTypes.Pickup) {
             //print("about to pickup");
             Pickup();
         }
 
-        else if (interactSubject.interactType == Interactable.InteractTypes.Fishing) {
-            //print("about to pickup");
-            if (FindObjectOfType<FishingPopup>().playerGotFish) {
-                Pickup();
-            }
-            else {
-                DestroyInteractable();
-            }
-            //Pickup();
-            if (removeItemWhenFinished)
-                RemoveObjectFromHand();
-        }
 
         else if (interactSubject.interactType == Interactable.InteractTypes.Chest) {
             Open();
-        }
-
-
-        //close any ui popups - move to when the player interacts again
-        if (interactSubject.interactType == Interactable.InteractTypes.Fishing) {
-            FindObjectOfType<FishingPopup>().EndFishing();
-
         }
     }
 
@@ -191,10 +155,8 @@ public class Interact : MonoBehaviour {
         int yield = 1; //need better logic for how quantity is yielded. right now set to 1
         // validates we can pick up item and adds it to the inventory
         bool attemptPickup = inventory.AddItem(item, yield, inventory);
-        //print(attemptPickup);
         // If able Destroy object
         if (attemptPickup) {
-            //print("picked up");
             DestroyInteractable();
         }
     }

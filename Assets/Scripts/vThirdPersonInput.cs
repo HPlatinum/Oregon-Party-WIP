@@ -69,7 +69,8 @@ namespace Invector.vCharacterController
                         cc.interactAnimationStarted = true;
 
                         //add any code you want run when the animation starts here
-                        interactScript.StartInteract();
+                        //at the moment, animations start when the interact button is pushed
+                        //later, if there are animations that start after a delay, we can put a function call here
                     }
                 }
                 else {

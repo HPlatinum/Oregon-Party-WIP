@@ -4,7 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
 
-public class FishingPopup : MonoBehaviour {
+public class FishingMinigame : Minigame {
 
     private int bobsRemaining;
     private Transform fish1;
@@ -21,7 +21,7 @@ public class FishingPopup : MonoBehaviour {
     public float moveOutTime = 0.5f;
     public float startDelay = 1f;
     public float availableCatchTime = 1f;
-    [Range(1,4)]
+    [Range(1, 4)]
     public int minBobs = 2;
     [Range(5, 30)]
     public int maxBobs = 15;
@@ -31,13 +31,25 @@ public class FishingPopup : MonoBehaviour {
     [HideInInspector]
     public bool playerGotFish = false;
 
-    Animator animator;
+    public bool showPopupWhenIdle = false;
+    private ParticleSystem bobberSplash;
+    private ParticleSystem bobberBigSplash;
 
-    
+
+
     void Start() {
         transform.Find("Fish Circle").gameObject.SetActive(false);
     }
-    
+
+    private void Update() {
+        if (showPopupWhenIdle) {
+            if (StaticVariables.playerAnimator.GetCurrentAnimatorStateInfo(0).IsName("Fishing - Idle")) {
+                BeginFishing();
+                showPopupWhenIdle = false;
+            }
+        }
+    }
+
 
     public void BeginFishing() {
         //reset end condition values
@@ -68,8 +80,8 @@ public class FishingPopup : MonoBehaviour {
         fish3 = transform.Find("Fish Circle").Find("Fish 3");
         fish3Origin = fish3.localPosition;
         fish3Destination = new Vector3(-77.95229f, -45, fish3.localPosition.z);
-
-        animator = FindObjectOfType<Invector.vCharacterController.vThirdPersonController>().GetComponent<Animator>();
+        bobberSplash = transform.Find("Fish Circle").Find("Bobber").Find("Splash").GetComponent<ParticleSystem>();
+        bobberBigSplash = transform.Find("Fish Circle").Find("Bobber").Find("Big Splash").GetComponent<ParticleSystem>();
 
         //wait startdelay time
         fish1.DOLocalMove(fish1.localPosition, startDelay, false).OnComplete(MoveNextFish);
@@ -87,8 +99,9 @@ public class FishingPopup : MonoBehaviour {
             return;
         }
 
-        if(bobsRemaining == 0) {
+        if (bobsRemaining == 0) {
             fishHooked = true;
+            bobberBigSplash.Play();
             fish1.DOLocalMove(fish1.localPosition, availableCatchTime, false).OnComplete(EndMinigame);
             return;
         }
@@ -98,6 +111,8 @@ public class FishingPopup : MonoBehaviour {
             bobsRemaining--;
         }
         else if (nextStep == 1) {
+            //make the bobber bob
+            bobberSplash.Play();
             fish1.DOLocalMove(fish1Origin, moveOutTime, false).OnComplete(MoveNextFish);
         }
         else if (nextStep == 2) {
@@ -105,6 +120,8 @@ public class FishingPopup : MonoBehaviour {
             bobsRemaining--;
         }
         else if (nextStep == 3) {
+            //make the bobber bob
+            bobberSplash.Play();
             fish2.DOLocalMove(fish2Origin, moveOutTime, false).OnComplete(MoveNextFish);
         }
         else if (nextStep == 4) {
@@ -112,6 +129,8 @@ public class FishingPopup : MonoBehaviour {
             bobsRemaining--;
         }
         else if (nextStep == 5) {
+            //make the bobber bob
+            bobberSplash.Play();
             fish3.DOLocalMove(fish3Origin, moveOutTime, false).OnComplete(MoveNextFish);
         }
 
@@ -125,8 +144,8 @@ public class FishingPopup : MonoBehaviour {
         //if the player does not reel in the fish in time, end the minigame
         if (!playerReeled) {
             fishHooked = false;
-            animator.CrossFadeInFixedTime("Shrugging", 0.2f);
-            EndFishing();
+            StaticVariables.playerAnimator.CrossFadeInFixedTime("Shrugging", 0.2f);
+            EndFishingUI();
             //FindObjectOfType<Interact>().DestroyInteractable();
             //gameObject.SetActive(false);
         }
@@ -138,20 +157,20 @@ public class FishingPopup : MonoBehaviour {
         if (fishHooked) {
             playerGotFish = true;
             //FindObjectOfType<Interact>().Pickup();
-            animator.CrossFadeInFixedTime("Fishing - Reeling", 0.2f);
-            EndFishing();
+            StaticVariables.playerAnimator.CrossFadeInFixedTime("Fishing - Reeling", 0.2f);
+            EndFishingUI();
             //gameObject.SetActive(false);
         }
         else {
             //FindObjectOfType<Interact>().DestroyInteractable();
-            animator.CrossFadeInFixedTime("Shrugging", 0.2f);
-            EndFishing();
+            StaticVariables.playerAnimator.CrossFadeInFixedTime("Shrugging", 0.2f);
+            EndFishingUI();
             //gameObject.SetActive(false);
         }
 
     }
 
-    public void EndFishing() {
+    public void EndFishingUI() {
         transform.Find("Fish Circle").gameObject.SetActive(false);
         fish1.localPosition = fish1Origin;
         fish2.localPosition = fish2Origin;
@@ -160,5 +179,53 @@ public class FishingPopup : MonoBehaviour {
 
         FindObjectOfType<MainUI>().transform.Find("Interact").Find("Text").GetComponent<Text>().text = "Interact";
     }
-    
+
+
+
+    //inherited functions
+
+    public override void InteractAction() {
+        
+        //if you are in the idle state, reel in
+        if (StaticVariables.playerAnimator.GetCurrentAnimatorStateInfo(0).IsName("Fishing - Idle")) {
+            ReelIn();
+            return;
+        }
+        //if you are not already interacting, start fishing
+        else if (!StaticVariables.interactScript.currentlyInteracting) {
+            //start the fishing animation
+            StaticVariables.controller.StartAnimation("Fishing - Cast", 0.2f);
+
+            //when the player hits the idle state, show the fishing UI popup
+            showPopupWhenIdle = true;
+
+            //set interactscript values
+            StaticVariables.interactScript.currentlyInteracting = true;
+
+            //put the fishing rod in the hand
+            StaticVariables.interactScript.removeItemWhenFinished = true;
+            if (StaticVariables.interactScript.itemInHand == StaticVariables.interactScript.fishingRod)
+                StaticVariables.interactScript.removeItemWhenFinished = false; //if the player already has the fishing rod in their hand, do not remove it at the end of the fishing minigame
+            StaticVariables.interactScript.PutObjectInHand(StaticVariables.interactScript.fishingRod, false);
+        }
+    }
+
+    public override void EndInteractAnimation() {
+        //pickup the fish, or don't
+        if (playerGotFish) 
+            StaticVariables.interactScript.Pickup();
+        else 
+            StaticVariables.interactScript.DestroyInteractable();
+
+        //remove the fishing rod from the hand
+        if (StaticVariables.interactScript.removeItemWhenFinished)
+            StaticVariables.interactScript.RemoveObjectFromHand();
+
+        StaticVariables.currentMinigame = null;
+
+        //close the fishing UI
+        //EndFishingUI();
+    }
+
+
 }
