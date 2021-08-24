@@ -22,7 +22,7 @@ public class InventoryUI : MonoBehaviour
     // // Update is called once per frame
     void Update()
     {
-        inventoryState();
+        //inventoryState();
     }
 
     // updates the UI (currently intensively goes through and recreates each item to simulate new items being added -- bug needs squashed)

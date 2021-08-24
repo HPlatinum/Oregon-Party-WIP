@@ -66,6 +66,7 @@ public class FishingMinigame : Minigame {
         //set starting fish and minigame duration
         System.Random rand = new System.Random();
         bobsRemaining = rand.Next(minBobs, maxBobs);
+        //bobsRemaining = 1000;
         nextStep = (rand.Next(0, 3)) * 2; //start at a random fish
 
         //set nextStep based on startingFish#
@@ -95,17 +96,21 @@ public class FishingMinigame : Minigame {
         //4 is moving fish 3 in
         //5 is moving fish 3 out
 
+        //if the player tried to reel in the rod, end the fish-moving cycle
         if (playerReeled) {
             return;
         }
 
+        //if this is the last fish movement, end the fish-moving cycle and move to the minigame end
         if (bobsRemaining == 0) {
             fishHooked = true;
             bobberBigSplash.Play();
-            fish1.DOLocalMove(fish1.localPosition, availableCatchTime, false).OnComplete(EndMinigame);
+            //start a pointless tween to delay a function call
+            bobberSplash.transform.DOLocalMove(bobberSplash.transform.localPosition, availableCatchTime, false).OnComplete(EndMinigame);
             return;
         }
 
+        //otherwise, go to the next fish-move
         if (nextStep == 0) {
             fish1.DOLocalMove(fish1Destination, moveInTime, false).OnComplete(MoveNextFish);
             bobsRemaining--;
@@ -134,6 +139,7 @@ public class FishingMinigame : Minigame {
             fish3.DOLocalMove(fish3Origin, moveOutTime, false).OnComplete(MoveNextFish);
         }
 
+        //prep for the next fish-move
         nextStep++;
         if (nextStep == 6) {
             nextStep = 0;
@@ -144,35 +150,34 @@ public class FishingMinigame : Minigame {
         //if the player does not reel in the fish in time, end the minigame
         if (!playerReeled) {
             fishHooked = false;
-            //StaticVariables.playerAnimator.CrossFadeInFixedTime("Shrugging", 0.2f);
             StaticVariables.playerAnimator.CrossFadeInFixedTime("Shake Fist", 0.2f);
             EndFishingUI();
-            //FindObjectOfType<Interact>().DestroyInteractable();
-            //gameObject.SetActive(false);
         }
-
     }
 
     public void ReelIn() {
+        //handle player interaction during the minigame
+
+        //set booleans for reference by other functions
         playerReeled = true;
+
+        //catch a fish
         if (fishHooked) {
             playerGotFish = true;
-            //FindObjectOfType<Interact>().Pickup();
             StaticVariables.playerAnimator.CrossFadeInFixedTime("Fishing - Reeling", 0.2f);
             EndFishingUI();
-            //gameObject.SetActive(false);
         }
+
+        //reel in too early
         else {
-            //FindObjectOfType<Interact>().DestroyInteractable();
-            //StaticVariables.playerAnimator.CrossFadeInFixedTime("Shrugging", 0.2f);
             StaticVariables.playerAnimator.CrossFadeInFixedTime("Shake Fist", 0.2f);
             EndFishingUI();
-            //gameObject.SetActive(false);
         }
 
     }
 
     public void EndFishingUI() {
+        //reset all the fish back to their starting positions and end the fishing minigame
         transform.Find("Fish Circle").gameObject.SetActive(false);
         fish1.localPosition = fish1Origin;
         fish2.localPosition = fish2Origin;
@@ -224,9 +229,6 @@ public class FishingMinigame : Minigame {
             StaticVariables.interactScript.RemoveObjectFromHand();
 
         StaticVariables.currentMinigame = null;
-
-        //close the fishing UI
-        //EndFishingUI();
     }
 
 
