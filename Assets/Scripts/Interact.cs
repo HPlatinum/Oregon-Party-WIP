@@ -146,7 +146,7 @@ public class Interact : MonoBehaviour {
 
 
         else if (interactSubject.interactType == Interactable.InteractTypes.Chest) {
-            Open();
+            OpenChest();
         }
     }
 
@@ -169,9 +169,10 @@ public class Interact : MonoBehaviour {
             Destroy(interactSubject.gameObject);
     }
 
-    public void Open() {
-        if(!interactSubject.inventoryState())
-            interactSubject.inventoryState();
+    public void OpenChest() {
+        // if(!interactSubject.inventoryState())
+        //     interactSubject.inventoryState();
+        print("Opening chest...");
     }
 
     // clears inventory and inventory weight on application quit

@@ -33,7 +33,7 @@ public class VehicleInventoryUI : MonoBehaviour
     void UpdateInventoryUI() {
         for(int i = 0; i < slots.Length; i++) {
             if(i < inventory.inventorySlot.Count) {
-                slots[i].AddItem(inventory.inventorySlot[i].item); // bug
+                slots[i].DisplayItem(inventory.inventorySlot[i].item); // bug
             }
             else {
                 slots[i].ClearSlot();

@@ -25,7 +25,7 @@ public class InventorySlots : MonoBehaviour
     }
 
     // adds an item to a slot and sets the quantity active if there is a 
-    public void AddItem(Item newItem){
+    public void DisplayItem(Item newItem){
         item = newItem;
 
         //add the object 3d model
