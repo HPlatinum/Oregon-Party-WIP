@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StaticVariables
 {
@@ -13,5 +14,10 @@ public class StaticVariables
     static public Animator playerAnimator;
     static public FishingMinigame fishingMinigame;
     static public Essentials essentials;
+    static public Text interactButtonText;
+
+    static public void SetInteractButtonText(string newText) {
+        interactButtonText.text = newText;
+    }
 
 }

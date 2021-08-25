@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class FishingMinigame : Minigame {
 
-    private int bobsRemaining;
+    private int bobsRemainingUntilFishBites;
     private Transform fish1;
     private Transform fish2;
     private Transform fish3;
@@ -16,7 +16,6 @@ public class FishingMinigame : Minigame {
     private Vector3 fish1Destination;
     private Vector3 fish2Destination;
     private Vector3 fish3Destination;
-    private int nextStep = 0;
     public float moveInTime = 0.5f;
     public float moveOutTime = 0.5f;
     public float startDelay = 1f;
@@ -35,13 +34,21 @@ public class FishingMinigame : Minigame {
     private ParticleSystem bobberSplash;
     private ParticleSystem bobberBigSplash;
 
+    private enum FishMovement { fish1In, fish1Out, fish2In, fish2Out, fish3In, fish3Out};
+    private FishMovement currentFishMovementStep = FishMovement.fish1In;
+
 
 
     void Start() {
+        //hide the fishing minigame ui when the scene starts
         transform.Find("Fish Circle").gameObject.SetActive(false);
     }
 
     private void Update() {
+        CheckIfUIShouldBeShown();
+    }
+
+    private void CheckIfUIShouldBeShown() {
         if (showPopupWhenIdle) {
             if (StaticVariables.playerAnimator.GetCurrentAnimatorStateInfo(0).IsName("Fishing - Idle")) {
                 BeginFishing();
@@ -57,19 +64,11 @@ public class FishingMinigame : Minigame {
         playerReeled = false;
         playerGotFish = false;
 
-        //set child active
         transform.Find("Fish Circle").gameObject.SetActive(true);
+        StaticVariables.SetInteractButtonText("Reel In");
 
-        //update main UI
-        FindObjectOfType<MainUI>().transform.Find("Interact").Find("Text").GetComponent<Text>().text = "Reel In";
-
-        //set starting fish and minigame duration
-        System.Random rand = new System.Random();
-        bobsRemaining = rand.Next(minBobs, maxBobs);
-        //bobsRemaining = 1000;
-        nextStep = (rand.Next(0, 3)) * 2; //start at a random fish
-
-        //set nextStep based on startingFish#
+        RandomlyChooseStartingBobAmount();
+        RandomlyChooseFirstFish();
 
         //set up variables
         fish1 = transform.Find("Fish Circle").Find("Fish 1");
@@ -83,70 +82,105 @@ public class FishingMinigame : Minigame {
         fish3Destination = new Vector3(-77.95229f, -45, fish3.localPosition.z);
         bobberSplash = transform.Find("Fish Circle").Find("Bobber").Find("Splash").GetComponent<ParticleSystem>();
         bobberBigSplash = transform.Find("Fish Circle").Find("Bobber").Find("Big Splash").GetComponent<ParticleSystem>();
-
-        //wait startdelay time
-        fish1.DOLocalMove(fish1.localPosition, startDelay, false).OnComplete(MoveNextFish);
+        
+        //start a pointless tween to delay a function call
+        //then start the fish-moving process
+        bobberSplash.transform.DOLocalMove(bobberSplash.transform.localPosition, startDelay, false).OnComplete(StartFishMovement);
     }
 
-    private void MoveNextFish() {
-        //0 is moving fish 1 in
-        //1 is moving fish 1 out
-        //2 is moving fish 2 in
-        //3 is moving fish 2 out
-        //4 is moving fish 3 in
-        //5 is moving fish 3 out
+    private void RandomlyChooseStartingBobAmount() {
+        bobsRemainingUntilFishBites = new System.Random().Next(minBobs, maxBobs);
+        print(bobsRemainingUntilFishBites);
+    }
 
-        //if the player tried to reel in the rod, end the fish-moving cycle
-        if (playerReeled) {
+    private void RandomlyChooseFirstFish() {
+        int startingFishNum = new System.Random().Next(1, 4);
+        if (startingFishNum == 1) 
+            currentFishMovementStep = FishMovement.fish1In;
+        if (startingFishNum == 2)
+            currentFishMovementStep = FishMovement.fish2In;
+        if (startingFishNum == 3)
+            currentFishMovementStep = FishMovement.fish3In;
+    }
+
+    private void FishFinishedMoving() {
+        if (playerReeled) 
             return;
-        }
 
-        //if this is the last fish movement, end the fish-moving cycle and move to the minigame end
-        if (bobsRemaining == 0) {
+        CountDownBobber();
+
+        //if no bobs remain, the fish bites the rod
+        if (bobsRemainingUntilFishBites == 0) {
             fishHooked = true;
             bobberBigSplash.Play();
             //start a pointless tween to delay a function call
-            bobberSplash.transform.DOLocalMove(bobberSplash.transform.localPosition, availableCatchTime, false).OnComplete(EndMinigame);
+            bobberSplash.transform.DOLocalMove(bobberSplash.transform.localPosition, availableCatchTime, false).OnComplete(EndMinigameFromNotReelingInTime);
+            //return so no more fish move
             return;
         }
 
-        //otherwise, go to the next fish-move
-        if (nextStep == 0) {
-            fish1.DOLocalMove(fish1Destination, moveInTime, false).OnComplete(MoveNextFish);
-            bobsRemaining--;
-        }
-        else if (nextStep == 1) {
-            //make the bobber bob
-            bobberSplash.Play();
-            fish1.DOLocalMove(fish1Origin, moveOutTime, false).OnComplete(MoveNextFish);
-        }
-        else if (nextStep == 2) {
-            fish2.DOLocalMove(fish2Destination, moveInTime, false).OnComplete(MoveNextFish);
-            bobsRemaining--;
-        }
-        else if (nextStep == 3) {
-            //make the bobber bob
-            bobberSplash.Play();
-            fish2.DOLocalMove(fish2Origin, moveOutTime, false).OnComplete(MoveNextFish);
-        }
-        else if (nextStep == 4) {
-            fish3.DOLocalMove(fish3Destination, moveInTime, false).OnComplete(MoveNextFish);
-            bobsRemaining--;
-        }
-        else if (nextStep == 5) {
-            //make the bobber bob
-            bobberSplash.Play();
-            fish3.DOLocalMove(fish3Origin, moveOutTime, false).OnComplete(MoveNextFish);
-        }
+        PlayBobberSplashAnimationIfFishIsIn();
+        DetermineNextFishMovement();
+        StartFishMovement();
+    }
 
-        //prep for the next fish-move
-        nextStep++;
-        if (nextStep == 6) {
-            nextStep = 0;
+    private void PlayBobberSplashAnimationIfFishIsIn() {
+        if (currentFishMovementStep == FishMovement.fish1In)
+            bobberSplash.Play();
+        if (currentFishMovementStep == FishMovement.fish2In)
+            bobberSplash.Play();
+        if (currentFishMovementStep == FishMovement.fish3In)
+            bobberSplash.Play();
+    }
+
+    private void CountDownBobber() {
+        if (currentFishMovementStep == FishMovement.fish1In)
+            bobsRemainingUntilFishBites--;
+        if (currentFishMovementStep == FishMovement.fish2In)
+            bobsRemainingUntilFishBites--;
+        if (currentFishMovementStep == FishMovement.fish3In)
+            bobsRemainingUntilFishBites--;
+    }
+
+    private void DetermineNextFishMovement() {
+        if (currentFishMovementStep == FishMovement.fish1In)
+            currentFishMovementStep = FishMovement.fish1Out;
+        else if (currentFishMovementStep == FishMovement.fish1Out)
+            currentFishMovementStep = FishMovement.fish2In;
+        else if (currentFishMovementStep == FishMovement.fish2In)
+            currentFishMovementStep = FishMovement.fish2Out;
+        else if (currentFishMovementStep == FishMovement.fish2Out)
+            currentFishMovementStep = FishMovement.fish3In;
+        else if (currentFishMovementStep == FishMovement.fish3In)
+            currentFishMovementStep = FishMovement.fish3Out;
+        else if (currentFishMovementStep == FishMovement.fish3Out)
+            currentFishMovementStep = FishMovement.fish1In;
+    }
+
+    private void StartFishMovement() {
+        switch (currentFishMovementStep) {
+            case (FishMovement.fish1In):
+                fish1.DOLocalMove(fish1Destination, moveInTime, false).OnComplete(FishFinishedMoving);
+                break;
+            case (FishMovement.fish1Out):
+                fish1.DOLocalMove(fish1Origin, moveInTime, false).OnComplete(FishFinishedMoving);
+                break;
+            case (FishMovement.fish2In):
+                fish2.DOLocalMove(fish2Destination, moveInTime, false).OnComplete(FishFinishedMoving);
+                break;
+            case (FishMovement.fish2Out):
+                fish2.DOLocalMove(fish2Origin, moveInTime, false).OnComplete(FishFinishedMoving);
+                break;
+            case (FishMovement.fish3In):
+                fish3.DOLocalMove(fish3Destination, moveInTime, false).OnComplete(FishFinishedMoving);
+                break;
+            case (FishMovement.fish3Out):
+                fish3.DOLocalMove(fish3Origin, moveInTime, false).OnComplete(FishFinishedMoving);
+                break;
         }
     }
 
-    private void EndMinigame() {
+    private void EndMinigameFromNotReelingInTime() {
         //if the player does not reel in the fish in time, end the minigame
         if (!playerReeled) {
             fishHooked = false;
@@ -184,7 +218,7 @@ public class FishingMinigame : Minigame {
         fish3.localPosition = fish3Origin;
 
 
-        FindObjectOfType<MainUI>().transform.Find("Interact").Find("Text").GetComponent<Text>().text = "Interact";
+        StaticVariables.SetInteractButtonText("Interact");
     }
 
 
@@ -224,7 +258,7 @@ public class FishingMinigame : Minigame {
         else 
             StaticVariables.interactScript.DestroyInteractable();
 
-        //remove the fishing rod from the hand
+        //remove the fishing rod from the hand, if it wasn't in the player's hand before the minigame start
         if (StaticVariables.interactScript.removeItemWhenFinished)
             StaticVariables.interactScript.RemoveObjectFromHand();
 

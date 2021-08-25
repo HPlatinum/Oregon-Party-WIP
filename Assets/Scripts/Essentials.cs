@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Essentials : MonoBehaviour{
 
@@ -12,6 +13,7 @@ public class Essentials : MonoBehaviour{
         StaticVariables.essentials = this;
         StaticVariables.interactScript = FindObjectOfType<Interact>();
         StaticVariables.currentMinigame = null;
+        StaticVariables.interactButtonText = FindObjectOfType<MainUI>().transform.Find("Interact").Find("Text").GetComponent<Text>();
 
     }
 
