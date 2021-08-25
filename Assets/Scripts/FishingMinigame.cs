@@ -90,7 +90,6 @@ public class FishingMinigame : Minigame {
 
     private void RandomlyChooseStartingBobAmount() {
         bobsRemainingUntilFishBites = new System.Random().Next(minBobs, maxBobs);
-        print(bobsRemainingUntilFishBites);
     }
 
     private void RandomlyChooseFirstFish() {
