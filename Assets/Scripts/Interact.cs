@@ -137,7 +137,7 @@ public class Interact : MonoBehaviour {
 
         //pass along the function call to the current minigame
         if (StaticVariables.currentMinigame != null)
-            StaticVariables.currentMinigame.EndInteractAnimation();
+            StaticVariables.currentMinigame.ProcessPlayerAnimatorExitingInteractState();
 
         if (interactSubject.interactType == Interactable.InteractTypes.Pickup) {
             //print("about to pickup");

@@ -3,8 +3,9 @@ using System.Collections;
 
 namespace Invector.vCharacterController
 {
-    public class vThirdPersonController : vThirdPersonAnimator
-    {
+    public class vThirdPersonController : vThirdPersonAnimator {
+        #region Default Player Controller Functions
+
         public virtual void ControlAnimatorRootMotion()
         {
             if (!this.enabled) return;
@@ -126,6 +127,8 @@ namespace Invector.vCharacterController
                 animator.CrossFadeInFixedTime("JumpMove", .2f);
         }
 
+        #endregion
+
         public virtual void Interact() {
 
             //if you are already interacting, see if you can interact again
@@ -139,22 +142,24 @@ namespace Invector.vCharacterController
                 return;
             }
             if (StaticVariables.currentMinigame != null) {
-                StaticVariables.currentMinigame.InteractAction();
+                StaticVariables.currentMinigame.ProcessInteractAction();
                 return;
             }
             if (!StaticVariables.interactScript.IsInteractAllowed()) {
                 print("you cannot perform the " + StaticVariables.interactScript.interactSubject.interactType.ToString() + " action");
-                StartAnimation("Shrugging", 0.2f);
+                StaticVariables.SetupPlayerInteractionWithHighlightedObject();
+                StaticVariables.PlayAnimation("Shrugging");
                 return;
             }
             if (StaticVariables.interactScript.interactSubject.interactType == Interactable.InteractTypes.Pickup) {
-                StartAnimation("Lifting", 0.2f);
+                StaticVariables.SetupPlayerInteractionWithHighlightedObject();
+                StaticVariables.PlayAnimation("Lifting");
                 return;
             }
             
             if (StaticVariables.interactScript.interactSubject.interactType == Interactable.InteractTypes.Fishing) {
                 StaticVariables.currentMinigame = StaticVariables.fishingMinigame;
-                StaticVariables.currentMinigame.InteractAction();
+                StaticVariables.currentMinigame.ProcessInteractAction();
                 return;
             }
 
@@ -167,43 +172,34 @@ namespace Invector.vCharacterController
         private void InteractCeption() {           
             //checks to see if the player can do any interaction while already interacting during a minigame
 
-            //if there is a current minigame, pass along the interaction request to the minigame
             if (StaticVariables.currentMinigame != null) {
-                StaticVariables.currentMinigame.InteractAction();
+                StaticVariables.currentMinigame.ProcessInteractAction();
                 return;
             }
 
             //if there is no minigame (eg, pickup interaction), do not process the interact request
         }
 
-            public void StartAnimation(string animationName, float transitionDuration) {
-            //plays the specified animation. transitions to the desired animation over the specified transitionDuration (in seconds)
-            //print(animationName);
-            //set flags for the controller and input scripts
+        private void PreparePlayerForInteraction() {
             isInteracting = true;
             interactAnimationStarted = false;
-
-            //freeze player's position and rotation, and reduce momentum to zero
             lockMovement = true;
             lockRotation = true;
-            HaltVelocity();
-            
-            //face toward the interacted object
-            FaceTo(StaticVariables.interactScript.interactSubject.gameObject, transitionDuration);
-            //start the animation
-            animator.CrossFadeInFixedTime(animationName, transitionDuration);
-
-
+            HaltPlayerVelocity();
         }
 
-        
-        private void FaceTo(GameObject go, float duration) {
-            //rotates the player towards the specified gameobject over duration time in seconds
-            //only rotates in the x-z plane
-            Vector3 pos = new Vector3(go.transform.position.x, transform.position.y, go.transform.position.z);
+        public void SetupPlayerInteractionWithHighlightedObject(float transitionDuration = 0.2f) {
+            PreparePlayerForInteraction();
+            FaceTo(StaticVariables.interactScript.interactSubject.gameObject, transitionDuration);
+        }
 
-            var rotation = Quaternion.LookRotation(pos - gameObject.transform.position);
-            StartCoroutine(RotatePlayer(duration, rotation));
+        private void FaceTo(GameObject go, float duration) {
+                //rotates the player towards the specified gameobject over duration time in seconds
+                //only rotates in the x-z plane
+                Vector3 pos = new Vector3(go.transform.position.x, transform.position.y, go.transform.position.z);
+
+                var rotation = Quaternion.LookRotation(pos - gameObject.transform.position);
+                StartCoroutine(RotatePlayer(duration, rotation));
         }
 
         private IEnumerator RotatePlayer(float lerpTime, Quaternion rotation) {
@@ -216,8 +212,5 @@ namespace Invector.vCharacterController
                 yield return null;
             }
         }
-        
-        
     }
-
 }

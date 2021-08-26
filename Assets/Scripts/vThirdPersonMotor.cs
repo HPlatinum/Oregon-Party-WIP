@@ -214,12 +214,6 @@ namespace Invector.vCharacterController
             stopMove = false;
         }
 
-        public virtual void RotateToPosition(Vector3 position)
-        {
-            Vector3 desiredDirection = position - transform.position;
-            RotateToDirection(desiredDirection.normalized);
-        }
-
         public virtual void RotateToDirection(Vector3 direction)
         {
             RotateToDirection(direction, isStrafing ? strafeSpeed.rotationSpeed : freeSpeed.rotationSpeed);
@@ -234,13 +228,6 @@ namespace Invector.vCharacterController
             transform.rotation = _newRotation;
         }
 
-        public virtual void HaltVelocity() {
-            //stop the player from moving
-            _rigidbody.velocity = Vector3.zero;
-            moveSpeed = 0f;
-            //also set their speed to 0 for the animator
-            inputMagnitude = 0f;
-        }
 
         #endregion
 
@@ -388,6 +375,15 @@ namespace Invector.vCharacterController
         }
 
         #endregion
+
+        public virtual void HaltPlayerVelocity() {
+            //stop the player from moving
+            _rigidbody.velocity = Vector3.zero;
+            moveSpeed = 0f;
+            //also set their speed to 0 for the animator
+            inputMagnitude = 0f;
+        }
+
 
         [System.Serializable]
         public class vMovementSpeed

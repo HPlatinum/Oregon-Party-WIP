@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public abstract class Minigame : MonoBehaviour {
 
-    public virtual void InteractAction() {
+    public virtual void ProcessInteractAction() {
         //run when the player pushes the interact button in range of an interactable
         print("interact button hit, no interaction to execute");
     }
@@ -17,7 +17,7 @@ public abstract class Minigame : MonoBehaviour {
     }
     */
 
-    public virtual void EndInteractAnimation() {
+    public virtual void ProcessPlayerAnimatorExitingInteractState() {
         //run when the interact animation ends - when the animator is no longer in state tagged "Interact"
         print("interact animation ended, no response to execute");
     }
