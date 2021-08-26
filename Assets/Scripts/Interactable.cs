@@ -9,7 +9,7 @@ public class Interactable : MonoBehaviour
     public Item item;
     public Item requiredItem; //only allow interaction if the required item is in the inventory
     public Inventory inventory;
-    public GameObject interactableUI;
+    // public GameObject interactableUI;
 
     public bool destroyParentAlso = false;
 
@@ -27,8 +27,9 @@ public class Interactable : MonoBehaviour
         outline.enabled = false;
     }
 
-    public bool inventoryState() {
-        interactableUI.SetActive(!interactableUI.activeSelf);
-        return(interactableUI.activeSelf);
-    }
+    // can be used to toggle chest/trunk inventories. You may have a better way of doing this though
+    // public bool inventoryState() {
+    //     interactableUI.SetActive(!interactableUI.activeSelf);
+    //     return(interactableUI.activeSelf);
+    // }
 }
