@@ -49,7 +49,7 @@ public class FishingMinigame : Minigame {
     #region Inherited Functions
 
     public override void ProcessInteractAction() {
-        if (StaticVariables.IsPlayerInInteractState("Fishing - Idle")) {
+        if (StaticVariables.IsPlayerAnimatorInState("Fishing - Idle")) {
             ReelIn();
             return;
         }
@@ -60,25 +60,25 @@ public class FishingMinigame : Minigame {
 
             //set interactscript values
             StaticVariables.interactScript.currentlyInteracting = true;
+            //StaticVariables.interactScript.isInteracting = true;
 
             //put the fishing rod in the hand
-            StaticVariables.interactScript.removeItemWhenFinished = true;
+            StaticVariables.interactScript.removeItemWhenFinishedWithInteraction = true;
             if (StaticVariables.interactScript.itemInHand == StaticVariables.interactScript.fishingRod)
-                StaticVariables.interactScript.removeItemWhenFinished = false; //if the player already has the fishing rod in their hand, do not remove it at the end of the fishing minigame
-            StaticVariables.interactScript.PutObjectInHand(StaticVariables.interactScript.fishingRod, false);
+                StaticVariables.interactScript.removeItemWhenFinishedWithInteraction = false; //if the player already has the fishing rod in their hand, do not remove it at the end of the fishing minigame
+            StaticVariables.interactScript.PutItemInPlayerHand(StaticVariables.interactScript.fishingRod, false);
         }
     }
 
-    public override void ProcessPlayerAnimatorExitingInteractState() {
+    public override void ProcessInteractAnimationEnding() {
         if (playerGotFish)
-            StaticVariables.interactScript.Pickup();
-        else
-            StaticVariables.interactScript.DestroyInteractable();
+            StaticVariables.interactScript.AddCurrentInteractableItemToInventory();
 
-        if (StaticVariables.interactScript.removeItemWhenFinished)
-            StaticVariables.interactScript.RemoveObjectFromHand();
+        if (StaticVariables.interactScript.removeItemWhenFinishedWithInteraction)
+            StaticVariables.interactScript.RemoveItemFromHand();
 
         StaticVariables.currentMinigame = null;
+        StaticVariables.interactScript.DestroyCurrentInteractable();
     }
 
     #endregion
@@ -97,7 +97,7 @@ public class FishingMinigame : Minigame {
 
 
     private bool ShouldFishingUIBeShown() {
-        return (showFishingUIWhenAnimatorIsIdle && StaticVariables.IsPlayerInInteractState("Fishing - Idle"));
+        return (showFishingUIWhenAnimatorIsIdle && StaticVariables.IsPlayerAnimatorInState("Fishing - Idle"));
     }
 
     public void BeginFishing() {

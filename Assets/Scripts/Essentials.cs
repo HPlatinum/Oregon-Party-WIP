@@ -11,7 +11,7 @@ public class Essentials : MonoBehaviour{
         StaticVariables.controller = FindObjectOfType<Invector.vCharacterController.vThirdPersonController>();
         StaticVariables.fishingMinigame = transform.Find("Canvas").Find("Fishing Popup").GetComponent<FishingMinigame>();
         StaticVariables.essentials = this;
-        StaticVariables.interactScript = FindObjectOfType<Interact>();
+        StaticVariables.interactScript = FindObjectOfType<InteractionManager>();
         StaticVariables.currentMinigame = null;
         StaticVariables.interactButtonText = FindObjectOfType<MainUI>().transform.Find("Interact").Find("Text").GetComponent<Text>();
         StaticVariables.tweenDummy = transform.Find("Empty Tween Dummy - For Delaying Function Calls");

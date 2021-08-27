@@ -102,9 +102,6 @@ namespace Invector.vCharacterController
         internal Vector3 colliderCenter;                    // storage the center of the capsule collider info                
         internal Vector3 inputSmooth;                       // generate smooth input based on the inputSmooth value       
         internal Vector3 moveDirection;                     // used to know the direction you're moving 
-        internal bool isInteracting = false;                // the player cannot do anything during the interact animation
-        internal bool interactAnimationStarted = false;     // only set to true once the current animation has the Interact tag (after the transition between animations has finished)
-        //internal Interact interactScript;
 
         #endregion
 

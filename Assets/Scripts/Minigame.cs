@@ -17,7 +17,7 @@ public abstract class Minigame : MonoBehaviour {
     }
     */
 
-    public virtual void ProcessPlayerAnimatorExitingInteractState() {
+    public virtual void ProcessInteractAnimationEnding() {
         //run when the interact animation ends - when the animator is no longer in state tagged "Interact"
         print("interact animation ended, no response to execute");
     }

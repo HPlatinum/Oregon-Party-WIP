@@ -129,71 +129,9 @@ namespace Invector.vCharacterController
 
         #endregion
 
-        public virtual void Interact() {
 
-            //if you are already interacting, see if you can interact again
-            if (isInteracting) {
-                InteractCeption();
-                return;
-            }
 
-            //interact with the minigame
-            if (StaticVariables.interactScript.interactSubject == null) {
-                return;
-            }
-            if (StaticVariables.currentMinigame != null) {
-                StaticVariables.currentMinigame.ProcessInteractAction();
-                return;
-            }
-            if (!StaticVariables.interactScript.IsInteractAllowed()) {
-                print("you cannot perform the " + StaticVariables.interactScript.interactSubject.interactType.ToString() + " action");
-                StaticVariables.SetupPlayerInteractionWithHighlightedObject();
-                StaticVariables.PlayAnimation("Shrugging");
-                return;
-            }
-            if (StaticVariables.interactScript.interactSubject.interactType == Interactable.InteractTypes.Pickup) {
-                StaticVariables.SetupPlayerInteractionWithHighlightedObject();
-                StaticVariables.PlayAnimation("Lifting");
-                return;
-            }
-            
-            if (StaticVariables.interactScript.interactSubject.interactType == Interactable.InteractTypes.Fishing) {
-                StaticVariables.currentMinigame = StaticVariables.fishingMinigame;
-                StaticVariables.currentMinigame.ProcessInteractAction();
-                return;
-            }
-
-            if (StaticVariables.interactScript.interactSubject.interactType == Interactable.InteractTypes.Chest) {
-                //StartAnimation("Fishing", 0.2f);
-                return;
-            }
-            
-        }
-        private void InteractCeption() {           
-            //checks to see if the player can do any interaction while already interacting during a minigame
-
-            if (StaticVariables.currentMinigame != null) {
-                StaticVariables.currentMinigame.ProcessInteractAction();
-                return;
-            }
-
-            //if there is no minigame (eg, pickup interaction), do not process the interact request
-        }
-
-        private void PreparePlayerForInteraction() {
-            isInteracting = true;
-            interactAnimationStarted = false;
-            lockMovement = true;
-            lockRotation = true;
-            HaltPlayerVelocity();
-        }
-
-        public void SetupPlayerInteractionWithHighlightedObject(float transitionDuration = 0.2f) {
-            PreparePlayerForInteraction();
-            FaceTo(StaticVariables.interactScript.interactSubject.gameObject, transitionDuration);
-        }
-
-        private void FaceTo(GameObject go, float duration) {
+        public void FaceTo(GameObject go, float duration) {
                 //rotates the player towards the specified gameobject over duration time in seconds
                 //only rotates in the x-z plane
                 Vector3 pos = new Vector3(go.transform.position.x, transform.position.y, go.transform.position.z);

@@ -5,18 +5,18 @@ using UnityEngine.UI;
 
 public class MainUI : MonoBehaviour {
 
-    private Invector.vCharacterController.vThirdPersonController characterController;
+    //private Invector.vCharacterController.vThirdPersonController characterController;
     private PauseMenu pauseMenu;
 
     private void Start() {
-        characterController = FindObjectOfType<Invector.vCharacterController.vThirdPersonController>();
+        //characterController = FindObjectOfType<Invector.vCharacterController.vThirdPersonController>();
         pauseMenu = FindObjectOfType<PauseMenu>();
     }
 
     public void Interact() {
         //when the player pushes the interact button
 
-        characterController.Interact();
+        StaticVariables.interactScript.StartInteractionWithCurrentInteractable();
     }
 
     public void Attack() {

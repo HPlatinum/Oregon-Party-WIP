@@ -23,7 +23,7 @@ namespace Invector.vCharacterController
         [HideInInspector] public Camera cameraMain;
         private Joystick joystick;
 
-        //private Interact interactScript;
+        //private InteractionManager interactScript;
 
         //thirdpersoncontroller variables
         //public Transform essentialsCanvas;
@@ -35,9 +35,6 @@ namespace Invector.vCharacterController
             joystick = FindObjectOfType<FixedJoystick>();
             InitilizeController();
             InitializeTpCamera();
-            //interactScript = gameObject.transform.Find("InteractCollider").GetComponent<Interact>();
-            //essentialsCanvas = GameObject.Find("Essentials").transform;
-            //cc.interactScript = interactScript;
         }
 
         protected virtual void FixedUpdate()
@@ -49,7 +46,7 @@ namespace Invector.vCharacterController
 
         protected virtual void Update()
         {
-            CheckInteractState();
+            
             InputHandle();                  // update the input methods
             StaticVariables.controller.UpdateAnimator();            // updates the Animator Parameters
         }
@@ -59,35 +56,7 @@ namespace Invector.vCharacterController
             StaticVariables.controller.ControlAnimatorRootMotion(); // handle root motion animations 
         }
 
-        public virtual void CheckInteractState() {
 
-            //if the interact animation has not been started
-            if (StaticVariables.controller.isInteracting) {
-                if (!StaticVariables.controller.interactAnimationStarted) {
-                    if (StaticVariables.controller.animator.GetCurrentAnimatorStateInfo(0).IsTag("Interact")) {
-
-                        StaticVariables.controller.interactAnimationStarted = true;
-
-                        //add any code you want run when the animation starts here
-                        //at the moment, animations start when the interact button is pushed
-                        //later, if there are animations that start after a delay, we can put a function call here
-                    }
-                }
-                else {
-                    if (!StaticVariables.controller.animator.GetCurrentAnimatorStateInfo(0).IsTag("Interact")) {
-
-                        StaticVariables.controller.interactAnimationStarted = false;
-                        StaticVariables.controller.isInteracting = false;
-                        StaticVariables.controller.lockMovement = false;
-                        StaticVariables.controller.lockRotation = false;
-
-                        //add any code you want run when the animation ends here
-                        StaticVariables.interactScript.EndInteract();
-                    }
-                }
-            }
-
-        }
 
         #region Basic Locomotion Inputs
 
@@ -203,7 +172,7 @@ namespace Invector.vCharacterController
         /// /// </summary>
         protected virtual void InteractInput() {
             if (Input.GetKeyDown(interactInput))
-                StaticVariables.controller.Interact();
+                StaticVariables.interactScript.StartInteractionWithCurrentInteractable();
         }
 
         #endregion       
