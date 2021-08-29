@@ -1,152 +1,73 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
 using UnityEditor;
+public enum InventorySize 
+    { 
+        Massive = 50, 
+        Large = 40,
+        Medium = 30,
+        Small = 20
+    }
 
 [CreateAssetMenu(fileName = "New Inventory", menuName = "Inventory System/Inventory")]
-public class Inventory : ScriptableObject, ISerializationCallbackReceiver
+public class Inventory : ScriptableObject
 {
-    public string savePath;
-    public ItemDatabaseObject database;
-    // Event which we can subscribe different methods to -- Trigger calls all attached events
-    public delegate void OnItemChanged();
-    public OnItemChanged onItemChangedCallback;
-    
-    public float maxWeight; // max inventory weight
-    public float currentWeight; // current weight
-
+    public InventorySize size;
     public List<InventorySlot> inventorySlot = new List<InventorySlot>();
 
-    // Adds an item to the List<InventorySlot>
-    public bool AddItem(Item _item, int _quantity, Inventory _inventory) {
-        bool containsItem = false;
-        // checks to see if it's possible to add the item, then adds it if it is and returns True or False.
-        if(CanAdd(_inventory, _item)) {
-            for(int i = 0; i < inventorySlot.Count; i++) {
-                // if the item exists in that inventory and the quantity is not greater than the stack limit, add quantity of item and return true.
-                if(inventorySlot[i].item == _item && inventorySlot[i].quantity < _item.stackLimit) {
-                    containsItem = true;
-                    inventorySlot[i].AddQuantity(_quantity);
-                    AddWeight(_item, _quantity);
-                if(onItemChangedCallback != null)
-                    onItemChangedCallback.Invoke();
-                }
-            }
-                // if the item is not contained within the inventory, adds it to the inventory
-            if(!containsItem) {
-                inventorySlot.Add(new InventorySlot(database.GetId[_item], _item, _quantity));
-                AddWeight(_item, _quantity);
-                containsItem = true;
-                if(onItemChangedCallback != null)
-                    onItemChangedCallback.Invoke();
-            }
-        }
-        return containsItem;
+    public delegate void OnItemChanged();
+    public OnItemChanged onItemChangedCallback;
+
+    void Start() {
     }
 
-    //Adds the ability to save the inventory state to the given path
-    public void Save() {
-        string saveData = JsonUtility.ToJson(this, true);
-        BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(string.Concat(Application.persistentDataPath, savePath));
-        bf.Serialize(file, saveData);
-        file.Close();
-    }
 
-    //Adds the ability to load the inventory state from the given path
-    public void Load() {
-        if(File.Exists(string.Concat(Application.persistentDataPath, savePath))){
-            BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(string.Concat(Application.persistentDataPath, savePath), FileMode.Open);
-            JsonUtility.FromJsonOverwrite(bf.Deserialize(file).ToString(), this);
-            file.Close();
-            onItemChangedCallback.Invoke();
-        }
-    }
-
-    public void OnAfterDeserialize() {
+    public void AddItemToInventory(Item item, int quantity) {
+        // Check if stack has met cap > if it has create new cap.
         for(int i = 0; i < inventorySlot.Count; i++) {
-            inventorySlot[i].item = database.GetItem[inventorySlot[i].ID];
-        }
-    }
-
-    public void OnBeforeSerialize() {
-    }
-
-    // function for removing an item from an inventory
-    public bool RemoveItem(Item _item, int _quantity, Inventory _inventory) {
-        bool containsItem = false;
-        Debug.Log(_item);
-        Debug.Log(_quantity);
-        for(int i = 0; i < inventorySlot.Count; i++) {
-            if(inventorySlot[i].item = _item) {
-                containsItem = true;
-                if(_quantity > inventorySlot[i].quantity) {
-                    return containsItem;
+            // if existing and not too large for stack add quantity to max, exclude the rest?
+            if(inventorySlot[i].item == item && inventorySlot[i].quantity < item.stackLimit) {
+                if(inventorySlot[i].quantity + quantity > item.stackLimit) { // if the picked up quantity exceeds the
+                // stackLimit, the quantity in the inventory slot[i] where the item is contained
+                // is set to the maximum and the quantity of the item being picked up is set to the
+                // remainder (quantity + quantity - stackLimit). Code then continues until the return statement 
+                // (if other stacks exists or if no stack exists, adds a new stack in line 32 
+                    quantity = inventorySlot[i].quantity + quantity - item.stackLimit;
+                    inventorySlot[i].quantity = item.stackLimit;
                 }
-                else if(_quantity == inventorySlot[i].quantity) {
-                    SubtractWeight(_item, inventorySlot[i].quantity);
-                    inventorySlot.RemoveAt(i);
-                    if(onItemChangedCallback != null)
-                        onItemChangedCallback.Invoke();
-                    return containsItem;
-                }
-                else {
-                    SubtractWeight(_item, inventorySlot[i].quantity);
-                    inventorySlot[i].RemoveQuantity(_quantity);
-                    if(onItemChangedCallback != null)
-                        onItemChangedCallback.Invoke();
+                if(inventorySlot[i].quantity + quantity <= item.stackLimit) {
+                    inventorySlot[i].AddQuantity(quantity);
+                    onItemChangedCallback.Invoke();
+                    return; // ends the code because quantity of picked up item has been exhausted
                 }
             }
         }
-        return containsItem;
+        // adds item & quantity to new InventorySlot
+        inventorySlot.Add(new InventorySlot(item, quantity));
+        onItemChangedCallback.Invoke();
     }
 
-    // Checks to see if the current weight plus the new item's weight is within the 
-    // inventory scope
-    // may be obsolete with our new design change (slots fill vs weight)
-    public bool CanAdd(Inventory _inventory, Item _item) { 
-        if(_inventory.currentWeight + _item.weight <= _inventory.maxWeight) {
+
+    public bool CanAddItemToInventory() {
+        if(inventorySlot.Count < (int) size) {
             return true;
         }
-        Debug.Log("This weighs too much for you to lift. Weaksauce.");
         return false;
     }
 
-    // adds to inventory weight total
-    public void AddWeight(Item _item, int _quantity) {
-        currentWeight += _item.weight * _quantity;
-    }
-
-    // subtracts from inventory weight total
-    public void SubtractWeight(Item _item, int quantity) {
-        currentWeight -= _item.weight * quantity;
-    }
-
-    public int ItemQuantity(Item item) {
-        //returns the amount of a specified item held in the inventory
-        foreach (InventorySlot i in inventorySlot) {
-            if (i.item == item) {
-                return i.quantity;
-            }
-        }
-        
-        return 0;
+    public int GetItemQuantity() {
+        return 1;
     }
 }
 
-// Allows us to add or remove items to our inventory.
 [System.Serializable]
 public class InventorySlot {
-    public int ID;
     public Item item;
     public int quantity;
-    public InventorySlot(int _id, Item _item, int _quantity) {
-        ID = _id;
-        item = _item;
-        quantity = _quantity;
+    public InventorySlot(Item item, int quantity) {
+        this.item = item;
+        this.quantity = quantity;
     }
 
     public void AddQuantity(int value) {

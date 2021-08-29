@@ -41,10 +41,10 @@ public class InteractionManager : MonoBehaviour {
             ProcessInteractAnimationEnding();
         
 
-        if (Input.GetKeyDown(KeyCode.O))
-            inventory.Save();
-        if (Input.GetKeyDown(KeyCode.L))
-            inventory.Load();
+        // if (Input.GetKeyDown(KeyCode.O))
+        //     inventory.Save();
+        // if (Input.GetKeyDown(KeyCode.L))
+        //     inventory.Load();
     }
 
     private void UpdateClosestInteractable() {
@@ -143,7 +143,7 @@ public class InteractionManager : MonoBehaviour {
     public void AddCurrentInteractableItemToInventory() {
         Item item = closestInteractable.item;
         int amount = 1; //need better logic for how quantity is determined
-        inventory.AddItem(item, amount, inventory);
+        inventory.AddItemToInventory(item, amount);
     }
 
     public void DestroyCurrentInteractable() {
@@ -165,18 +165,18 @@ public class InteractionManager : MonoBehaviour {
     // clears inventory and inventory weight on application quit
     private void OnApplicationQuit() {
         inventory.inventorySlot.Clear();
-        inventory.currentWeight = 0;
+        
     }
     
     private bool CanPlayerInteractWithCurrentInteractable() {
         if (closestInteractable.interactType == Interactable.InteractTypes.Pickup) {
-            if (inventory.CanAdd(inventory, closestInteractable.item)) { //check if the player can carry the new item
+            if (inventory.CanAddItemToInventory()) { //check if the player can carry the new item
                 return true;
             }
         }
         else if (closestInteractable.interactType == Interactable.InteractTypes.Fishing) {
-            if (inventory.ItemQuantity(closestInteractable.requiredItem) > 0) { //check for required item (probably will be fishing rod)
-                if (inventory.CanAdd(inventory, closestInteractable.item)) { //check if the player can carry the new item
+            if (itemInHand == closestInteractable.requiredItem) { //check for required item (probably will be fishing rod)
+                if (inventory.CanAddItemToInventory()) { //check if the player can carry the new item
                     return true;
                 }
             }
