@@ -9,7 +9,7 @@ public class ItemDetails : MonoBehaviour {
     private Vector2 originalModelParentPos;
     private enum ItemAction { Equip, Eat, Unequip };
     private ItemAction mainAction;
-    private InteractionManager interactScript;
+    private Interact interactScript;
 
     //gameobject references
     private Transform itemModelParent;
@@ -26,7 +26,7 @@ public class ItemDetails : MonoBehaviour {
         descriptionText = transform.Find("Description").Find("Text").GetComponent<Text>();
         nameText = transform.Find("Name").Find("Text").GetComponent<Text>();
         mainActionText = transform.Find("Main Action").Find("Text").GetComponent<Text>();
-        interactScript = FindObjectOfType<InteractionManager>();
+        interactScript = FindObjectOfType<Interact>();
         pauseMenu = FindObjectOfType<PauseMenu>();
         quantityGO = transform.Find("Quantity").gameObject;
         quantityText = quantityGO.transform.Find("Text").GetComponent<Text>();
@@ -134,10 +134,10 @@ public class ItemDetails : MonoBehaviour {
     public void MainAction() {
         //use the item's main action
         if (mainActionText.text == "Equip") {
-            interactScript.PutItemInPlayerHand(item, false);
+            interactScript.PutObjectInHand(item, false);
         }
         else if (mainActionText.text == "Unequip") {
-            interactScript.RemoveItemFromHand();
+            interactScript.RemoveObjectFromHand();
         }
         else if (mainActionText.text == "") {
             //do nothing

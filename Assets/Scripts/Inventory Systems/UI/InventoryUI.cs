@@ -13,8 +13,9 @@ public class InventoryUI : MonoBehaviour
     void Start()
     {
         // when an item is added or removed, the updateUI function is also called (adds updateUI to onItemChangedCallback function)
-        inventory.onItemChangedCallback += UpdateInventoryUI;
+        inventory.onItemChangedCallback += UpdateUI;
         slots = itemsParent.GetComponentsInChildren<InventorySlots>();
+        UpdateUI();
         inventoryUI.SetActive(false);
     }
 
@@ -23,15 +24,20 @@ public class InventoryUI : MonoBehaviour
     {
     }
 
-    // updates the UI (currently intensively goes through and recreates each item to simulate new items being added -- bug needs squashed)
-    void UpdateInventoryUI() {
+    // updates the UI
+    void UpdateUI() {
         for(int i = 0; i < slots.Length; i++) {
-            if(i < inventory.inventorySlot.Count) {
-                slots[i].DisplayItem(inventory.inventorySlot[i].item); // bug re-adds items each time the updateUI function is called
+            if( i < inventory.inventorySlot.Count) {
+                if(slots[i].GetItem() != inventory.inventorySlot[i].item){ // if it doesn't match
+                    slots[i].ClearSlot(); // clear item and remove old game object
+                    slots[i].AddItem(inventory.inventorySlot[i].item); // add new item
+                }
             }
-            else
-                slots[i].ClearSlot();
+            else if(slots[i].GetItem() != null) { // if the slot item isn't null but the slot.count is grater than inventory slot count
+                slots[i].ClearSlot(); // clear item and remove old game object
+            }
         }
         Debug.Log("Updating UI");
+        
     }
 }
