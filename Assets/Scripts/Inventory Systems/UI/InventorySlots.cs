@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class InventorySlots : MonoBehaviour
 {
+    //public Image icon;
     public Inventory inventory;
     public GameObject quantityUI;
     Item item;
@@ -24,7 +25,7 @@ public class InventorySlots : MonoBehaviour
     }
 
     // adds an item to a slot and sets the quantity active if there is a 
-    public void AddItem(Item newItem){
+    public void DisplayItem(Item newItem){
         item = newItem;
 
         //add the object 3d model
@@ -38,13 +39,13 @@ public class InventorySlots : MonoBehaviour
         itemModelParent.localPosition = new Vector3(originalModelParentPos.x + (item.modelPosition.x * .2f), originalModelParentPos.y + (item.modelPosition.y * .2f), itemModelParent.localPosition.z);
 
 
-        // if (inventory.ItemQuantity(item) == 1){
-        //     return;
-        // }
-        // else {
-        //     quantity.text = "" + inventory.ItemQuantity(item);
-        //     quantityUI.SetActive(true);
-        // }
+        if (inventory.ItemQuantity(item) == 1){
+            return;
+        }
+        else {
+            quantity.text = "" + inventory.ItemQuantity(item);
+            quantityUI.SetActive(true);
+        }
     }
 
     // clears the slot and removes the quantity UI
@@ -52,19 +53,16 @@ public class InventorySlots : MonoBehaviour
         item = null;
         quantityUI.SetActive(false);
         quantity.text = "";
+
         foreach (Transform t in itemModelParent)
             GameObject.Destroy(t.gameObject);
     }
 
-    public Item GetItem() {
-        return item;
+    public void TapItem() {
+        if (item != null) {
+            FindObjectOfType<ItemDetails>().DisplayItem(item, inventory.ItemQuantity(item));
+        }
     }
-
-    // public void TapItem() {
-    //     if (item != null) {
-    //         FindObjectOfType<ItemDetails>().DisplayItem(item, inventory.ItemQuantity(item));
-    //     }
-    // }
 
     private void SetLayerRecursively(GameObject obj, int newLayer) {
         //sets the object and all children to be in the specified layer
