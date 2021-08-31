@@ -8,6 +8,7 @@ public class InventorySlots : MonoBehaviour
     public Inventory inventory;
     public GameObject quantityUI;
     Item item;
+    int slotNumber;
     private Text quantity;
     private Transform itemModelParent;
     private Vector2 originalModelParentPos;
@@ -24,8 +25,9 @@ public class InventorySlots : MonoBehaviour
     }
 
     // adds an item to a slot and sets the quantity active if there is a 
-    public void AddItem(Item newItem){
+    public void AddItemToInventorySlot(Item newItem){
         item = newItem;
+
 
         //add the object 3d model
         //create the 3d model instance and position it correctly
@@ -36,15 +38,23 @@ public class InventorySlots : MonoBehaviour
         newModel.transform.Rotate(item.modelRotation);
         //set the position of the 3d model. position offset is scaled down to 20% of the offset used in the item details screen
         itemModelParent.localPosition = new Vector3(originalModelParentPos.x + (item.modelPosition.x * .2f), originalModelParentPos.y + (item.modelPosition.y * .2f), itemModelParent.localPosition.z);
+    }
 
+    public void DisplayItemQuantity(int newSlotNumber) {
+        slotNumber = newSlotNumber;
+        if (inventory.GetItemQuantity(slotNumber) > 1) {
+            quantity.text = "" + inventory.GetItemQuantity(slotNumber);
+            quantityUI.SetActive(true);
+            print("It's more than 1");
+        }
+    }
 
-        // if (inventory.ItemQuantity(item) == 1){
-        //     return;
-        // }
-        // else {
-        //     quantity.text = "" + inventory.ItemQuantity(item);
-        //     quantityUI.SetActive(true);
-        // }
+    public bool HasItemQuantityChanged(int newSlotNumber) {
+        slotNumber = newSlotNumber;
+        if("" + inventory.GetItemQuantity(slotNumber) == quantity.text)
+            return false;
+        else
+            return true;
     }
 
     // clears the slot and removes the quantity UI
@@ -62,7 +72,7 @@ public class InventorySlots : MonoBehaviour
 
     public void TapItem() {
         if (item != null) {
-            FindObjectOfType<ItemDetails>().DisplayItem(item, inventory.GetItemQuantity());
+            FindObjectOfType<ItemDetails>().DisplayItem(item, inventory.GetItemQuantity(slotNumber));
         }
     }
 

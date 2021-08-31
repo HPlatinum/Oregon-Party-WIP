@@ -56,8 +56,8 @@ public class Inventory : ScriptableObject
         return false;
     }
 
-    public int GetItemQuantity() {
-        return 1;
+    public int GetItemQuantity(int inventorySlotPosition) {
+        return inventorySlot[inventorySlotPosition].quantity;
     }
 }
 
