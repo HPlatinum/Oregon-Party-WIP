@@ -28,7 +28,7 @@ public class Inventory : ScriptableObject
         for(int i = 0; i < inventorySlot.Count; i++) {
             // if existing and not too large for stack add quantity to max, exclude the rest?
             if(inventorySlot[i].item == item && inventorySlot[i].quantity < item.stackLimit) {
-                if(inventorySlot[i].quantity + quantity > item.stackLimit) { // if the picked up quantity exceeds the
+                if(IfQuantityIsLargerThanStackLimit(i, quantity)) { // if the picked up quantity exceeds the
                 // stackLimit, the quantity in the inventory slot[i] where the item is contained
                 // is set to the maximum and the quantity of the item being picked up is set to the
                 // remainder (quantity + quantity - stackLimit). Code then continues until the return statement 
@@ -58,6 +58,10 @@ public class Inventory : ScriptableObject
 
     public int GetItemQuantity(int inventorySlotPosition) {
         return inventorySlot[inventorySlotPosition].quantity;
+    }
+
+    public bool IfQuantityIsLargerThanStackLimit(int slotNumber, int quantity) {
+        return inventorySlot[slotNumber].quantity + quantity > inventorySlot[slotNumber].item.stackLimit;
     }
 }
 
