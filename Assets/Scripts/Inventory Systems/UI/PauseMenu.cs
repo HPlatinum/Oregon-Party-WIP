@@ -26,7 +26,7 @@ public class PauseMenu : MonoBehaviour {
     public void Close() {
         //open the pause menu, with the inventory inside it
         ShowMenu(false);
-        mainUI.ShowUI(true);
+        mainUI.ShowUI();
     }
 
     public void PauseGame() {
@@ -36,7 +36,7 @@ public class PauseMenu : MonoBehaviour {
 
     public void ResumeGame() {
         ShowMenu(false);
-        mainUI.ShowUI(true);
+        mainUI.ShowUI();
         Time.timeScale = 1f;
     }
 }

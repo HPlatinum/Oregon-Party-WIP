@@ -96,6 +96,7 @@ public class Inventory : ScriptableObject
     public void AddPickedUpItemAndQuantityToNewInventorySlot(Item item, int quantity) { 
         inventorySlot.Add(new InventorySlot(item, quantity));
         onItemChangedCallback.Invoke();
+        StaticVariables.mainUI.ShowItemBeingAdded(item, quantity);
     }
 
     public int RemainingPickedUpItemQuantity(int slotNumber, int quantity) {

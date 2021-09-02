@@ -17,6 +17,7 @@ public class StaticVariables
     static public Essentials essentials;
     static public Text interactButtonText;
     static public Transform tweenDummy;
+    static public MainUI mainUI;
 
     static public void SetInteractButtonText(string newText) {
         interactButtonText.text = newText;

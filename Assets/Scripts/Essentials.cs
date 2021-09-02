@@ -15,6 +15,7 @@ public class Essentials : MonoBehaviour{
         StaticVariables.currentMinigame = null;
         StaticVariables.interactButtonText = FindObjectOfType<MainUI>().transform.Find("Interact").Find("Text").GetComponent<Text>();
         StaticVariables.tweenDummy = transform.Find("Empty Tween Dummy - For Delaying Function Calls");
+        StaticVariables.mainUI = transform.Find("Canvas").Find("Main UI").GetComponent<MainUI>();
     }
 
 }

@@ -2,20 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class MainUI : MonoBehaviour {
-
-    //private Invector.vCharacterController.vThirdPersonController characterController;
+    
     private PauseMenu pauseMenu;
+    private GameObject addItemDisplay;
+    private Text addItemDisplayText;
+    private bool isItemAddedPopupBeingDisplayed = false;
 
     private void Start() {
-        //characterController = FindObjectOfType<Invector.vCharacterController.vThirdPersonController>();
         pauseMenu = FindObjectOfType<PauseMenu>();
+        addItemDisplay = transform.Find("Add Item Display").gameObject;
+        addItemDisplayText = addItemDisplay.transform.Find("Text").GetComponent<Text>();
+
+
+        HideItemBeingAddedPopup();
     }
 
     public void Interact() {
-        //when the player pushes the interact button
-
         StaticVariables.interactScript.StartInteractionWithCurrentInteractable();
     }
 
@@ -24,15 +29,38 @@ public class MainUI : MonoBehaviour {
     }
 
     public void Pause() {
-        //open the pause menu, with the inventory inside it
         pauseMenu.PauseGame();
-        ShowUI(false);
+        HideUI();
+    }
+    
+    public void ShowUI() {
+        foreach (Transform t in transform)
+            t.gameObject.SetActive(true);
+        if (!isItemAddedPopupBeingDisplayed)
+            addItemDisplay.SetActive(false);
     }
 
-    public void ShowUI(bool show) {
-        //if true, sets all child objects to active. if false, sets to inactive
-        foreach (Transform t in transform) {
-            t.gameObject.SetActive(show);
-        }
+    private void HideUI() {
+        foreach (Transform t in transform)
+            t.gameObject.SetActive(false);
+    }
+
+    public void ShowItemBeingAdded(Item item, int quantity) {
+        addItemDisplayText.text = "+" + quantity + " " + item.name;
+
+        //fade out the text
+        Color transparent = Color.black;
+        transparent.a = 0;
+        addItemDisplayText.DOColor(transparent, 1).OnComplete(HideItemBeingAddedPopup);
+
+        addItemDisplay.SetActive(true);
+
+        isItemAddedPopupBeingDisplayed = true;
+    }
+
+    private void HideItemBeingAddedPopup() {
+        addItemDisplayText.DOColor(Color.black, 0);
+        addItemDisplay.SetActive(false);
+        isItemAddedPopupBeingDisplayed = false;
     }
 }
