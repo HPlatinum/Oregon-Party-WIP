@@ -24,22 +24,24 @@ public class Inventory : ScriptableObject
 
 
     public void AddItemToInventory(Item item, int pickedUpItemQuantity) {
+        StaticVariables.mainUI.ShowItemBeingAdded(item, pickedUpItemQuantity);
+
         // Check if stack has met cap > if it has create new cap.
         for(int i = 0; i < inventorySlot.Count; i++) {
             // if existing and not too large for stack add quantity to max, exclude the rest?
-            if(InventorySlotItemIsTheSameAsThePickedUpItemAndInventorySlotQuantityIsNotAlreadyFull(i, item)) {
-                if(PickedUpQuantityPlusInventorySlotQuantityIsGreaterThanTheItemsStackLimit(i, pickedUpItemQuantity)) { 
-                    pickedUpItemQuantity = RemainingPickedUpItemQuantity(i, pickedUpItemQuantity);
-                    SetInventorySlotQuantityToMaximumStackLimit(i);
+            if(IsItemAlreadyInSlot(i, item) && IsSlotFull(i)) {
+                if(WouldAddingQuantityOverfillSlot(i, pickedUpItemQuantity)) { 
+                    pickedUpItemQuantity = RemainingItemQuantity(i, pickedUpItemQuantity);
+                    SetSlotQuantityToStackLimit(i);
                 }
                 if(PickedUpQuantityIsLessThanOrEqualToStackLimit(i, pickedUpItemQuantity)) {
-                    AddPickedUpQuantityToInventorySlotQuantity(i, pickedUpItemQuantity);
+                    AddQuantityToSlot(i, pickedUpItemQuantity);
                     return; // ends the code because pickedUpItemQuantity item has been exhausted
                 }
             }
         }
         // adds item & quantity to new InventorySlot
-        AddPickedUpItemAndQuantityToNewInventorySlot(item, pickedUpItemQuantity);
+        AddItemToNewSlot(item, pickedUpItemQuantity);
     }
 
 
@@ -57,14 +59,14 @@ public class Inventory : ScriptableObject
     public int GetTotalItemQuantity(Item item) {
         int totalQuantity = 0;
         for(int i = 0; i < inventorySlot.Count; i++){
-            if(ItemIsTheSame(i, item)) {
+            if(IsItemAlreadyInSlot(i, item)) {
                 totalQuantity += inventorySlot[i].quantity;
             }
         }
         return totalQuantity;
     }
 
-    public bool PickedUpQuantityPlusInventorySlotQuantityIsGreaterThanTheItemsStackLimit(int slotNumber, int quantity) {
+    public bool WouldAddingQuantityOverfillSlot(int slotNumber, int quantity) {
         return inventorySlot[slotNumber].quantity + quantity > inventorySlot[slotNumber].item.stackLimit;
     }
 
@@ -72,34 +74,34 @@ public class Inventory : ScriptableObject
         return inventorySlot[slotNumber].quantity + quantity <= inventorySlot[slotNumber].item.stackLimit;
     }
 
-    public bool InventorySlotItemIsTheSameAsThePickedUpItemAndInventorySlotQuantityIsNotAlreadyFull(int slotNumber, Item item) {
-        return ItemIsTheSame(slotNumber, item) && inventorySlot[slotNumber].quantity < inventorySlot[slotNumber].item.stackLimit;
+    public bool IsSlotFull(int slotNumber) {
+        return inventorySlot[slotNumber].quantity < inventorySlot[slotNumber].item.stackLimit;
     }
 
     public bool ItemsInInventoryAreLessThanTheMaximumInventoryCapacity() {
         return inventorySlot.Count < (int) size;
     }
 
-    public bool ItemIsTheSame(int slotNumber, Item item) {
+    public bool IsItemAlreadyInSlot(int slotNumber, Item item) {
         return inventorySlot[slotNumber].item == item;
     }
 
-    public void SetInventorySlotQuantityToMaximumStackLimit(int slotNumber) {
+    public void SetSlotQuantityToStackLimit(int slotNumber) {
         inventorySlot[slotNumber].quantity = inventorySlot[slotNumber].item.stackLimit;
     }
 
-    public void AddPickedUpQuantityToInventorySlotQuantity(int slotNumber, int quantity) {
+    public void AddQuantityToSlot(int slotNumber, int quantity) {
         inventorySlot[slotNumber].AddQuantity(quantity);
         onItemChangedCallback.Invoke();
     }
 
-    public void AddPickedUpItemAndQuantityToNewInventorySlot(Item item, int quantity) { 
+    public void AddItemToNewSlot(Item item, int quantity) { 
         inventorySlot.Add(new InventorySlot(item, quantity));
         onItemChangedCallback.Invoke();
         StaticVariables.mainUI.ShowItemBeingAdded(item, quantity);
     }
 
-    public int RemainingPickedUpItemQuantity(int slotNumber, int quantity) {
+    public int RemainingItemQuantity(int slotNumber, int quantity) {
         return inventorySlot[slotNumber].quantity + quantity - inventorySlot[slotNumber].item.stackLimit;
     }
 }
