@@ -39,12 +39,6 @@ public class InteractionManager : MonoBehaviour {
         bool justEnded = CheckIfInteractAnimationJustEnded();
         if (justEnded)
             ProcessInteractAnimationEnding();
-        
-
-        // if (Input.GetKeyDown(KeyCode.O))
-        //     inventory.Save();
-        // if (Input.GetKeyDown(KeyCode.L))
-        //     inventory.Load();
     }
 
     private void UpdateClosestInteractable() {
@@ -66,9 +60,24 @@ public class InteractionManager : MonoBehaviour {
             interactable.GetComponent<Outline>().enabled = false;
     }
 
+    private void UnhighlightInteractable(GameObject go) {
+        UnhighlightInteractable(go.GetComponent<Interactable>());
+    }
+
     private void OnTriggerEnter(Collider obj) {
         if (!currentlyInteracting) {
             AddObjectToInteractablesListIfInteractable(obj.gameObject);
+        }
+    }
+
+    private void OnTriggerExit(Collider obj) {
+        GameObject go = obj.gameObject;
+        if (!currentlyInteracting) {
+            RemoveObjectFromInteractablesList(go);
+            UnhighlightInteractable(go);
+            if (closestInteractable == obj.GetComponent<Interactable>()) {
+                closestInteractable = null;
+            }
         }
     }
 
@@ -84,11 +93,7 @@ public class InteractionManager : MonoBehaviour {
             interactablesInRange.Remove(interactable);
     }
 
-    private void OnTriggerExit(Collider obj) {
-        if (!currentlyInteracting) {
-            RemoveObjectFromInteractablesList(obj.gameObject);
-        }
-    }
+
 
     private Interactable GetClosestInteractable() {
         if (interactablesInRange.Count == 0)
@@ -169,18 +174,28 @@ public class InteractionManager : MonoBehaviour {
     }
     
     private bool CanPlayerInteractWithCurrentInteractable() {
-        if (closestInteractable.interactType == Interactable.InteractTypes.Pickup) {
+        Interactable.InteractTypes type = closestInteractable.interactType;
+        if (type == Interactable.InteractTypes.Pickup) {
             if (inventory.CanAddItemToInventory()) { //check if the player can carry the new item
                 return true;
             }
         }
-        else if (closestInteractable.interactType == Interactable.InteractTypes.Fishing) {
+        else if (type == Interactable.InteractTypes.Fishing) {
             if (itemInHand == closestInteractable.requiredItem) { //check for required item (probably will be fishing rod)
                 if (inventory.CanAddItemToInventory()) { //check if the player can carry the new item
                     return true;
                 }
             }
         }
+        else if (type == Interactable.InteractTypes.CookingTier1) {
+
+        }
+        else if (type == Interactable.InteractTypes.CookingTier2) {
+
+        }
+        else
+            print("the interaction type" + closestInteractable.interactType.ToString() + " does not have an interact option!");
+
         //else if (closestInteractable.interactType == Interactable.InteractTypes.Chest) {
         //        return true; // return true since it's a chest could check required key?
         //}
@@ -264,10 +279,10 @@ public class InteractionManager : MonoBehaviour {
             return;
         }
         //else if (closestInteractable.interactType == Interactable.InteractTypes.Chest) {
-            //StartAnimation("Fishing", 0.2f);
-            //return;
+        //StartAnimation("Fishing", 0.2f);
+        //return;
         //}
-    }
+        }
 
     private void PassInteractToCurrentMinigame() {
         if (StaticVariables.currentMinigame != null) 
