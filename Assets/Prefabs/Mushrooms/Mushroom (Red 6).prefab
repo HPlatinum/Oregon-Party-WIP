@@ -51,6 +51,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -93,7 +94,7 @@ GameObject:
   - component: {fileID: 4197829044545140045}
   - component: {fileID: 4197829044526440941}
   - component: {fileID: 4534603347154104796}
-  - component: {fileID: 1443614278563926017}
+  - component: {fileID: 5109765718611352326}
   m_Layer: 0
   m_Name: Mushroom (Red 6)
   m_TagString: Untagged
@@ -154,7 +155,7 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0.5, z: 0}
---- !u!114 &1443614278563926017
+--- !u!114 &5109765718611352326
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -163,11 +164,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 4197829044544842093}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac4899ea643310c4a9ff2efedb59b6d9, type: 3}
+  m_Script: {fileID: 11500000, guid: db4957fd4b801fe4bbf2cf4c52ccacf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   interactType: 0
-  item: {fileID: 11400000, guid: a22a2aa482b2f1149b4b16c89583d15a, type: 2}
+  item: {fileID: 11400000, guid: 90b8028ea7e26064f8b4a68495827958, type: 2}
+  requiredItem: {fileID: 0}
+  inventory: {fileID: 0}
+  destroyParentAlso: 0
 --- !u!1 &4197829044544842095
 GameObject:
   m_ObjectHideFlags: 0
@@ -219,6 +223,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
