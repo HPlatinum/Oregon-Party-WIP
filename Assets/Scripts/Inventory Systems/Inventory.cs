@@ -104,6 +104,17 @@ public class Inventory : ScriptableObject
     public int RemainingItemQuantity(int slotNumber, int quantity) {
         return inventorySlot[slotNumber].quantity + quantity - inventorySlot[slotNumber].item.stackLimit;
     }
+
+    public int SeeHowManyOfThisItemAreWithinTheInventory(Item item) {
+        int totalOfItems = 0;
+        for(int i = 0; i < inventorySlot.Count; i++) {
+            // if existing and not too large for stack add quantity to max, exclude the rest?
+            if(IsItemAlreadyInSlot(i, item)) {
+                totalOfItems += GetItemQuantity(i);
+            }
+        }
+        return totalOfItems;
+    }
 }
 
 [System.Serializable]

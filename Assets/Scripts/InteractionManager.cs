@@ -189,14 +189,14 @@ public class InteractionManager : MonoBehaviour {
             }
         }
         else if (closestInteractable.interactType == Interactable.InteractTypes.Fishing) {
-            if (itemInHand == closestInteractable.requiredItem) { //check for required item (probably will be fishing rod)
+            if (StaticVariables.playerInventory.SeeHowManyOfThisItemAreWithinTheInventory(closestInteractable.requiredItem) > 0) { //check for required item (probably will be fishing rod)
                 if (inventory.CanAddItemToInventory()) { //check if the player can carry the new item
                     return true;
                 }
             }
         }
         else if (closestInteractable.interactType == Interactable.InteractTypes.Woodcutting) {
-            if (itemInHand == closestInteractable.requiredItem) { //check for required item (probably will be fishing rod)
+            if (StaticVariables.playerInventory.SeeHowManyOfThisItemAreWithinTheInventory(closestInteractable.requiredItem) > 0) { //check for required item (probably will be fishing rod)
                 if (inventory.CanAddItemToInventory()) { //check if the player can carry the new item
                     return true;
                 }
