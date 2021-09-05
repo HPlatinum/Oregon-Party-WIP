@@ -29,6 +29,10 @@ public class InteractionManager : MonoBehaviour {
     public Inventory inventory;
     public bool removeItemWhenFinishedWithInteraction = true;
 
+    void Start() {
+        StaticVariables.playerInventory = inventory;
+    }
+
     void Update() {
         if (!currentlyInteracting)
             UpdateClosestInteractable();
