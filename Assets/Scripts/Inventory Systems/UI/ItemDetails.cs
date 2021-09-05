@@ -134,7 +134,7 @@ public class ItemDetails : MonoBehaviour {
     public void MainAction() {
         //use the item's main action
         if (mainActionText.text == "Equip") {
-            interactScript.PutItemInPlayerHand(item, false);
+            interactScript.PutItemInPlayerHand(item, item.useRightHand);
         }
         else if (mainActionText.text == "Unequip") {
             interactScript.RemoveItemFromHand();

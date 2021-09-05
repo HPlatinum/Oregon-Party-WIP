@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3448116481888659367}
   - component: {fileID: 2904983210185834574}
-  - component: {fileID: 2904983210185834569}
+  - component: {fileID: 7836220466810053729}
   m_Layer: 0
   m_Name: Interactable
   m_TagString: Untagged
@@ -46,7 +46,7 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.6
   m_Center: {x: 0, y: 0.2, z: 0}
---- !u!114 &2904983210185834569
+--- !u!114 &7836220466810053729
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -55,14 +55,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 2635163265639185693}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac4899ea643310c4a9ff2efedb59b6d9, type: 3}
+  m_Script: {fileID: 11500000, guid: db4957fd4b801fe4bbf2cf4c52ccacf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactType: 4
+  interactType: 3
   item: {fileID: 0}
   requiredItem: {fileID: 0}
   inventory: {fileID: 0}
-  destroyParentAlso: 1
+  destroyParentAlso: 0
 --- !u!1 &5553849962045416200
 GameObject:
   m_ObjectHideFlags: 0

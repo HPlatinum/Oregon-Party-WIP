@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6aa93eacc9195a34cadb187a82c986f2, type: 3}
+  m_Name: Fish
+  m_EditorClassIdentifier: 
+  name: Fish
+  type: 2
+  defaultItem: 0
+  description: It's a dead fish.
+  stackLimit: 10
+  weight: 1
+  model: {fileID: 6277289769389393030, guid: 2925f2ed5b723a144a2a4e54ea841733, type: 3}
+  modelScale: 0.008
+  modelRotation: {x: 0, y: 0, z: 150}
+  modelPosition: {x: 0, y: 16}

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Interactable : MonoBehaviour
 {
-    public enum InteractTypes { Pickup, Fishing, Chest, CookingTier1, CookingTier2 };
+    public enum InteractTypes { Pickup, Fishing, Chest, CookingTier1, CookingTier2, Woodcutting };
     public InteractTypes interactType;
     public Item item;
     public Item requiredItem; //only allow interaction if the required item is in the inventory
@@ -25,6 +25,10 @@ public class Interactable : MonoBehaviour
 
         //by default, hide the outline
         outline.enabled = false;
+    }
+
+    public Item GetItem() {
+        return item;
     }
 
     // can be used to toggle chest/trunk inventories. You may have a better way of doing this though

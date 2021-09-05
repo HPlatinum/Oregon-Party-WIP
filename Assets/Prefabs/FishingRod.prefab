@@ -41,8 +41,8 @@ GameObject:
   - component: {fileID: 8358996948871210587}
   - component: {fileID: 4877052027429317118}
   - component: {fileID: 7226645397103779124}
-  - component: {fileID: -4623837208578325954}
   - component: {fileID: 3480649126973120670}
+  - component: {fileID: 6186986483021415948}
   m_Layer: 0
   m_Name: FishingRod
   m_TagString: Untagged
@@ -84,6 +84,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -114,21 +115,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &-4623837208578325954
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9172372029443849441}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac4899ea643310c4a9ff2efedb59b6d9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interactType: 0
-  item: {fileID: 11400000, guid: b2f757954ad222f458fff8100c5aefd6, type: 2}
-  requiredItem: {fileID: 0}
 --- !u!136 &3480649126973120670
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -143,3 +129,20 @@ CapsuleCollider:
   m_Height: 1.8262672
   m_Direction: 2
   m_Center: {x: -0.0067133904, y: 0.007487297, z: -0.17137337}
+--- !u!114 &6186986483021415948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9172372029443849441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db4957fd4b801fe4bbf2cf4c52ccacf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactType: 0
+  item: {fileID: 11400000, guid: b2f757954ad222f458fff8100c5aefd6, type: 2}
+  requiredItem: {fileID: 0}
+  inventory: {fileID: 0}
+  destroyParentAlso: 0

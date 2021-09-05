@@ -23,6 +23,7 @@ public class InteractionManager : MonoBehaviour {
     //holdable items
     [Header("Tools")]
     public Item fishingRod;
+    public Item woodAxe;
 
     //misc
     public Inventory inventory;
@@ -39,6 +40,12 @@ public class InteractionManager : MonoBehaviour {
         bool justEnded = CheckIfInteractAnimationJustEnded();
         if (justEnded)
             ProcessInteractAnimationEnding();
+        
+
+        // if (Input.GetKeyDown(KeyCode.O))
+        //     inventory.Save();
+        // if (Input.GetKeyDown(KeyCode.L))
+        //     inventory.Load();
     }
 
     private void UpdateClosestInteractable() {
@@ -92,8 +99,6 @@ public class InteractionManager : MonoBehaviour {
         if ((interactable != null) && interactablesInRange.Contains(interactable))
             interactablesInRange.Remove(interactable);
     }
-
-
 
     private Interactable GetClosestInteractable() {
         if (interactablesInRange.Count == 0)
@@ -174,31 +179,25 @@ public class InteractionManager : MonoBehaviour {
     }
     
     private bool CanPlayerInteractWithCurrentInteractable() {
-        Interactable.InteractTypes type = closestInteractable.interactType;
-        if (type == Interactable.InteractTypes.Pickup) {
+        if (closestInteractable.interactType == Interactable.InteractTypes.Pickup) {
             if (inventory.CanAddItemToInventory()) { //check if the player can carry the new item
                 return true;
             }
         }
-        else if (type == Interactable.InteractTypes.Fishing) {
+        else if (closestInteractable.interactType == Interactable.InteractTypes.Fishing) {
             if (itemInHand == closestInteractable.requiredItem) { //check for required item (probably will be fishing rod)
                 if (inventory.CanAddItemToInventory()) { //check if the player can carry the new item
                     return true;
                 }
             }
         }
-        else if (type == Interactable.InteractTypes.CookingTier1) {
-
+        else if (closestInteractable.interactType == Interactable.InteractTypes.Woodcutting) {
+            if (itemInHand == closestInteractable.requiredItem) { //check for required item (probably will be fishing rod)
+                if (inventory.CanAddItemToInventory()) { //check if the player can carry the new item
+                    return true;
+                }
+            }
         }
-        else if (type == Interactable.InteractTypes.CookingTier2) {
-
-        }
-        else
-            print("the interaction type" + closestInteractable.interactType.ToString() + " does not have an interact option!");
-
-        //else if (closestInteractable.interactType == Interactable.InteractTypes.Chest) {
-        //        return true; // return true since it's a chest could check required key?
-        //}
         return false;
     }
 
@@ -211,8 +210,8 @@ public class InteractionManager : MonoBehaviour {
         Transform hand = leftHand;
         if (useRightHand) hand = rightHand;
 
-        GameObject newObj = InstantiatePrefabAsChild(item.model, hand);
-        RotateAndPositionObjectToFitInHand(newObj, hand);
+        GameObject newObj = InstantiatePrefabAsChild(item.model, hand, item);
+        RotateObjectToFitInHand(newObj, hand, item);
         TurnOffCollidersOnObject(newObj);
 
         //assumes we only have one object in the hand at a time
@@ -229,23 +228,21 @@ public class InteractionManager : MonoBehaviour {
         if (bc != null) Destroy(bc);
     }
 
-    private GameObject InstantiatePrefabAsChild(GameObject prefab, Transform parent) {
+    private GameObject InstantiatePrefabAsChild(GameObject prefab, Transform parent, Item item) {
         GameObject newObj = Instantiate(prefab);
         newObj.transform.SetParent(parent);
-        newObj.transform.localPosition = Vector3.zero;
+        newObj.transform.localPosition = item.inHandPosition; // positions object in hand
         return newObj;
     }
 
-    private void RotateAndPositionObjectToFitInHand(GameObject go, Transform hand) {
+    private void RotateObjectToFitInHand(GameObject go, Transform hand, Item item) {
         Vector3 newRotation;
-        if (hand == rightHand) newRotation = new Vector3(0, -90, 180); //could need some work once we add more objects?
-        else newRotation = new Vector3(0, 90, 180); //could need some work once we add more objects?
-        go.transform.localEulerAngles = newRotation;
+        newRotation = item.inHandRotation;
 
-        Vector3 posDiff = go.transform.Find("Handle").position - hand.position;
-        Vector3 newPos = go.transform.position;
-        newPos -= posDiff;
-        go.transform.position = newPos;
+        print("Game Object " + go);
+        print(go.transform.position);
+        
+        go.transform.localEulerAngles = newRotation;
     }
 
     public void RemoveItemFromHand() {
@@ -278,11 +275,12 @@ public class InteractionManager : MonoBehaviour {
             StaticVariables.currentMinigame.ProcessInteractAction();
             return;
         }
-        //else if (closestInteractable.interactType == Interactable.InteractTypes.Chest) {
-        //StartAnimation("Fishing", 0.2f);
-        //return;
-        //}
+        else if (closestInteractable.interactType == Interactable.InteractTypes.Woodcutting) {
+            // StaticVariables.SetupPlayerInteractionWithHighlightedObject(); Movement is locked even after interaction. Need to investigate once I can add to mesh
+            StaticVariables.PlayAnimation("Swinging", 1);
+            return;
         }
+    }
 
     private void PassInteractToCurrentMinigame() {
         if (StaticVariables.currentMinigame != null) 
