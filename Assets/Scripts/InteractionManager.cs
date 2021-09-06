@@ -44,12 +44,6 @@ public class InteractionManager : MonoBehaviour {
         bool justEnded = CheckIfInteractAnimationJustEnded();
         if (justEnded)
             ProcessInteractAnimationEnding();
-        
-
-        // if (Input.GetKeyDown(KeyCode.O))
-        //     inventory.Save();
-        // if (Input.GetKeyDown(KeyCode.L))
-        //     inventory.Load();
     }
 
     private void UpdateClosestInteractable() {
@@ -183,26 +177,40 @@ public class InteractionManager : MonoBehaviour {
     }
     
     private bool CanPlayerInteractWithCurrentInteractable() {
-        if (closestInteractable.interactType == Interactable.InteractTypes.Pickup) {
+        Interactable.InteractTypes type = closestInteractable.interactType;
+        if (type == Interactable.InteractTypes.Pickup) {
             if (inventory.CanAddItemToInventory()) { //check if the player can carry the new item
                 return true;
             }
         }
-        else if (closestInteractable.interactType == Interactable.InteractTypes.Fishing) {
+        else if (type == Interactable.InteractTypes.Fishing) {
             if (StaticVariables.playerInventory.SeeHowManyOfThisItemAreWithinTheInventory(closestInteractable.requiredItem) > 0) { //check for required item (probably will be fishing rod)
                 if (inventory.CanAddItemToInventory()) { //check if the player can carry the new item
                     return true;
                 }
             }
         }
-        else if (closestInteractable.interactType == Interactable.InteractTypes.Woodcutting) {
+        else if (type == Interactable.InteractTypes.Woodcutting) {
             if (StaticVariables.playerInventory.SeeHowManyOfThisItemAreWithinTheInventory(closestInteractable.requiredItem) > 0) { //check for required item (probably will be fishing rod)
                 if (inventory.CanAddItemToInventory()) { //check if the player can carry the new item
                     return true;
                 }
             }
         }
+        else if (type == Interactable.InteractTypes.CookingTier1) {
+            OpenCookingInterface(1);
+        }
+        else if (type == Interactable.InteractTypes.CookingTier2) {
+            OpenCookingInterface(2);
+        }
+        else
+            print("the interaction type" + closestInteractable.interactType.ToString() + " does not have an interact option!");
         return false;
+    }
+
+    private void OpenCookingInterface(int tier) {
+        StaticVariables.cookingMinigame.ShowUI();
+        
     }
 
     public void PutItemInPlayerHand(Item item, bool useRightHand) {

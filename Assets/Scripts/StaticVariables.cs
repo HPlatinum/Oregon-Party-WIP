@@ -19,6 +19,7 @@ public class StaticVariables
     static public Transform tweenDummy;
     static public MainUI mainUI;
     static public Inventory playerInventory;
+    static public CookingMinigame cookingMinigame;
 
     static public void SetInteractButtonText(string newText) {
         interactButtonText.text = newText;
