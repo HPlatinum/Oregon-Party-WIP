@@ -184,24 +184,26 @@ public class InteractionManager : MonoBehaviour {
             }
         }
         else if (type == Interactable.InteractTypes.Fishing) {
-            if (StaticVariables.playerInventory.SeeHowManyOfThisItemAreWithinTheInventory(closestInteractable.requiredItem) > 0) { //check for required item (probably will be fishing rod)
+            if (StaticVariables.playerInventory.GetQuantityOfSpecificItem(closestInteractable.requiredItem) > 0) { //check for required item (probably will be fishing rod)
                 if (inventory.CanAddItemToInventory()) { //check if the player can carry the new item
                     return true;
                 }
             }
         }
         else if (type == Interactable.InteractTypes.Woodcutting) {
-            if (StaticVariables.playerInventory.SeeHowManyOfThisItemAreWithinTheInventory(closestInteractable.requiredItem) > 0) { //check for required item (probably will be fishing rod)
+            if (StaticVariables.playerInventory.GetQuantityOfSpecificItem(closestInteractable.requiredItem) > 0) { //check for required item (probably will be fishing rod)
                 if (inventory.CanAddItemToInventory()) { //check if the player can carry the new item
                     return true;
                 }
             }
         }
         else if (type == Interactable.InteractTypes.CookingTier1) {
-            OpenCookingInterface(1);
+            //check if the player has any Raw Food in their inventory? or not if we want non-cooking actions supported
+            return true;
         }
         else if (type == Interactable.InteractTypes.CookingTier2) {
-            OpenCookingInterface(2);
+            //check if the player has any Raw Food in their inventory? or not if we want non-cooking actions supported
+            return true;
         }
         else
             print("the interaction type" + closestInteractable.interactType.ToString() + " does not have an interact option!");
@@ -209,6 +211,7 @@ public class InteractionManager : MonoBehaviour {
     }
 
     private void OpenCookingInterface(int tier) {
+        StaticVariables.cookingMinigame.SetTier(tier);
         StaticVariables.cookingMinigame.ShowUI();
         
     }
@@ -290,6 +293,14 @@ public class InteractionManager : MonoBehaviour {
         else if (closestInteractable.interactType == Interactable.InteractTypes.Woodcutting) {
             // StaticVariables.SetupPlayerInteractionWithHighlightedObject(); Movement is locked even after interaction. Need to investigate once I can add to mesh
             StaticVariables.PlayAnimation("Swinging", 1);
+            return;
+        }
+        else if (closestInteractable.interactType == Interactable.InteractTypes.CookingTier1) {
+            OpenCookingInterface(1);
+            return;
+        }
+        else if (closestInteractable.interactType == Interactable.InteractTypes.CookingTier2) {
+            OpenCookingInterface(2);
             return;
         }
     }

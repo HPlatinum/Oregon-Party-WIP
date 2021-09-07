@@ -46,9 +46,10 @@ public class Inventory : ScriptableObject
 
 
     public bool CanAddItemToInventory() {
-        if(ItemsInInventoryAreLessThanTheMaximumInventoryCapacity()) {
+        if(!IsInventoryFull()) {
             return true;
         }
+        //todo, check to see if a provided item can fit in an already-occupied slot
         return false;
     }
 
@@ -78,8 +79,8 @@ public class Inventory : ScriptableObject
         return inventorySlot[slotNumber].quantity < inventorySlot[slotNumber].item.stackLimit;
     }
 
-    public bool ItemsInInventoryAreLessThanTheMaximumInventoryCapacity() {
-        return inventorySlot.Count < (int) size;
+    public bool IsInventoryFull() {
+        return (!(inventorySlot.Count < (int) size));
     }
 
     public bool IsItemAlreadyInSlot(int slotNumber, Item item) {
@@ -105,7 +106,7 @@ public class Inventory : ScriptableObject
         return inventorySlot[slotNumber].quantity + quantity - inventorySlot[slotNumber].item.stackLimit;
     }
 
-    public int SeeHowManyOfThisItemAreWithinTheInventory(Item item) {
+    public int GetQuantityOfSpecificItem(Item item) {
         int totalOfItems = 0;
         for(int i = 0; i < inventorySlot.Count; i++) {
             // if existing and not too large for stack add quantity to max, exclude the rest?
@@ -115,6 +116,35 @@ public class Inventory : ScriptableObject
         }
         return totalOfItems;
     }
+
+    public List<(Item, int)> GetListOfItemsWithType(ItemType searchType) {
+        List<(Item, int)> result = new List<(Item, int)>();
+        for (int i = 0; i < inventorySlot.Count; i++) {
+            Item itemInSlot = inventorySlot[i].item;
+            int quantityInSlot = inventorySlot[i].quantity;
+            
+            //look for all items with the specified type
+            if (itemInSlot.type == searchType) {
+
+                //if the item is already in the list, increase the item quantity
+                bool foundInListAlready = false;
+                for (int j =0; j<result.Count; j++) {
+                    if (result[j].Item1 == itemInSlot) {
+                        int newQuantity = result[j].Item2 + quantityInSlot;
+                        result[j] = (result[j].Item1, newQuantity);
+                        foundInListAlready = true;
+                    }
+                }
+
+                //otherwise, add the item to the end of the list
+                if (!foundInListAlready) {
+                    result.Add((itemInSlot, quantityInSlot));
+                }
+            }
+        }
+        return result;
+    }
+
 }
 
 [System.Serializable]

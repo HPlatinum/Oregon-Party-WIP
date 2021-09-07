@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: Fish
   m_EditorClassIdentifier: 
   name: Fish
-  type: 2
+  type: 8
   defaultItem: 0
   description: It's a dead fish.
   stackLimit: 10
-  weight: 1
   model: {fileID: 6277289769389393030, guid: 2925f2ed5b723a144a2a4e54ea841733, type: 3}
   modelScale: 0.008
   modelRotation: {x: 0, y: 0, z: 150}
   modelPosition: {x: 0, y: 16}
+  inHandPosition: {x: 0, y: 0, z: 0}
+  inHandRotation: {x: 0, y: 0, z: 0}
+  inHandScale: 1
+  useRightHand: 0
