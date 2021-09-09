@@ -3,25 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InventorySlots : MonoBehaviour
-{
-    public Inventory inventory;
-    public GameObject quantityUI;
-    Item item;
-    int slotNumber;
-    private Text quantity;
+public class InventorySlotUI : MonoBehaviour {
+    // todo remove inventory dependency
+    // todo change display item quantity to just take a new value
+    // todo set the tap function at runtime
+
+
+    //public Inventory inventory;
+    private GameObject quantityUI;
+    [HideInInspector]
+    public Item item;
+    [HideInInspector]
+    public int quantity;
+    private Text quantityText;
     private Transform itemModelParent;
     private Vector2 originalModelParentPos;
+    public enum OnClickEffect { ItemDetails, CookingInterface }
+    public OnClickEffect clickEffect = OnClickEffect.ItemDetails;
+    
+    //set the method to call when clicked         private 
 
-    // Deactivates the quantity UI
-    void Start() {
-        quantity = transform.Find("Quantity").Find("Text").GetComponent<Text>();
+    public void Setup() {
+        AssignLocalVariables();
         quantityUI.SetActive(false);
+    }
+
+
+    public void AssignLocalVariables() {
+        quantityUI = transform.Find("Quantity").gameObject;
+        //print(quantityUI);
+        quantityText = quantityUI.transform.Find("Text").GetComponent<Text>();
         itemModelParent = transform.Find("Object Parent");
-
-        //set the starting position of the 3d model UI element
         originalModelParentPos = new Vector2(itemModelParent.localPosition.x, itemModelParent.localPosition.y);
-
     }
 
     // adds an item to a slot and sets the quantity active if there is a 
@@ -39,29 +52,21 @@ public class InventorySlots : MonoBehaviour
         //set the position of the 3d model. position offset is scaled down to 20% of the offset used in the item details screen
         itemModelParent.localPosition = new Vector3(originalModelParentPos.x + (item.modelPosition.x * .2f), originalModelParentPos.y + (item.modelPosition.y * .2f), itemModelParent.localPosition.z);
     }
-
-    public void DisplayItemQuantity(int newSlotNumber) {
-        slotNumber = newSlotNumber;
-        if (inventory.GetItemQuantity(slotNumber) > 1) {
-            quantity.text = "" + inventory.GetItemQuantity(slotNumber);
-            quantityUI.SetActive(true);
-            print("It's more than 1");
-        }
+    public void DisplayItemQuantity(int quantity) {
+        this.quantity = quantity;
+        //print(quantity);
+        quantityText.text = quantity + "";
+        quantityUI.SetActive(true);
+        if (quantity <= 1) 
+            quantityUI.SetActive(false);
+        
     }
-
-    public bool HasItemQuantityChanged(int newSlotNumber) {
-        slotNumber = newSlotNumber;
-        if("" + inventory.GetItemQuantity(slotNumber) == quantity.text)
-            return false;
-        else
-            return true;
-    }
-
-    // clears the slot and removes the quantity UI
+    
     public void ClearSlot(){
         item = null;
+        quantity = 0;
         quantityUI.SetActive(false);
-        quantity.text = "";
+        quantityText.text = "";
         foreach (Transform t in itemModelParent)
             GameObject.Destroy(t.gameObject);
     }
@@ -70,9 +75,16 @@ public class InventorySlots : MonoBehaviour
         return item;
     }
 
-    public void TapItem() {
-        if (item != null) {
-            FindObjectOfType<ItemDetails>().DisplayItem(item, inventory.GetItemQuantity(slotNumber));
+    public void OnClick() {
+        if (item == null)
+            return;
+        if (clickEffect == OnClickEffect.ItemDetails) {
+            FindObjectOfType<ItemDetails>().DisplayItem(item, quantity);
+            return;
+        }
+        if (clickEffect == OnClickEffect.CookingInterface) {
+            print("cooking time");
+            return;
         }
     }
 

@@ -6,41 +6,59 @@ public class InventoryUI : MonoBehaviour
     public Transform itemsParent;
     public GameObject inventoryUI;
 
-    public Inventory inventory; 
-
-    InventorySlots[] slots;
+    public Inventory inventory;
+    
+    private InventorySlotUI[] slotsUI;
     // // Start is called before the first frame update
     void Start()
     {
         // when an item is added or removed, the updateUI function is also called (adds updateUI to onItemChangedCallback function)
         inventory.onItemChangedCallback += UpdateUI;
-        slots = itemsParent.GetComponentsInChildren<InventorySlots>();
+        slotsUI = itemsParent.GetComponentsInChildren<InventorySlotUI>();
+        SetupAllInventorySlotsUI();
         UpdateUI();
         inventoryUI.SetActive(false);
     }
 
-    // // Update is called once per frame
-    void Update()
-    {
-    }
-
     // updates the UI
     void UpdateUI() {
-        for(int i = 0; i < slots.Length; i++) {
+        for(int i = 0; i < slotsUI.Length; i++) {
+            InventorySlotUI slotUI = slotsUI[i];
             if( i < inventory.inventorySlot.Count) {
-                if(slots[i].GetItem() != inventory.inventorySlot[i].item){ // if it doesn't match
-                    slots[i].ClearSlot(); // clear item and remove old game object
-                    slots[i].AddItemToInventorySlot(inventory.inventorySlot[i].item); // add new item
+                InventorySlot slot = inventory.inventorySlot[i];
+                if (ShouldUpdateSlotUIItem(slotUI, slot)){
+                    slotUI.ClearSlot(); // clear item and remove old game object
+                    slotUI.AddItemToInventorySlot(slot.item); // add new item
+                    slotUI.DisplayItemQuantity(slot.quantity);
                 }
-                if(inventory.inventorySlot[i].quantity > 1 && slots[i].HasItemQuantityChanged(i)) { // this will refresh every time. I can add a get quantity function to check it maybe?
-                    slots[i].DisplayItemQuantity(i);
+                if(ShouldUpdateSlotUIQuantity(slotUI, slot)) {
+                    slotUI.DisplayItemQuantity(slot.quantity);
                 }
             }
-            else if(slots[i].GetItem() != null) { // if the slot item isn't null but the slot.count is grater than inventory slot count
-                slots[i].ClearSlot(); // clear item and remove old game object
+            else if(slotUI.item != null) { // if the slot item isn't null but the slot.count is grater than inventory slot count
+                slotUI.ClearSlot(); // clear item and remove old game object
             }
         }
         Debug.Log("Updating UI");
         
+    }
+    
+
+    private bool ShouldUpdateSlotUIQuantity(InventorySlotUI ui, InventorySlot slot) {
+        if (slot.quantity != ui.quantity)
+            return true;
+        return false;
+    }
+
+    private bool ShouldUpdateSlotUIItem(InventorySlotUI ui, InventorySlot slot) {
+        if (slot.item != ui.item)
+            return true;
+        return false;
+    }
+
+    private void SetupAllInventorySlotsUI() {
+        foreach (InventorySlotUI slotUI in slotsUI) {
+            slotUI.Setup();
+        }
     }
 }

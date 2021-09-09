@@ -13,10 +13,10 @@ public class Essentials : MonoBehaviour{
         StaticVariables.essentials = this;
         StaticVariables.interactScript = FindObjectOfType<InteractionManager>();
         StaticVariables.currentMinigame = null;
-        StaticVariables.interactButtonText = FindObjectOfType<MainUI>().transform.Find("Interact").Find("Text").GetComponent<Text>();
         StaticVariables.tweenDummy = transform.Find("Empty Tween Dummy - For Delaying Function Calls");
         StaticVariables.mainUI = transform.Find("Canvas").Find("Main UI").GetComponent<MainUI>();
         StaticVariables.cookingMinigame = transform.Find("Canvas").Find("Cooking Interface").GetComponent<CookingMinigame>();
+        StaticVariables.interactButtonText = StaticVariables.mainUI.transform.Find("Interact").Find("Text").GetComponent<Text>();
 
         foreach (Transform t in transform.Find("Canvas")) {
             t.gameObject.SetActive(true);

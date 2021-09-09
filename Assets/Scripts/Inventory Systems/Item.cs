@@ -7,6 +7,7 @@ public class Item : ScriptableObject {
     // creates a scriptableObject "Item" and assigns values to it that can be modified in Unity i.e. Weight, stacklimit, etc.
 
     new public string name = "New Item"; 
+    [HideInInspector]
     public ItemType type;
     public bool defaultItem = false;
     [TextArea(15,20)]

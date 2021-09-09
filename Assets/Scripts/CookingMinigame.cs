@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class CookingMinigame : Minigame {
 
     private int cookingTier = 0;
+    public GameObject inventorySpacePrefab;
+    private Transform inventoryParent;
 
     #region Inherited Functions
 
@@ -31,7 +33,7 @@ public class CookingMinigame : Minigame {
 
 
     private void AssignLocalVariables() {
-
+        inventoryParent = transform.Find("Inventory").Find("ItemsParent");
     }
 
     public void ShowUI() {
@@ -47,8 +49,29 @@ public class CookingMinigame : Minigame {
     }
 
     private void DisplayRawFoodFromInventory() {
-        List<(Item, int)> rawFood = StaticVariables.playerInventory.GetListOfItemsWithType(ItemType.RawFood);
+        List<(Item, int)> rawFood = StaticVariables.playerInventory.GetListOfItemsWithType(ItemType.Tool);
         PrintTupleListContents(rawFood);
+
+        foreach ((Item, int) tuple in rawFood) {
+            Item item = tuple.Item1;
+            int quantity = tuple.Item2;
+
+            //instatntiate the inventory space prefab
+            GameObject newObj = Instantiate(inventorySpacePrefab);
+            newObj.transform.SetParent(inventoryParent);
+            newObj.transform.localScale = new Vector3(1, 1, 1);
+            //newObj.transform.localPosition = Vector3.zero;
+
+            //set image quantity for inventory space prefab
+            InventorySlotUI slot = newObj.GetComponent<InventorySlotUI>();
+            slot.Setup();
+            slot.AddItemToInventorySlot(item);
+            slot.DisplayItemQuantity(quantity);
+
+            //set click interaction
+            slot.clickEffect = InventorySlotUI.OnClickEffect.CookingInterface;
+        }
+
     }
 
     public void SetTier(int tier) {
@@ -63,6 +86,10 @@ public class CookingMinigame : Minigame {
         if (list.Count == 0) {
             print("No Raw Food found in inventory");
         }
+    }
+
+    public void ClickedRawFood(Item item, int quantity) {
+
     }
 
 }
