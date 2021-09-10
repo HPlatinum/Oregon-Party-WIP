@@ -7,8 +7,7 @@ using UnityEngine.UI;
 public class CookingMinigame : Minigame {
 
     private int cookingTier = 0;
-    public GameObject inventorySpacePrefab;
-    private Transform inventoryParent;
+    private CompactInventory compactInventory;
 
     #region Inherited Functions
 
@@ -27,13 +26,8 @@ public class CookingMinigame : Minigame {
         HideUI();
     }
 
-    private void Update() {
-
-    }
-
-
     private void AssignLocalVariables() {
-        inventoryParent = transform.Find("Inventory").Find("ItemsParent");
+        compactInventory = transform.Find("Compact Inventory").GetComponent<CompactInventory>();
     }
 
     public void ShowUI() {
@@ -49,47 +43,21 @@ public class CookingMinigame : Minigame {
     }
 
     private void DisplayRawFoodFromInventory() {
-        List<(Item, int)> rawFood = StaticVariables.playerInventory.GetListOfItemsWithType(ItemType.Tool);
-        PrintTupleListContents(rawFood);
+        ItemType itemType = ItemType.Tool;
+        Inventory inventory = StaticVariables.playerInventory;
+        InventorySlotUI.OnClickEffect onClick = InventorySlotUI.OnClickEffect.CookingInterface;
+        string inventoryTitle = "Raw Food";
 
-        foreach ((Item, int) tuple in rawFood) {
-            Item item = tuple.Item1;
-            int quantity = tuple.Item2;
-
-            //instatntiate the inventory space prefab
-            GameObject newObj = Instantiate(inventorySpacePrefab);
-            newObj.transform.SetParent(inventoryParent);
-            newObj.transform.localScale = new Vector3(1, 1, 1);
-            //newObj.transform.localPosition = Vector3.zero;
-
-            //set image quantity for inventory space prefab
-            InventorySlotUI slot = newObj.GetComponent<InventorySlotUI>();
-            slot.Setup();
-            slot.AddItemToInventorySlot(item);
-            slot.DisplayItemQuantity(quantity);
-
-            //set click interaction
-            slot.clickEffect = InventorySlotUI.OnClickEffect.CookingInterface;
-        }
-
+        compactInventory.SetupValues(onClick, inventoryTitle);
+        compactInventory.DisplayAllItemsOfTypeFromInventory(itemType, inventory);
     }
 
     public void SetTier(int tier) {
         cookingTier = tier;
     }
 
-    private void PrintTupleListContents(List<(Item, int)> list) {
-        foreach ((Item, int) tuple in list) {
-            print("Raw Food item found: " + tuple.Item1 + ", with quantity " + tuple.Item2);
-        }
-
-        if (list.Count == 0) {
-            print("No Raw Food found in inventory");
-        }
-    }
-
     public void ClickedRawFood(Item item, int quantity) {
-
+        print("clicked " + item.name + ", quantity " + quantity);
     }
 
 }

@@ -79,11 +79,11 @@ public class InventorySlotUI : MonoBehaviour {
         if (item == null)
             return;
         if (clickEffect == OnClickEffect.ItemDetails) {
-            FindObjectOfType<ItemDetails>().DisplayItem(item, quantity);
+            StaticVariables.itemDetails.DisplayItem(item, quantity);
             return;
         }
         if (clickEffect == OnClickEffect.CookingInterface) {
-            print("cooking time");
+            StaticVariables.cookingMinigame.ClickedRawFood(item, quantity);
             return;
         }
     }

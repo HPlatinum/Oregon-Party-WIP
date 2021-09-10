@@ -20,6 +20,7 @@ public class StaticVariables
     static public MainUI mainUI;
     static public Inventory playerInventory;
     static public CookingMinigame cookingMinigame;
+    static public ItemDetails itemDetails;
 
     static public void SetInteractButtonText(string newText) {
         interactButtonText.text = newText;

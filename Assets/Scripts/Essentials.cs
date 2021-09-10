@@ -7,17 +7,27 @@ public class Essentials : MonoBehaviour{
 
     // Start is called before the first frame update
     void Start() {
+        Transform canvas = transform.Find("Canvas");
+
+        //misc stuff
+        StaticVariables.essentials = this;
         StaticVariables.playerAnimator = FindObjectOfType<Invector.vCharacterController.vThirdPersonController>().GetComponent<Animator>();
         StaticVariables.controller = FindObjectOfType<Invector.vCharacterController.vThirdPersonController>();
-        StaticVariables.fishingMinigame = transform.Find("Canvas").Find("Fishing Popup").GetComponent<FishingMinigame>();
-        StaticVariables.essentials = this;
         StaticVariables.interactScript = FindObjectOfType<InteractionManager>();
         StaticVariables.currentMinigame = null;
         StaticVariables.tweenDummy = transform.Find("Empty Tween Dummy - For Delaying Function Calls");
-        StaticVariables.mainUI = transform.Find("Canvas").Find("Main UI").GetComponent<MainUI>();
-        StaticVariables.cookingMinigame = transform.Find("Canvas").Find("Cooking Interface").GetComponent<CookingMinigame>();
-        StaticVariables.interactButtonText = StaticVariables.mainUI.transform.Find("Interact").Find("Text").GetComponent<Text>();
 
+        //UI elements        
+        StaticVariables.itemDetails = canvas.Find("Item Details").GetComponent<ItemDetails>();
+        StaticVariables.mainUI = canvas.Find("Main UI").GetComponent<MainUI>(); StaticVariables.interactButtonText = StaticVariables.mainUI.transform.Find("Interact").Find("Text").GetComponent<Text>();
+
+
+        //minigames
+        StaticVariables.cookingMinigame = canvas.Find("Cooking Interface").GetComponent<CookingMinigame>();
+        StaticVariables.fishingMinigame = canvas.Find("Fishing Popup").GetComponent<FishingMinigame>();
+
+        //turn on all UI elements
+        //they usually hide themselves on startup, after setting local variables
         foreach (Transform t in transform.Find("Canvas")) {
             t.gameObject.SetActive(true);
         }
