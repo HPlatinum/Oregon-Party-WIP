@@ -16,7 +16,8 @@ public class InventorySlotUI : MonoBehaviour {
     [HideInInspector]
     public int quantity;
     private Text quantityText;
-    private Transform itemModelParent;
+    //private Transform itemModelParent;
+    private DisplayItem displayItem;
     private Vector2 originalModelParentPos;
     public enum OnClickEffect { ItemDetails, CookingInterface }
     public OnClickEffect clickEffect = OnClickEffect.ItemDetails;
@@ -33,28 +34,20 @@ public class InventorySlotUI : MonoBehaviour {
         quantityUI = transform.Find("Quantity").gameObject;
         //print(quantityUI);
         quantityText = quantityUI.transform.Find("Text").GetComponent<Text>();
-        itemModelParent = transform.Find("Object Parent");
-        originalModelParentPos = new Vector2(itemModelParent.localPosition.x, itemModelParent.localPosition.y);
+        displayItem = transform.Find("Display Item").GetComponent<DisplayItem>();
+        //itemModelParent = transform.Find("Object Parent");
+       // originalModelParentPos = new Vector2(itemModelParent.localPosition.x, itemModelParent.localPosition.y);
     }
 
     // adds an item to a slot and sets the quantity active if there is a 
     public void AddItemToInventorySlot(Item newItem){
         item = newItem;
 
+        displayItem.AddItemAsChild(item, 0.2f);
 
-        //add the object 3d model
-        //create the 3d model instance and position it correctly
-        GameObject newModel = GameObject.Instantiate(item.model, itemModelParent);
-        newModel.transform.localPosition = Vector3.zero;
-        SetLayerRecursively(newModel, 5); //assumes UI layer is #5
-        newModel.transform.localScale = newModel.transform.localScale * item.modelScale;
-        newModel.transform.Rotate(item.modelRotation);
-        //set the position of the 3d model. position offset is scaled down to 20% of the offset used in the item details screen
-        itemModelParent.localPosition = new Vector3(originalModelParentPos.x + (item.modelPosition.x * .2f), originalModelParentPos.y + (item.modelPosition.y * .2f), itemModelParent.localPosition.z);
     }
     public void DisplayItemQuantity(int quantity) {
         this.quantity = quantity;
-        //print(quantity);
         quantityText.text = quantity + "";
         quantityUI.SetActive(true);
         if (quantity <= 1) 
@@ -67,8 +60,7 @@ public class InventorySlotUI : MonoBehaviour {
         quantity = 0;
         quantityUI.SetActive(false);
         quantityText.text = "";
-        foreach (Transform t in itemModelParent)
-            GameObject.Destroy(t.gameObject);
+        displayItem.ClearDisplay();
     }
 
     public Item GetItem() {

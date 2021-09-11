@@ -60,7 +60,6 @@ public class FishingMinigame : Minigame {
 
             //set interactscript values
             StaticVariables.interactScript.currentlyInteracting = true;
-            //StaticVariables.interactScript.isInteracting = true;
 
             //put the fishing rod in the hand
             StaticVariables.interactScript.removeItemWhenFinishedWithInteraction = true;

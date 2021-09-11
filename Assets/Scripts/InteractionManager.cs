@@ -211,8 +211,8 @@ public class InteractionManager : MonoBehaviour {
     }
 
     private void OpenCookingInterface(int tier) {
-        StaticVariables.cookingMinigame.SetTier(tier);
-        StaticVariables.cookingMinigame.ShowUI();
+        StaticVariables.cookingMinigame.cookingTier = tier;
+        StaticVariables.cookingMinigame.ShowSelectionUI();
         
     }
 

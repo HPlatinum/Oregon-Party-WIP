@@ -47,6 +47,7 @@ public class CompactInventory : MonoBehaviour {
     private void SetupInstanceTransform(GameObject obj) {
         obj.transform.SetParent(inventoryParent);
         obj.transform.localScale = new Vector3(1, 1, 1);
+        obj.transform.localPosition = Vector3.zero;
     } 
     
     private void PrintTupleListContents(List<(Item, int)> list, ItemType itemType) {
@@ -54,5 +55,11 @@ public class CompactInventory : MonoBehaviour {
             print(itemType.ToString()+ " found: " + tuple.Item1 + ", with quantity " + tuple.Item2);
         if (list.Count == 0) 
             print("No " + itemType.ToString() + " found in inventory");
+    }
+
+    public void ClearAllItemDisplay() {
+        foreach (Transform t in inventoryParent) {
+            GameObject.Destroy(t.gameObject);
+        }
     }
 }

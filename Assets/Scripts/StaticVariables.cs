@@ -45,4 +45,18 @@ public class StaticVariables
     static public void PlayAnimation(string animationName, float transitionDuration = 0.2f) {
         playerAnimator.CrossFadeInFixedTime(animationName, transitionDuration);
     }
+
+    /*
+    static public void DisplayItemInsideParentRectTransform(Item item, RectTransform parent) {
+        //add the object 3d model
+        //create the 3d model instance and position it correctly
+        GameObject newModel = GameObject.Instantiate(item.model, parent);
+        newModel.transform.localPosition = Vector3.zero;
+        itemDetails.SetLayerRecursively(newModel, 5); //assumes UI layer is #5
+        newModel.transform.localScale = newModel.transform.localScale * item.modelScale;
+        newModel.transform.Rotate(item.modelRotation);
+        //set the position of the 3d model. position offset is scaled down to 20% of the offset used in the item details screen
+        //parent.localPosition = new Vector3(originalModelParentPos.x + (item.modelPosition.x * .2f), originalModelParentPos.y + (item.modelPosition.y * .2f), itemModelParent.localPosition.z);
+    }
+    */
 }

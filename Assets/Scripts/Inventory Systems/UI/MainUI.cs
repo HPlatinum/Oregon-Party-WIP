@@ -40,7 +40,7 @@ public class MainUI : MonoBehaviour {
             addItemDisplay.SetActive(false);
     }
 
-    private void HideUI() {
+    public void HideUI() {
         foreach (Transform t in transform)
             t.gameObject.SetActive(false);
     }

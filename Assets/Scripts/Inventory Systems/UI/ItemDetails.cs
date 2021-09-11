@@ -5,24 +5,23 @@ using UnityEngine.UI;
 
 public class ItemDetails : MonoBehaviour { 
     private Item item;
-    public float rotationSpeed = 50f;
     private Vector2 originalModelParentPos;
     private enum ItemAction { Equip, Eat, Unequip };
     private ItemAction mainAction;
     private InteractionManager interactScript;
 
     //gameobject references
-    private Transform itemModelParent;
     private Text descriptionText;
     private Text nameText;
     private Text mainActionText;
     private PauseMenu pauseMenu;
     private GameObject quantityGO;
     private Text quantityText;
+    private DisplayItem displayItem;
 
     void Start(){
         //declare the gameobject references
-        itemModelParent = transform.Find("Item Model").Find("Object Parent");
+        displayItem = transform.Find("Item Model").Find("Display Item").GetComponent<DisplayItem>();
         descriptionText = transform.Find("Description").Find("Text").GetComponent<Text>();
         nameText = transform.Find("Name").Find("Text").GetComponent<Text>();
         mainActionText = transform.Find("Main Action").Find("Text").GetComponent<Text>();
@@ -31,15 +30,12 @@ public class ItemDetails : MonoBehaviour {
         quantityGO = transform.Find("Quantity").gameObject;
         quantityText = quantityGO.transform.Find("Text").GetComponent<Text>();
 
-        //set the starting position of the 3d model UI element
-        originalModelParentPos = new Vector2(itemModelParent.localPosition.x, itemModelParent.localPosition.y);
-
         //hide the item details popup
         ShowContents(false);
     }
 
     private void Update() {
-        itemModelParent.Rotate(0, (rotationSpeed * Time.unscaledDeltaTime), 0);
+        //itemModelParent.Rotate(0, (rotationSpeed * Time.unscaledDeltaTime), 0);
     }
 
     private void ShowContents(bool show) {
@@ -56,13 +52,8 @@ public class ItemDetails : MonoBehaviour {
         //set variables
         this.item = item;
 
-        //create the 3d model instance and position it correctly
-        GameObject newModel = GameObject.Instantiate(item.model, itemModelParent);
-        newModel.transform.localPosition = Vector3.zero;
-        SetLayerRecursively(newModel, 5); //assumes UI layer is #5
-        newModel.transform.localScale = newModel.transform.localScale * item.modelScale;
-        newModel.transform.Rotate(item.modelRotation);
-        itemModelParent.localPosition = new Vector3 (originalModelParentPos.x + item.modelPosition.x, originalModelParentPos.y + item.modelPosition.y, itemModelParent.localPosition.z);
+        displayItem.AddItemAsChild(item);
+        displayItem.shouldRotate = true;
 
         //add the description text
         descriptionText.text = item.description;
@@ -95,8 +86,9 @@ public class ItemDetails : MonoBehaviour {
         ShowContents(false);
 
         //clear the UI elements
-        foreach (Transform t in itemModelParent)
-            GameObject.Destroy(t.gameObject);
+        displayItem.ClearDisplay();
+        //foreach (Transform t in itemModelParent)
+        //    GameObject.Destroy(t.gameObject);
         descriptionText.text = "";
         nameText.text = "";
 
@@ -105,20 +97,6 @@ public class ItemDetails : MonoBehaviour {
 
         //show the pause menu UI again
         pauseMenu.ShowMenu(true);
-    }
-
-    private void SetLayerRecursively(GameObject obj, int newLayer) {
-        //sets the object and all children to be in the specified layer
-        if (obj == null) {
-            return;
-        }
-        obj.layer = newLayer;
-        foreach (Transform child in obj.transform) {
-            if (child == null) {
-                continue;
-            }
-            SetLayerRecursively(child.gameObject, newLayer);
-        }
     }
 
     public  void Trash() {
