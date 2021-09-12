@@ -45,11 +45,13 @@ public class Inventory : ScriptableObject
         AddItemToNewSlot(item, pickedUpItemQuantity);
     }
     
-    public bool CanAddItemToInventory() {
-        if(!IsInventoryFull()) {
+    public bool CanAddItemToInventory(Item item, int quantity) {
+        if(!IsInventoryFull())
             return true;
-        }
-        //todo, check to see if a provided item can fit in an already-occupied slot
+        //check if the item can fit in a partially-filled slot
+        int preexistingQuant = GetQuantityOfSpecificItem(item);
+        if ((preexistingQuant + quantity) <= item.stackLimit)
+            return true;
         return false;
     }
 
@@ -161,8 +163,7 @@ public class Inventory : ScriptableObject
         if (diff > 0)
             AddItemToInventory(item, diff);
     }
-
-
+    
     private void RemoveAllOfItem(Item item) {
         List<InventorySlot> newSlots = new List<InventorySlot>();
         foreach (InventorySlot slot in inventorySlots) {

@@ -28,6 +28,7 @@ public class InteractionManager : MonoBehaviour {
     //misc
     public Inventory inventory;
     public bool removeItemWhenFinishedWithInteraction = true;
+    private bool doNotPickupAfterAnimation = false;
 
     void Start() {
         StaticVariables.playerInventory = inventory;
@@ -127,7 +128,11 @@ public class InteractionManager : MonoBehaviour {
 
     private void ProcessInteractAnimationEnding() {
         SetVariablesOnInteractAnimationEnd();
-
+        if (doNotPickupAfterAnimation) {
+            doNotPickupAfterAnimation = false;
+            return;
+        }
+            
         //pass along the function call to the current minigame
         if (StaticVariables.currentMinigame != null)
             StaticVariables.currentMinigame.ProcessInteractAnimationEnding();
@@ -178,21 +183,22 @@ public class InteractionManager : MonoBehaviour {
     
     private bool CanPlayerInteractWithCurrentInteractable() {
         Interactable.InteractTypes type = closestInteractable.interactType;
+        Item item = closestInteractable.item;
         if (type == Interactable.InteractTypes.Pickup) {
-            if (inventory.CanAddItemToInventory()) { //check if the player can carry the new item
+            if (inventory.CanAddItemToInventory(item, 1)) { //check if the player can carry the new item
                 return true;
             }
         }
         else if (type == Interactable.InteractTypes.Fishing) {
             if (StaticVariables.playerInventory.GetQuantityOfSpecificItem(closestInteractable.requiredItem) > 0) { //check for required item (probably will be fishing rod)
-                if (inventory.CanAddItemToInventory()) { //check if the player can carry the new item
+                if (inventory.CanAddItemToInventory(item, 1)) { //check if the player can carry the new item
                     return true;
                 }
             }
         }
         else if (type == Interactable.InteractTypes.Woodcutting) {
             if (StaticVariables.playerInventory.GetQuantityOfSpecificItem(closestInteractable.requiredItem) > 0) { //check for required item (probably will be fishing rod)
-                if (inventory.CanAddItemToInventory()) { //check if the player can carry the new item
+                if (inventory.CanAddItemToInventory(item, 1)) { //check if the player can carry the new item
                     return true;
                 }
             }
@@ -277,6 +283,7 @@ public class InteractionManager : MonoBehaviour {
         else if (!CanPlayerInteractWithCurrentInteractable()) {
             print("you cannot perform the " + closestInteractable.interactType.ToString() + " action");
             StaticVariables.SetupPlayerInteractionWithHighlightedObject();
+            doNotPickupAfterAnimation = true;
             StaticVariables.PlayAnimation("Shrugging");
             return;
         }
