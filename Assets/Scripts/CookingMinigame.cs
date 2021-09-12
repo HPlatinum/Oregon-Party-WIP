@@ -122,27 +122,24 @@ public class CookingMinigame : Minigame {
         cookItemName.text = item.name;
         cookItemQuantity.text = quantity + " in full Inventory";
 
-        displayItem.AddItemAsChild(item, 0.8f);
+        displayItem.AddItemAsChild(item, 1.2f);
         displayItem.shouldRotate = true;
 
     }
     
     public void CookAllOfItem() {
-        print("cooking all copies of " + cookableItem.name + " from your inventory");
         ReplaceRawItemWithCooked(cookableItem, cookableItemTotalQuantity);
         QuitCookingUI();
 
     }
 
     public void CookAllOfEverything() {
-        print("cooking every cookable item in your inventory");
         foreach ((Item, int) tuple in allRawFood)
             ReplaceRawItemWithCooked(tuple.Item1, tuple.Item2);
         QuitSelectionUI();
     }
 
     public void CookXOfItem() {
-        print("cooking " + cookAmount + " of " + cookableItem.name + " from your inventory");
         ReplaceRawItemWithCooked(cookableItem, cookAmount);
         QuitCookingUI();
     }
@@ -185,30 +182,23 @@ public class CookingMinigame : Minigame {
 
     private void ReplaceRawItemWithCooked(Item item, int quantity) {
         Item newItem = ((RawFood)item).cookedVariant;
-        print("turning " + quantity + " " + item.name + " into " + newItem.name);
         Inventory inventory = StaticVariables.playerInventory;
         inventory.RemoveItemFromInventory(item, quantity);
         inventory.AddItemToInventory(newItem, quantity);
+
+        //todo do something with the cooking tier?
     }
 
     private bool DoesPlayerHaveEnoughRoomToCook(int quantity) {
         int maxStackSize = cookableItem.stackLimit;
         int partialStackSize = cookableItemTotalQuantity % maxStackSize;
-        if (quantity == maxStackSize) {
-            print("quantity is max size");
+        if (quantity == maxStackSize)
             return true;
-        }
         //otherwise, there is 1 stack that is partially full
-        if (quantity == partialStackSize) {
-            print("quantity is partial size");
+        if (quantity == partialStackSize)
             return true;
-        }
-            
-        if (!StaticVariables.playerInventory.IsInventoryFull()) {
-            print("full");
+        if (!StaticVariables.playerInventory.IsInventoryFull())
             return true;
-        }
-            
         return false;
     }
 
@@ -218,8 +208,6 @@ public class CookingMinigame : Minigame {
             if (DoesPlayerHaveEnoughRoomToCook(i))
                 allowedQuantities.Add(i);
         }
-        foreach (int i in allowedQuantities)
-            print(i);
         return allowedQuantities;
     }
 

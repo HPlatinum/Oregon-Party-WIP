@@ -15,23 +15,24 @@ public class DisplayItem : MonoBehaviour {
     }
 
     public void AddItemAsChild(Item item, float scale = -1) {
+        if (scale <= 0)
+            scale = 1;
         SetTransform(scale);
         GameObject newModel = GameObject.Instantiate(item.model, transform);
         SetLayerRecursively(newModel, 5); //assumes UI layer is #5
-        SetModelTransform(newModel.transform, item);
+        SetModelTransform(newModel.transform, item, scale);
     }
 
     private void SetTransform(float scale) {
-        if (scale != -1)
-            transform.localScale = Vector3.one * scale; //scale based on the container's scaling requirements
+        transform.localScale = Vector3.one * scale; //scale based on the container's scaling requirements
         transform.localPosition = new Vector3(0, 0, -500); //prevent clipping througn UI elements
     }
 
-    private void SetModelTransform(Transform transform, Item item) {
+    private void SetModelTransform(Transform transform, Item item, float scale) {
         transform.localPosition = Vector3.zero;
         transform.localScale = transform.localScale * item.modelScale; //scale based on the item's scaling requirements
         transform.Rotate(item.modelRotation);
-        transform.localPosition = new Vector3(item.modelPosition.x, item.modelPosition.y, 0);
+        transform.localPosition = new Vector3(item.modelPosition.x, item.modelPosition.y, 0) * scale;
     }
 
     private void SetLayerRecursively(GameObject obj, int newLayer) {
