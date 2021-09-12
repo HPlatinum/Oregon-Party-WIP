@@ -17,6 +17,16 @@ public class CookingMinigame : Minigame {
     private Text cookItemName;
     private Text cookItemQuantity;
 
+    private int cookAmount = 1;
+    private Item cookableItem;
+    private int cookableItemTotalQuantity = -1;
+
+    private Text cookAmountText;
+
+    List<(Item, int)> allRawFood;
+
+    List<int> allowedCookableQuantities;
+
 
     #region Inherited Functions
 
@@ -45,6 +55,8 @@ public class CookingMinigame : Minigame {
 
         cookItemName = cookInterface.Find("Name").Find("Text").GetComponent<Text>();
         cookItemQuantity = cookInterface.Find("Quantity").Find("Text").GetComponent<Text>();
+
+        cookAmountText = cookInterface.Find("Cook X").Find("Text").GetComponent<Text>();
     }
 
     private void DisplayRawFoodFromInventory() {
@@ -55,10 +67,14 @@ public class CookingMinigame : Minigame {
 
         compactInventory.SetupValues(onClick, inventoryTitle);
         compactInventory.ClearAllItemDisplay();
-        compactInventory.DisplayAllItemsOfTypeFromInventory(itemType, inventory);
+        allRawFood = compactInventory.DisplayAllItemsOfTypeFromInventory(itemType, inventory);
     }
 
     public void ClickedRawFood(Item item, int quantity) {
+        cookableItem = item;
+        cookableItemTotalQuantity = quantity;
+        allowedCookableQuantities = GetQuantitiesThatPlayerEnoughRoomToCook();
+        SetCurrentCookQuantityToMinAllowed();
         ShowCookingUI(item, quantity);
     }
 
@@ -80,6 +96,7 @@ public class CookingMinigame : Minigame {
         StaticVariables.mainUI.HideUI();
 
         DisplayItemInCookingInterface(item, quantity);
+        DisplayCookAmount();
     }
 
     private void HideAllUI() {
@@ -95,8 +112,11 @@ public class CookingMinigame : Minigame {
 
     public void QuitCookingUI() {
         ShowSelectionUI();
+        cookableItem = null;
+        cookableItemTotalQuantity = -1;
+        allowedCookableQuantities = null;
     }
-
+    
     private void DisplayItemInCookingInterface(Item item, int quantity) {
 
         cookItemName.text = item.name;
@@ -106,15 +126,105 @@ public class CookingMinigame : Minigame {
         displayItem.shouldRotate = true;
 
     }
-
-
+    
     public void CookAllOfItem() {
-        print("cooking all copies of the item from your inventory");
+        print("cooking all copies of " + cookableItem.name + " from your inventory");
+        ReplaceRawItemWithCooked(cookableItem, cookableItemTotalQuantity);
+        QuitCookingUI();
 
     }
 
     public void CookAllOfEverything() {
         print("cooking every cookable item in your inventory");
+        foreach ((Item, int) tuple in allRawFood)
+            ReplaceRawItemWithCooked(tuple.Item1, tuple.Item2);
+        QuitSelectionUI();
+    }
+
+    public void CookXOfItem() {
+        print("cooking " + cookAmount + " of " + cookableItem.name + " from your inventory");
+        ReplaceRawItemWithCooked(cookableItem, cookAmount);
+        QuitCookingUI();
+    }
+
+    public void AddCookAmount() {
+        CalculateNextHigherCookAmount();
+        DisplayCookAmount();
+    }
+
+    private void CalculateNextHigherCookAmount() {
+        int currentAmount = cookAmount;
+        while (true) {
+            cookAmount++;
+            if (allowedCookableQuantities.Contains(cookAmount))
+                return;
+            if (cookAmount > cookableItemTotalQuantity)
+                cookAmount = currentAmount; return;
+        }
+    }
+
+    public void SubtractCookAmount() {
+        CalculateNextLowerCookAmount();
+        DisplayCookAmount();
+    }
+
+    private void CalculateNextLowerCookAmount() {
+        int currentAmount = cookAmount;
+        while (true) {
+            cookAmount--;
+            if (allowedCookableQuantities.Contains(cookAmount))
+                return;
+            if (cookAmount == 0)
+                cookAmount = currentAmount; return;
+        }
+    }
+
+    private void DisplayCookAmount() {
+        cookAmountText.text = "Cook " + cookAmount;
+    }
+
+    private void ReplaceRawItemWithCooked(Item item, int quantity) {
+        Item newItem = ((RawFood)item).cookedVariant;
+        print("turning " + quantity + " " + item.name + " into " + newItem.name);
+        Inventory inventory = StaticVariables.playerInventory;
+        inventory.RemoveItemFromInventory(item, quantity);
+        inventory.AddItemToInventory(newItem, quantity);
+    }
+
+    private bool DoesPlayerHaveEnoughRoomToCook(int quantity) {
+        int maxStackSize = cookableItem.stackLimit;
+        int partialStackSize = cookableItemTotalQuantity % maxStackSize;
+        if (quantity == maxStackSize) {
+            print("quantity is max size");
+            return true;
+        }
+        //otherwise, there is 1 stack that is partially full
+        if (quantity == partialStackSize) {
+            print("quantity is partial size");
+            return true;
+        }
+            
+        if (!StaticVariables.playerInventory.IsInventoryFull()) {
+            print("full");
+            return true;
+        }
+            
+        return false;
+    }
+
+    private List<int> GetQuantitiesThatPlayerEnoughRoomToCook() {
+        List<int> allowedQuantities = new List<int>();
+        for (int i = 1; i<cookableItemTotalQuantity + 1; i++) {
+            if (DoesPlayerHaveEnoughRoomToCook(i))
+                allowedQuantities.Add(i);
+        }
+        foreach (int i in allowedQuantities)
+            print(i);
+        return allowedQuantities;
+    }
+
+    private void SetCurrentCookQuantityToMinAllowed() {
+        cookAmount = allowedCookableQuantities[0];
     }
 
 }

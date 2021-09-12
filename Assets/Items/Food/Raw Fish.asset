@@ -15,7 +15,9 @@ MonoBehaviour:
   name: Raw Fish
   type: 8
   defaultItem: 0
-  description: It's a dead fish. You should cook this before you take a bite.
+  description: 'It''s a dead fish
+
+    Probably not safe to eat, but you can try.'
   stackLimit: 10
   model: {fileID: 6277289769389393030, guid: 2925f2ed5b723a144a2a4e54ea841733, type: 3}
   modelScale: 3.68
@@ -25,4 +27,4 @@ MonoBehaviour:
   inHandRotation: {x: 0, y: 0, z: 0}
   inHandScale: 1
   useRightHand: 0
-  CookedVariant: {fileID: 11400000, guid: 27f3ac5b590540f458389f9cbb3cff57, type: 2}
+  cookedVariant: {fileID: 11400000, guid: 27f3ac5b590540f458389f9cbb3cff57, type: 2}

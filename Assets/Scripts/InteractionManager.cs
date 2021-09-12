@@ -172,7 +172,7 @@ public class InteractionManager : MonoBehaviour {
 
     // clears inventory and inventory weight on application quit
     private void OnApplicationQuit() {
-        inventory.inventorySlot.Clear();
+        inventory.inventorySlots.Clear();
         
     }
     

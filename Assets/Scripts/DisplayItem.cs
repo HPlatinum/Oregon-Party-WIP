@@ -10,9 +10,8 @@ public class DisplayItem : MonoBehaviour {
     public bool shouldRotate = false;
 
     private void Update() {
-        if (shouldRotate) {
+        if (shouldRotate) 
             transform.Rotate(0, (rotationSpeed * Time.unscaledDeltaTime), 0);
-        }
     }
 
     public void AddItemAsChild(Item item, float scale = -1) {
@@ -33,19 +32,16 @@ public class DisplayItem : MonoBehaviour {
         transform.localScale = transform.localScale * item.modelScale; //scale based on the item's scaling requirements
         transform.Rotate(item.modelRotation);
         transform.localPosition = new Vector3(item.modelPosition.x, item.modelPosition.y, 0);
-
     }
 
     private void SetLayerRecursively(GameObject obj, int newLayer) {
         //sets the object and all children to be in the specified layer
-        if (obj == null) {
+        if (obj == null) 
             return;
-        }
         obj.layer = newLayer;
         foreach (Transform child in obj.transform) {
-            if (child == null) {
+            if (child == null)
                 continue;
-            }
             SetLayerRecursively(child.gameObject, newLayer);
         }
     }
@@ -55,6 +51,4 @@ public class DisplayItem : MonoBehaviour {
         foreach (Transform t in transform)
             GameObject.Destroy(t.gameObject);
     }
-
-
 }

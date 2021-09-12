@@ -24,8 +24,8 @@ public class InventoryUI : MonoBehaviour
     void UpdateUI() {
         for(int i = 0; i < slotsUI.Length; i++) {
             InventorySlotUI slotUI = slotsUI[i];
-            if( i < inventory.inventorySlot.Count) {
-                InventorySlot slot = inventory.inventorySlot[i];
+            if( i < inventory.inventorySlots.Count) {
+                InventorySlot slot = inventory.inventorySlots[i];
                 if (ShouldUpdateSlotUIItem(slotUI, slot)){
                     slotUI.ClearSlot(); // clear item and remove old game object
                     slotUI.AddItemToInventorySlot(slot.item); // add new item

@@ -25,7 +25,7 @@ public class CompactInventory : MonoBehaviour {
         titleText.text = inventoryTitle;
     }
 
-    public void DisplayAllItemsOfTypeFromInventory(ItemType itemType, Inventory inventory) {
+    public List<(Item, int)> DisplayAllItemsOfTypeFromInventory(ItemType itemType, Inventory inventory) {
         List<(Item, int)> itemData = inventory.GetListOfItemsWithType(itemType);
         //PrintTupleListContents(itemData, itemType);
 
@@ -42,6 +42,8 @@ public class CompactInventory : MonoBehaviour {
             s.DisplayItemQuantity(quantity);
             s.clickEffect = onClick;
         }
+
+        return itemData;
     }
 
     private void SetupInstanceTransform(GameObject obj) {
