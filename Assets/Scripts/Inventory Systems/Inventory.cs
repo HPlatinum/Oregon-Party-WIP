@@ -46,12 +46,18 @@ public class Inventory : ScriptableObject
     }
     
     public bool CanAddItemToInventory(Item item, int quantity) {
+        //do you have open inventory space?
         if(!IsInventoryFull())
             return true;
-        //check if the item can fit in a partially-filled slot
+        //do you have an unfilled stack?
         int preexistingQuant = GetQuantityOfSpecificItem(item);
-        if ((preexistingQuant + quantity) <= item.stackLimit)
+        int partialStackQuant = preexistingQuant % item.stackLimit;
+        if (partialStackQuant == 0)
+            return false;
+        //is there enough room in the unfilled stack to hold the new amount?
+        if ((partialStackQuant + quantity) <= item.stackLimit)
             return true;
+        //otherwise you dont got no room sun
         return false;
     }
 
