@@ -10,6 +10,8 @@ public class Interactable : MonoBehaviour
     public Item requiredItem; //only allow interaction if the required item is in the inventory
     public Inventory inventory;
     // public GameObject interactableUI;
+    public int requiredHits;
+    public int hitCount;
 
     public bool destroyParentAlso = false;
 

@@ -21,6 +21,7 @@ public class StaticVariables
     static public Inventory playerInventory;
     static public CookingMinigame cookingMinigame;
     static public ItemDetails itemDetails;
+    static public Woodcutting woodcutting;
 
     static public void SetInteractButtonText(string newText) {
         interactButtonText.text = newText;

@@ -99,7 +99,7 @@ public class InteractionManager : MonoBehaviour {
             interactablesInRange.Remove(interactable);
     }
 
-    private Interactable GetClosestInteractable() {
+    public Interactable GetClosestInteractable() {
         if (interactablesInRange.Count == 0)
             return null;
         if (interactablesInRange.Count == 1)
@@ -183,6 +183,7 @@ public class InteractionManager : MonoBehaviour {
     
     private bool CanPlayerInteractWithCurrentInteractable() {
         Interactable.InteractTypes type = closestInteractable.interactType;
+        
         Item item = closestInteractable.item;
         if (type == Interactable.InteractTypes.Pickup) {
             if (inventory.CanAddItemToInventory(item, 1)) { //check if the player can carry the new item
@@ -298,8 +299,9 @@ public class InteractionManager : MonoBehaviour {
             return;
         }
         else if (closestInteractable.interactType == Interactable.InteractTypes.Woodcutting) {
-            // StaticVariables.SetupPlayerInteractionWithHighlightedObject(); Movement is locked even after interaction. Need to investigate once I can add to mesh
+            StaticVariables.SetupPlayerInteractionWithHighlightedObject();
             StaticVariables.PlayAnimation("Swinging", 1);
+            StaticVariables.WaitTimeThenCallFunction(.6f,StaticVariables.woodcutting.EnableBlade);
             return;
         }
         else if (closestInteractable.interactType == Interactable.InteractTypes.CookingTier1) {
