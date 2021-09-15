@@ -89,7 +89,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c54a4c6ce2af0448bbc076286be58c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  treeParticles: {fileID: 8131410960344199209}
+  particleEffect: {fileID: 8131410960344199209}
   blade: {fileID: 370840265360192185}
 --- !u!1 &3602409199396436946
 GameObject:
@@ -207,6 +207,8 @@ MonoBehaviour:
   item: {fileID: 11400000, guid: 6461446679dfdab4183f9ed0b6b2573c, type: 2}
   requiredItem: {fileID: 0}
   inventory: {fileID: 0}
+  hitsRequiredToGatherResource: 0
+  hitsCurrentlyAppliedToResource: 0
   destroyParentAlso: 0
 --- !u!1001 &8243597288846386069
 PrefabInstance:

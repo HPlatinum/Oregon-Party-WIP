@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class Interactable : MonoBehaviour
 {
-    public enum InteractTypes { Pickup, Fishing, Chest, CookingTier1, CookingTier2, Woodcutting };
+    public enum InteractTypes { Pickup, Fishing, Chest, CookingTier1, CookingTier2, Woodcutting, Mining };
     public InteractTypes interactType;
     public Item item;
     public Item requiredItem; //only allow interaction if the required item is in the inventory
     public Inventory inventory;
     // public GameObject interactableUI;
-    public int requiredHits;
-    public int hitCount;
+    public int hitsRequiredToGatherResource;
+    public int hitsCurrentlyAppliedToResource;
 
     public bool destroyParentAlso = false;
 

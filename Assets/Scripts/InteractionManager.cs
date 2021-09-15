@@ -24,6 +24,7 @@ public class InteractionManager : MonoBehaviour {
     [Header("Tools")]
     public Item fishingRod;
     public Item woodAxe;
+    public Item pickaxe;
 
     //misc
     public Inventory inventory;
@@ -204,6 +205,13 @@ public class InteractionManager : MonoBehaviour {
                 }
             }
         }
+        else if (type == Interactable.InteractTypes.Mining) {
+            if (StaticVariables.playerInventory.GetQuantityOfSpecificItem(closestInteractable.requiredItem) > 0) { //check for required item (probably will be fishing rod)
+                if (inventory.CanAddItemToInventory(item, 1)) { //check if the player can carry the new item
+                    return true;
+                }
+            }
+        }
         else if (type == Interactable.InteractTypes.CookingTier1) {
             //check if the player has any Raw Food in their inventory? or not if we want non-cooking actions supported
             return true;
@@ -300,12 +308,18 @@ public class InteractionManager : MonoBehaviour {
         }
         else if (closestInteractable.interactType == Interactable.InteractTypes.Woodcutting) {
             StaticVariables.SetupPlayerInteractionWithHighlightedObject();
-            StaticVariables.PlayAnimation("Swinging", 1);
-            StaticVariables.WaitTimeThenCallFunction(.6f,StaticVariables.woodcutting.EnableBlade);
+            StaticVariables.PlayAnimation("Swing Axe", 1);
+            StaticVariables.WaitTimeThenCallFunction(.6f,StaticVariables.toolResourceCollection.EnableBlade);
             return;
         }
         else if (closestInteractable.interactType == Interactable.InteractTypes.CookingTier1) {
             OpenCookingInterface(1);
+            return;
+        }
+        else if (closestInteractable.interactType == Interactable.InteractTypes.Mining) {
+            StaticVariables.SetupPlayerInteractionWithHighlightedObject();
+            StaticVariables.PlayAnimation("Swing Pickaxe", 1);
+            StaticVariables.WaitTimeThenCallFunction(.6f,StaticVariables.toolResourceCollection.EnableBlade);
             return;
         }
         else if (closestInteractable.interactType == Interactable.InteractTypes.CookingTier2) {
