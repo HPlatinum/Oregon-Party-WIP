@@ -5,8 +5,8 @@ using UnityEngine;
 public class InteractionManager : MonoBehaviour {
 
     //nearby objects that the player can interact with
-    private Interactable closestInteractable = null; //null means no object is within interact range
-    private List<Interactable> interactablesInRange = new List<Interactable>();
+    public Interactable closestInteractable = null; //null means no object is within interact range
+    [SerializeField] private List<Interactable> interactablesInRange = new List<Interactable>();
 
     //tracking the item in the player's hand
     public GameObject objectInHand;

@@ -32,8 +32,8 @@ public class ToolResourceCollection : MonoBehaviour
     }
 
     private void CountInteractSubjectHits() {
-        StaticVariables.interactScript.GetClosestInteractable().hitsCurrentlyAppliedToResource += 1;
-        if(StaticVariables.interactScript.GetClosestInteractable().hitsCurrentlyAppliedToResource > StaticVariables.interactScript.GetClosestInteractable().hitsRequiredToGatherResource) {
+        StaticVariables.interactScript.closestInteractable.hitsCurrentlyAppliedToResource ++;
+        if(StaticVariables.interactScript.closestInteractable.hitsCurrentlyAppliedToResource >= StaticVariables.interactScript.closestInteractable.hitsRequiredToGatherResource) {
             StaticVariables.interactScript.AddCurrentInteractableItemToInventory();
             StaticVariables.interactScript.DestroyCurrentInteractable();
         }
