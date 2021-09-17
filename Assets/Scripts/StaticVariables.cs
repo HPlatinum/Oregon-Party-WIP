@@ -18,13 +18,15 @@ public class StaticVariables
     static public MainUI mainUI;
     static public Inventory playerInventory;
     static public ItemDetails itemDetails;
-    static public ToolResourceCollection toolResourceCollection;
+    static public ToolResourceCollectionHandler toolResourceCollection;
 
     //interaction handlers
     static public InteractionHandler currentInteractionHandler;
     static public FishingHandler fishingHandler;
     static public CookingHandler cookingHandler;
     static public PickupHandler pickupHandler;
+    static public WoodcuttingHandler woodcuttingHandler;
+    static public MiningHandler miningHandler;
 
     static public void SetInteractButtonText(string newText) {
         interactButtonText.text = newText;

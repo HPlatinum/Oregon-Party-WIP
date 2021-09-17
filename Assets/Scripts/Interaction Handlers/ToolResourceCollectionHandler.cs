@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class ToolResourceCollection : MonoBehaviour
+public class ToolResourceCollectionHandler : InteractionHandler
 {
     [SerializeField] public ParticleSystem particleEffect;
     [SerializeField] public GameObject blade;
     // Start is called before the first frame update
     void Start()
     {
-        StaticVariables.toolResourceCollection = blade.GetComponent<ToolResourceCollection>();
+        StaticVariables.toolResourceCollection = blade.GetComponent<ToolResourceCollectionHandler>();
         blade.GetComponent<CapsuleCollider>().enabled = false;
     }
 
@@ -18,6 +18,10 @@ public class ToolResourceCollection : MonoBehaviour
         particleEffect.Play();
         DisableBlade();
         CountInteractSubjectHits();
+        if(StaticVariables.interactScript.closestInteractable.hitsCurrentlyAppliedToResource == StaticVariables.interactScript.closestInteractable.hitsRequiredToGatherResource) {
+            StaticVariables.interactScript.DestroyCurrentInteractable();
+            StaticVariables.interactScript.AddCurrentInteractableItemToInventory();
+        }
     }
 
      private void OnTriggerExit(Collider obj) {
@@ -33,9 +37,5 @@ public class ToolResourceCollection : MonoBehaviour
 
     private void CountInteractSubjectHits() {
         StaticVariables.interactScript.closestInteractable.hitsCurrentlyAppliedToResource ++;
-        if(StaticVariables.interactScript.closestInteractable.hitsCurrentlyAppliedToResource >= StaticVariables.interactScript.closestInteractable.hitsRequiredToGatherResource) {
-            StaticVariables.interactScript.AddCurrentInteractableItemToInventory();
-            StaticVariables.interactScript.DestroyCurrentInteractable();
-        }
     }
 }

@@ -192,22 +192,10 @@ public class InteractionManager : MonoBehaviour {
             return StaticVariables.cookingHandler.CanPlayerInteractWithObject(closestInteractable);
         else if (type == Interactable.InteractTypes.CookingTier2)
             return StaticVariables.cookingHandler.CanPlayerInteractWithObject(closestInteractable);
-
-        else if (type == Interactable.InteractTypes.Woodcutting) {
-            if (StaticVariables.playerInventory.GetQuantityOfSpecificItem(closestInteractable.requiredItem) > 0) { //check for required item (probably will be fishing rod)
-                if (inventory.CanAddItemToInventory(item, 1)) { //check if the player can carry the new item
-                    return true;
-                }
-            }
-        }
-        else if (type == Interactable.InteractTypes.Mining) {
-            if (StaticVariables.playerInventory.GetQuantityOfSpecificItem(closestInteractable.requiredItem) > 0) { //check for required item (probably will be fishing rod)
-                if (inventory.CanAddItemToInventory(item, 1)) { //check if the player can carry the new item
-                    return true;
-                }
-            }
-        }
-
+        else if (type == Interactable.InteractTypes.Woodcutting)
+            return StaticVariables.woodcuttingHandler.CanPlayerInteractWithObject(closestInteractable);
+        else if (type == Interactable.InteractTypes.Mining)
+            return StaticVariables.miningHandler.CanPlayerInteractWithObject(closestInteractable);
         else
             print("the interaction type" + closestInteractable.interactType.ToString() + " does not have an interact option!");
         return false;
@@ -223,6 +211,10 @@ public class InteractionManager : MonoBehaviour {
                 return StaticVariables.cookingHandler;
             case (Interactable.InteractTypes.Pickup):
                 return StaticVariables.pickupHandler;
+            case (Interactable.InteractTypes.Woodcutting):
+                return StaticVariables.woodcuttingHandler;
+            case (Interactable.InteractTypes.Mining):
+                return StaticVariables.miningHandler;
         }
         return null;
     }
@@ -319,15 +311,13 @@ public class InteractionManager : MonoBehaviour {
         }
 
         else if (closestInteractable.interactType == Interactable.InteractTypes.Woodcutting) {
-            StaticVariables.SetupPlayerInteractionWithHighlightedObject();
-            StaticVariables.PlayAnimation("Swing Axe", 1);
-            StaticVariables.WaitTimeThenCallFunction(.6f,StaticVariables.toolResourceCollection.EnableBlade);
+            StaticVariables.currentInteractionHandler = StaticVariables.woodcuttingHandler;
+            StaticVariables.currentInteractionHandler.ProcessInteractAction();
             return;
         }
         else if (closestInteractable.interactType == Interactable.InteractTypes.Mining) {
-            StaticVariables.SetupPlayerInteractionWithHighlightedObject();
-            StaticVariables.PlayAnimation("Swing Pickaxe", 1);
-            StaticVariables.WaitTimeThenCallFunction(.6f,StaticVariables.toolResourceCollection.EnableBlade);
+            StaticVariables.currentInteractionHandler = StaticVariables.miningHandler;
+            StaticVariables.currentInteractionHandler.ProcessInteractAction();
             return;
         }
     }
