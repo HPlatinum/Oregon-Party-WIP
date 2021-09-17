@@ -75,7 +75,7 @@ public class InventorySlotUI : MonoBehaviour {
             return;
         }
         if (clickEffect == OnClickEffect.CookingInterface) {
-            StaticVariables.cookingMinigame.ClickedRawFood(item, quantity);
+            StaticVariables.cookingHandler.ClickedRawFood(item, quantity);
             return;
         }
     }

@@ -6,7 +6,10 @@ using UnityEngine;
 public class Tool : Item {
     [Header("Item Stats")]
     public double wear;
+    public enum ToolTypes { rod, axe, pickaxe, firelighter }
+    public ToolTypes toolType;
     public void Awake(){
         type = ItemType.Tool;
+
     }
 }

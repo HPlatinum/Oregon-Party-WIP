@@ -11,17 +11,20 @@ public class StaticVariables
 
     static public InteractionManager interactScript;
     static public Invector.vCharacterController.vThirdPersonController controller;
-    static public Minigame currentMinigame;
     static public Animator playerAnimator;
-    static public FishingMinigame fishingMinigame;
     static public Essentials essentials;
     static public Text interactButtonText;
     static public Transform tweenDummy;
     static public MainUI mainUI;
     static public Inventory playerInventory;
-    static public CookingMinigame cookingMinigame;
     static public ItemDetails itemDetails;
     static public ToolResourceCollection toolResourceCollection;
+
+    //interaction handlers
+    static public InteractionHandler currentInteractionHandler;
+    static public FishingHandler fishingHandler;
+    static public CookingHandler cookingHandler;
+    static public PickupHandler pickupHandler;
 
     static public void SetInteractButtonText(string newText) {
         interactButtonText.text = newText;
@@ -46,18 +49,4 @@ public class StaticVariables
     static public void PlayAnimation(string animationName, float transitionDuration = 0.2f) {
         playerAnimator.CrossFadeInFixedTime(animationName, transitionDuration);
     }
-
-    /*
-    static public void DisplayItemInsideParentRectTransform(Item item, RectTransform parent) {
-        //add the object 3d model
-        //create the 3d model instance and position it correctly
-        GameObject newModel = GameObject.Instantiate(item.model, parent);
-        newModel.transform.localPosition = Vector3.zero;
-        itemDetails.SetLayerRecursively(newModel, 5); //assumes UI layer is #5
-        newModel.transform.localScale = newModel.transform.localScale * item.modelScale;
-        newModel.transform.Rotate(item.modelRotation);
-        //set the position of the 3d model. position offset is scaled down to 20% of the offset used in the item details screen
-        //parent.localPosition = new Vector3(originalModelParentPos.x + (item.modelPosition.x * .2f), originalModelParentPos.y + (item.modelPosition.y * .2f), itemModelParent.localPosition.z);
-    }
-    */
 }

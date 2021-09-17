@@ -4,7 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
 
-public class CookingMinigame : Minigame {
+public class CookingHandler : InteractionHandler {
 
     public int cookingTier = 0;
     private CompactInventory compactInventory;
@@ -31,11 +31,16 @@ public class CookingMinigame : Minigame {
     #region Inherited Functions
 
     public override void ProcessInteractAction() {
-
+        SetCookingTier();
+        ShowSelectionUI();
     }
 
     public override void ProcessInteractAnimationEnding() {
 
+    }
+
+    public override bool CanPlayerInteractWithObject(Interactable interactable) {
+        return true;
     }
 
     #endregion
@@ -108,6 +113,7 @@ public class CookingMinigame : Minigame {
     public void QuitSelectionUI() {
         HideAllUI();
         StaticVariables.mainUI.ShowUI();
+        StaticVariables.currentInteractionHandler = null;
     }
 
     public void QuitCookingUI() {
@@ -215,4 +221,12 @@ public class CookingMinigame : Minigame {
         cookAmount = allowedCookableQuantities[0];
     }
 
+    private void SetCookingTier() {
+        Interactable.InteractTypes type = StaticVariables.interactScript.closestInteractable.interactType;
+        cookingTier = 0;
+        if (type == Interactable.InteractTypes.CookingTier1)
+            cookingTier = 1;
+        if (type == Interactable.InteractTypes.CookingTier2)
+            cookingTier = 2;
+    }
 }

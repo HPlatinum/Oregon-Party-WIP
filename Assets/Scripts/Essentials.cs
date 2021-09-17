@@ -14,7 +14,7 @@ public class Essentials : MonoBehaviour{
         StaticVariables.playerAnimator = FindObjectOfType<Invector.vCharacterController.vThirdPersonController>().GetComponent<Animator>();
         StaticVariables.controller = FindObjectOfType<Invector.vCharacterController.vThirdPersonController>();
         StaticVariables.interactScript = FindObjectOfType<InteractionManager>();
-        StaticVariables.currentMinigame = null;
+        StaticVariables.currentInteractionHandler = null;
         StaticVariables.tweenDummy = transform.Find("Empty Tween Dummy - For Delaying Function Calls");
 
         //UI elements        
@@ -22,9 +22,10 @@ public class Essentials : MonoBehaviour{
         StaticVariables.mainUI = canvas.Find("Main UI").GetComponent<MainUI>(); StaticVariables.interactButtonText = StaticVariables.mainUI.transform.Find("Interact").Find("Text").GetComponent<Text>();
 
 
-        //minigames
-        StaticVariables.cookingMinigame = canvas.Find("Cooking Interface").GetComponent<CookingMinigame>();
-        StaticVariables.fishingMinigame = canvas.Find("Fishing Popup").GetComponent<FishingMinigame>();
+        //interaction handlers
+        StaticVariables.cookingHandler = canvas.Find("Cooking Interface").GetComponent<CookingHandler>();
+        StaticVariables.fishingHandler = canvas.Find("Fishing Interface").GetComponent<FishingHandler>();
+        StaticVariables.pickupHandler = canvas.Find("Pickup Interface").GetComponent<PickupHandler>();
 
         //turn on all UI elements
         //they usually hide themselves on startup, after setting local variables

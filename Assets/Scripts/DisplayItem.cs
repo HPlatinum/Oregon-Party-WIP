@@ -32,7 +32,7 @@ public class DisplayItem : MonoBehaviour {
         transform.localPosition = Vector3.zero;
         transform.localScale = transform.localScale * item.modelScale; //scale based on the item's scaling requirements
         transform.Rotate(item.modelRotation);
-        transform.localPosition = new Vector3(item.modelPosition.x, item.modelPosition.y, 0) * scale;
+        transform.localPosition = new Vector3(item.modelPosition.x, item.modelPosition.y, 0);
     }
 
     private void SetLayerRecursively(GameObject obj, int newLayer) {

@@ -135,14 +135,9 @@ public class InteractionManager : MonoBehaviour {
         }
             
         //pass along the function call to the current minigame
-        if (StaticVariables.currentMinigame != null)
-            StaticVariables.currentMinigame.ProcessInteractAnimationEnding();
+        if (StaticVariables.currentInteractionHandler != null)
+            StaticVariables.currentInteractionHandler.ProcessInteractAnimationEnding();
 
-        //handle interactions that do not have their own minigame
-        else if (closestInteractable.interactType == Interactable.InteractTypes.Pickup) {
-            AddCurrentInteractableItemToInventory();
-            DestroyCurrentInteractable();
-        }
         //else if (closestInteractable.interactType == Interactable.InteractTypes.Chest)
         //    OpenChest();
     }
@@ -186,18 +181,18 @@ public class InteractionManager : MonoBehaviour {
         Interactable.InteractTypes type = closestInteractable.interactType;
         
         Item item = closestInteractable.item;
-        if (type == Interactable.InteractTypes.Pickup) {
-            if (inventory.CanAddItemToInventory(item, 1)) { //check if the player can carry the new item
-                return true;
-            }
-        }
-        else if (type == Interactable.InteractTypes.Fishing) {
-            if (StaticVariables.playerInventory.GetQuantityOfSpecificItem(closestInteractable.requiredItem) > 0) { //check for required item (probably will be fishing rod)
-                if (inventory.CanAddItemToInventory(item, 1)) { //check if the player can carry the new item
-                    return true;
-                }
-            }
-        }
+        //after all of the different handlers process their own interact conditions, we can just do
+        //return GetInteractionHandlerForInteractable().CanPlayerInteractWithObject(closestInteractable);
+
+        if (type == Interactable.InteractTypes.Pickup) 
+            return StaticVariables.pickupHandler.CanPlayerInteractWithObject(closestInteractable);
+        else if (type == Interactable.InteractTypes.Fishing) 
+            return StaticVariables.fishingHandler.CanPlayerInteractWithObject(closestInteractable);
+        else if (type == Interactable.InteractTypes.CookingTier1)
+            return StaticVariables.cookingHandler.CanPlayerInteractWithObject(closestInteractable);
+        else if (type == Interactable.InteractTypes.CookingTier2)
+            return StaticVariables.cookingHandler.CanPlayerInteractWithObject(closestInteractable);
+
         else if (type == Interactable.InteractTypes.Woodcutting) {
             if (StaticVariables.playerInventory.GetQuantityOfSpecificItem(closestInteractable.requiredItem) > 0) { //check for required item (probably will be fishing rod)
                 if (inventory.CanAddItemToInventory(item, 1)) { //check if the player can carry the new item
@@ -212,23 +207,24 @@ public class InteractionManager : MonoBehaviour {
                 }
             }
         }
-        else if (type == Interactable.InteractTypes.CookingTier1) {
-            //check if the player has any Raw Food in their inventory? or not if we want non-cooking actions supported
-            return true;
-        }
-        else if (type == Interactable.InteractTypes.CookingTier2) {
-            //check if the player has any Raw Food in their inventory? or not if we want non-cooking actions supported
-            return true;
-        }
+
         else
             print("the interaction type" + closestInteractable.interactType.ToString() + " does not have an interact option!");
         return false;
     }
-
-    private void OpenCookingInterface(int tier) {
-        StaticVariables.cookingMinigame.cookingTier = tier;
-        StaticVariables.cookingMinigame.ShowSelectionUI();
-        
+    
+    private InteractionHandler GetInteractionHandlerForInteractable(Interactable interactable) {
+        switch (interactable.interactType){
+            case (Interactable.InteractTypes.Fishing):
+                    return StaticVariables.fishingHandler;
+            case (Interactable.InteractTypes.CookingTier1):
+                return StaticVariables.cookingHandler;
+            case (Interactable.InteractTypes.CookingTier2):
+                return StaticVariables.cookingHandler;
+            case (Interactable.InteractTypes.Pickup):
+                return StaticVariables.pickupHandler;
+        }
+        return null;
     }
 
     public void PutItemInPlayerHand(Item item, bool useRightHand) {
@@ -250,6 +246,7 @@ public class InteractionManager : MonoBehaviour {
     }
 
     private void TurnOffCollidersOnObject(GameObject go) {
+        //move to StaticVariables?
         CapsuleCollider cc = go.GetComponent<CapsuleCollider>();
         SphereCollider sc = go.GetComponent<SphereCollider>();
         BoxCollider bc = go.GetComponent<BoxCollider>();
@@ -283,8 +280,8 @@ public class InteractionManager : MonoBehaviour {
     }
 
     public void StartInteractionWithCurrentInteractable() {
-        if (StaticVariables.currentMinigame != null) {
-            PassInteractToCurrentMinigame();
+        if (StaticVariables.currentInteractionHandler != null) {
+            PassInteractionToCurrentHandler();
             return;
         }
         else if (closestInteractable == null)
@@ -296,24 +293,35 @@ public class InteractionManager : MonoBehaviour {
             StaticVariables.PlayAnimation("Shrugging");
             return;
         }
+        //after all the different handlers process their own setup conditions, we can just do
+        // StaticVariables.currentInteractionHandler = GetInteractionHandlerForInteractable();
+        // StaticVariables.currentInteractionHandler.ProcessInteractAction();
+
         else if (closestInteractable.interactType == Interactable.InteractTypes.Pickup) {
-            StaticVariables.SetupPlayerInteractionWithHighlightedObject();
-            StaticVariables.PlayAnimation("Lifting");
+            StaticVariables.currentInteractionHandler = StaticVariables.pickupHandler;
+            StaticVariables.currentInteractionHandler.ProcessInteractAction();
             return;
         }
         else if (closestInteractable.interactType == Interactable.InteractTypes.Fishing) {
-            StaticVariables.currentMinigame = StaticVariables.fishingMinigame;
-            StaticVariables.currentMinigame.ProcessInteractAction();
+            StaticVariables.currentInteractionHandler = StaticVariables.fishingHandler;
+            StaticVariables.currentInteractionHandler.ProcessInteractAction();
             return;
         }
+        else if (closestInteractable.interactType == Interactable.InteractTypes.CookingTier1) {
+            StaticVariables.currentInteractionHandler = StaticVariables.cookingHandler;
+            StaticVariables.currentInteractionHandler.ProcessInteractAction();
+            return;
+        }
+        else if (closestInteractable.interactType == Interactable.InteractTypes.CookingTier2) {
+            StaticVariables.currentInteractionHandler = StaticVariables.cookingHandler;
+            StaticVariables.currentInteractionHandler.ProcessInteractAction();
+            return;
+        }
+
         else if (closestInteractable.interactType == Interactable.InteractTypes.Woodcutting) {
             StaticVariables.SetupPlayerInteractionWithHighlightedObject();
             StaticVariables.PlayAnimation("Swing Axe", 1);
             StaticVariables.WaitTimeThenCallFunction(.6f,StaticVariables.toolResourceCollection.EnableBlade);
-            return;
-        }
-        else if (closestInteractable.interactType == Interactable.InteractTypes.CookingTier1) {
-            OpenCookingInterface(1);
             return;
         }
         else if (closestInteractable.interactType == Interactable.InteractTypes.Mining) {
@@ -322,15 +330,11 @@ public class InteractionManager : MonoBehaviour {
             StaticVariables.WaitTimeThenCallFunction(.6f,StaticVariables.toolResourceCollection.EnableBlade);
             return;
         }
-        else if (closestInteractable.interactType == Interactable.InteractTypes.CookingTier2) {
-            OpenCookingInterface(2);
-            return;
-        }
     }
 
-    private void PassInteractToCurrentMinigame() {
-        if (StaticVariables.currentMinigame != null) 
-            StaticVariables.currentMinigame.ProcessInteractAction();
+    private void PassInteractionToCurrentHandler() {
+        if (StaticVariables.currentInteractionHandler != null) 
+            StaticVariables.currentInteractionHandler.ProcessInteractAction();
     }
 
     private void PreparePlayerForInteraction() {

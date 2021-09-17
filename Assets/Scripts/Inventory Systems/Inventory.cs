@@ -186,6 +186,22 @@ public class Inventory : ScriptableObject
         onItemChangedCallback.Invoke();
     }
 
+    public bool DoesInventoryContainToolWithType(Tool.ToolTypes toolType) {
+        if (GetFirstToolWithType(toolType) != null)
+            return true;
+        return false;
+    }
+
+    public Item GetFirstToolWithType(Tool.ToolTypes toolType) {
+        foreach (InventorySlot slot in inventorySlots) {
+            if (slot.item.type == ItemType.Tool) {
+                if (((Tool)slot.item).toolType == toolType)
+                    return slot.item;
+            }
+        }
+
+        return null;
+    }
 }
 
 [System.Serializable]

@@ -4,7 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
 
-public class FishingMinigame : Minigame {
+public class FishingHandler : InteractionHandler {
 
     //fish and fish position references
     private Transform fish1;
@@ -76,9 +76,20 @@ public class FishingMinigame : Minigame {
         if (StaticVariables.interactScript.removeItemWhenFinishedWithInteraction)
             StaticVariables.interactScript.RemoveItemFromHand();
 
-        StaticVariables.currentMinigame = null;
+        StaticVariables.currentInteractionHandler = null;
         StaticVariables.interactScript.DestroyCurrentInteractable();
     }
+
+    public override bool CanPlayerInteractWithObject(Interactable interactable) {
+        if (StaticVariables.playerInventory.DoesInventoryContainToolWithType(Tool.ToolTypes.rod)) {
+            if (StaticVariables.playerInventory.CanAddItemToInventory(interactable.item, 1)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
     #endregion
 
