@@ -8,10 +8,8 @@ public class WoodcuttingHandler : ToolHandler
 
     public override void ProcessInteractAction() {
         // //put the fishing rod in the hand
-        StaticVariables.interactScript.removeItemWhenFinishedWithInteraction = true;
-        if (StaticVariables.interactScript.itemInHand == StaticVariables.interactScript.axe)
-            StaticVariables.interactScript.removeItemWhenFinishedWithInteraction = false; //if the player already has the fishing rod in their hand, do not remove it at the end of the fishing minigame
-        StaticVariables.interactScript.PutItemInPlayerHand(StaticVariables.interactScript.axe, StaticVariables.interactScript.axe.useRightHand);
+        StaticVariables.interactScript.SetPreviousItemInHand();
+        StaticVariables.interactScript.PutFirstToolOfTypeInHand(Tool.ToolTypes.pickaxe);
 
         AssignLocalVariables();
         StaticVariables.SetupPlayerInteractionWithHighlightedObject();
@@ -19,8 +17,7 @@ public class WoodcuttingHandler : ToolHandler
         StaticVariables.WaitTimeThenCallFunction(.6f, blade.EnableBlade);
     }
 
-    public override void ProcessInteractAnimationEnding(){
-        StaticVariables.currentInteractionHandler = null;
+    public override void ProcessInteractAnimationEnding() {
     }
 
     public override bool CanPlayerInteractWithObject(Interactable interactable) {

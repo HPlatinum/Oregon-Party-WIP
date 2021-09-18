@@ -5,8 +5,7 @@ using UnityEngine;
 public class ToolHandler : InteractionHandler
 {
     public BladeInteraction blade;
-
-    #region Inherited Functions
+    
     public override void ProcessBladeHittingObject(ParticleSystem particleEffect) {
         particleEffect.Play();
         CountInteractSubjectHits();
@@ -15,7 +14,6 @@ public class ToolHandler : InteractionHandler
             StaticVariables.interactScript.AddCurrentInteractableItemToInventory();
         }
     }
-    #endregion
 
     private void CountInteractSubjectHits() {
         StaticVariables.interactScript.closestInteractable.hitsCurrentlyAppliedToResource ++;

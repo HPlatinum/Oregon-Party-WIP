@@ -1462,18 +1462,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df477d129c6a6904b90919810379cf60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactSubject: {fileID: 0}
-  inventory: {fileID: 11400000, guid: 2bc05075b34179940bb487cba622012c, type: 2}
-  objectsInRange: []
+  closestInteractable: {fileID: 0}
+  interactablesInRange: []
+  objectInHand: {fileID: 0}
+  itemInHand: {fileID: 0}
   currentlyInteracting: 0
   rightHand: {fileID: 8147239266399355231}
   leftHand: {fileID: 8353189296552790741}
-  objectInHand: {fileID: 0}
-  itemInHand: {fileID: 0}
-  removeItemWhenFinished: 1
   fishingRod: {fileID: 11400000, guid: b2f757954ad222f458fff8100c5aefd6, type: 2}
-  isInteracting: 0
-  interactAnimationStarted: 0
+  axe: {fileID: 11400000, guid: 6461446679dfdab4183f9ed0b6b2573c, type: 2}
+  pickaxe: {fileID: 11400000, guid: 1cd2e219a6c320a4685478842a25dfb2, type: 2}
+  inventory: {fileID: 11400000, guid: 2bc05075b34179940bb487cba622012c, type: 2}
+  removeItemWhenFinishedWithInteraction: 1
 --- !u!1 &8560800492045140676
 GameObject:
   m_ObjectHideFlags: 0

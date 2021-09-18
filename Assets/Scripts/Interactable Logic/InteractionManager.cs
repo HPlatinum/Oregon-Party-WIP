@@ -11,6 +11,7 @@ public class InteractionManager : MonoBehaviour {
     //tracking the item in the player's hand
     public GameObject objectInHand;
     public Item itemInHand;
+    public Item itemInHandBeforeInteraction = null;
 
     //interaction state trackers
     public bool currentlyInteracting = false;
@@ -20,15 +21,8 @@ public class InteractionManager : MonoBehaviour {
     public Transform rightHand;
     public Transform leftHand;
 
-    //holdable items
-    [Header("Tools")]
-    public Item fishingRod;
-    public Item axe;
-    public Item pickaxe;
-
     //misc
     public Inventory inventory;
-    public bool removeItemWhenFinishedWithInteraction = true;
     private bool doNotPickupAfterAnimation = false;
 
     void Start() {
@@ -179,9 +173,6 @@ public class InteractionManager : MonoBehaviour {
     
     private bool CanPlayerInteractWithCurrentInteractable() {
         Interactable.InteractTypes type = closestInteractable.interactType;
-        
-        Item item = closestInteractable.item;
-        //after all of the different handlers process their own interact conditions, we can just do
         return GetInteractionHandlerForClosestInteractable().CanPlayerInteractWithObject(closestInteractable);
     }
     
@@ -207,14 +198,14 @@ public class InteractionManager : MonoBehaviour {
         return GetInteractionHandlerForInteractable(closestInteractable);
     }
 
-    public void PutItemInPlayerHand(Item item, bool useRightHand) {
+    public void PutItemInPlayerHand(Item item) {
         //only allow one object in the hand at a time
         if (objectInHand != null)
             RemoveItemFromHand();
 
         //use the correct hand
         Transform hand = leftHand;
-        if (useRightHand) hand = rightHand;
+        if (item.useRightHand) hand = rightHand;
 
         GameObject newObj = InstantiatePrefabAsChild(item.model, hand, item);
         RotateObjectToFitInHand(newObj, hand, item);
@@ -273,7 +264,7 @@ public class InteractionManager : MonoBehaviour {
             StaticVariables.PlayAnimation("Shrugging");
             return;
         }
-        //after all the different handlers process their own setup conditions, we can just do
+        
         StaticVariables.currentInteractionHandler = GetInteractionHandlerForClosestInteractable();
         StaticVariables.currentInteractionHandler.ProcessInteractAction();
     }
@@ -322,4 +313,30 @@ public class InteractionManager : MonoBehaviour {
         return false;
     }
 
+    public bool IsToolTypeInPlayerHand(Tool.ToolTypes type) {
+        if (itemInHand != null) {
+            if (itemInHand.type == ItemType.Tool) {
+                if (((Tool)itemInHand).toolType == type)
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public void SetPreviousItemInHand() {
+        itemInHandBeforeInteraction = itemInHand;
+    }
+
+    public void PutFirstToolOfTypeInHand(Tool.ToolTypes type) {
+        Item item = StaticVariables.playerInventory.GetFirstToolWithType(type);
+        PutItemInPlayerHand(item);
+    }
+
+    public void PutPreviousItemBackInHand() {
+        RemoveItemFromHand();
+        if (itemInHandBeforeInteraction != null) {
+            PutItemInPlayerHand(itemInHandBeforeInteraction);
+            itemInHandBeforeInteraction = null;
+        }
+    }
 } 

@@ -61,11 +61,9 @@ public class FishingHandler : InteractionHandler {
             //set interactscript values
             StaticVariables.interactScript.currentlyInteracting = true;
 
-            //put the fishing rod in the hand
-            StaticVariables.interactScript.removeItemWhenFinishedWithInteraction = true;
-            if (StaticVariables.interactScript.itemInHand == StaticVariables.interactScript.fishingRod)
-                StaticVariables.interactScript.removeItemWhenFinishedWithInteraction = false; //if the player already has the fishing rod in their hand, do not remove it at the end of the fishing minigame
-            StaticVariables.interactScript.PutItemInPlayerHand(StaticVariables.interactScript.fishingRod, false);
+            StaticVariables.interactScript.SetPreviousItemInHand();
+            StaticVariables.interactScript.PutFirstToolOfTypeInHand(Tool.ToolTypes.rod);
+
         }
     }
 
@@ -73,8 +71,7 @@ public class FishingHandler : InteractionHandler {
         if (playerGotFish)
             StaticVariables.interactScript.AddCurrentInteractableItemToInventory();
 
-        if (StaticVariables.interactScript.removeItemWhenFinishedWithInteraction)
-            StaticVariables.interactScript.RemoveItemFromHand();
+        StaticVariables.interactScript.PutPreviousItemBackInHand();
 
         StaticVariables.currentInteractionHandler = null;
         StaticVariables.interactScript.DestroyCurrentInteractable();
@@ -88,8 +85,6 @@ public class FishingHandler : InteractionHandler {
         }
         return false;
     }
-
-
 
     #endregion
 
@@ -271,4 +266,6 @@ public class FishingHandler : InteractionHandler {
         playerReeled = false;
         playerGotFish = false;
     }
+    
+
 }
