@@ -26,5 +26,9 @@ public abstract class InteractionHandler : MonoBehaviour {
         return false;
     }
 
+    public virtual void ProcessBladeHittingObject(ParticleSystem particleEffect) {
+        print("Hit uninteractable object with blade");
+    }
+
     
 }

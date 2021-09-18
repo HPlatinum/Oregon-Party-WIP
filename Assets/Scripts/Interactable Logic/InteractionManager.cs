@@ -23,7 +23,7 @@ public class InteractionManager : MonoBehaviour {
     //holdable items
     [Header("Tools")]
     public Item fishingRod;
-    public Item woodAxe;
+    public Item axe;
     public Item pickaxe;
 
     //misc
@@ -182,23 +182,7 @@ public class InteractionManager : MonoBehaviour {
         
         Item item = closestInteractable.item;
         //after all of the different handlers process their own interact conditions, we can just do
-        //return GetInteractionHandlerForInteractable().CanPlayerInteractWithObject(closestInteractable);
-
-        if (type == Interactable.InteractTypes.Pickup) 
-            return StaticVariables.pickupHandler.CanPlayerInteractWithObject(closestInteractable);
-        else if (type == Interactable.InteractTypes.Fishing) 
-            return StaticVariables.fishingHandler.CanPlayerInteractWithObject(closestInteractable);
-        else if (type == Interactable.InteractTypes.CookingTier1)
-            return StaticVariables.cookingHandler.CanPlayerInteractWithObject(closestInteractable);
-        else if (type == Interactable.InteractTypes.CookingTier2)
-            return StaticVariables.cookingHandler.CanPlayerInteractWithObject(closestInteractable);
-        else if (type == Interactable.InteractTypes.Woodcutting)
-            return StaticVariables.woodcuttingHandler.CanPlayerInteractWithObject(closestInteractable);
-        else if (type == Interactable.InteractTypes.Mining)
-            return StaticVariables.miningHandler.CanPlayerInteractWithObject(closestInteractable);
-        else
-            print("the interaction type" + closestInteractable.interactType.ToString() + " does not have an interact option!");
-        return false;
+        return GetInteractionHandlerForClosestInteractable().CanPlayerInteractWithObject(closestInteractable);
     }
     
     private InteractionHandler GetInteractionHandlerForInteractable(Interactable interactable) {
@@ -217,6 +201,10 @@ public class InteractionManager : MonoBehaviour {
                 return StaticVariables.miningHandler;
         }
         return null;
+    }
+
+    public InteractionHandler GetInteractionHandlerForClosestInteractable() {
+        return GetInteractionHandlerForInteractable(closestInteractable);
     }
 
     public void PutItemInPlayerHand(Item item, bool useRightHand) {
@@ -286,40 +274,8 @@ public class InteractionManager : MonoBehaviour {
             return;
         }
         //after all the different handlers process their own setup conditions, we can just do
-        // StaticVariables.currentInteractionHandler = GetInteractionHandlerForInteractable();
-        // StaticVariables.currentInteractionHandler.ProcessInteractAction();
-
-        else if (closestInteractable.interactType == Interactable.InteractTypes.Pickup) {
-            StaticVariables.currentInteractionHandler = StaticVariables.pickupHandler;
-            StaticVariables.currentInteractionHandler.ProcessInteractAction();
-            return;
-        }
-        else if (closestInteractable.interactType == Interactable.InteractTypes.Fishing) {
-            StaticVariables.currentInteractionHandler = StaticVariables.fishingHandler;
-            StaticVariables.currentInteractionHandler.ProcessInteractAction();
-            return;
-        }
-        else if (closestInteractable.interactType == Interactable.InteractTypes.CookingTier1) {
-            StaticVariables.currentInteractionHandler = StaticVariables.cookingHandler;
-            StaticVariables.currentInteractionHandler.ProcessInteractAction();
-            return;
-        }
-        else if (closestInteractable.interactType == Interactable.InteractTypes.CookingTier2) {
-            StaticVariables.currentInteractionHandler = StaticVariables.cookingHandler;
-            StaticVariables.currentInteractionHandler.ProcessInteractAction();
-            return;
-        }
-
-        else if (closestInteractable.interactType == Interactable.InteractTypes.Woodcutting) {
-            StaticVariables.currentInteractionHandler = StaticVariables.woodcuttingHandler;
-            StaticVariables.currentInteractionHandler.ProcessInteractAction();
-            return;
-        }
-        else if (closestInteractable.interactType == Interactable.InteractTypes.Mining) {
-            StaticVariables.currentInteractionHandler = StaticVariables.miningHandler;
-            StaticVariables.currentInteractionHandler.ProcessInteractAction();
-            return;
-        }
+        StaticVariables.currentInteractionHandler = GetInteractionHandlerForClosestInteractable();
+        StaticVariables.currentInteractionHandler.ProcessInteractAction();
     }
 
     private void PassInteractionToCurrentHandler() {

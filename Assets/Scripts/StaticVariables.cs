@@ -18,7 +18,7 @@ public class StaticVariables
     static public MainUI mainUI;
     static public Inventory playerInventory;
     static public ItemDetails itemDetails;
-    static public ToolResourceCollectionHandler toolResourceCollection;
+    static public ToolHandler ToolHandler;
 
     //interaction handlers
     static public InteractionHandler currentInteractionHandler;
