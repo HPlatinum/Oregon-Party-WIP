@@ -26,13 +26,21 @@ public class CookingHandler : InteractionHandler {
     List<(Item, int)> allRawFood;
 
     List<int> allowedCookableQuantities;
+    
+    private Transform cookingObject;
 
 
     #region Inherited Functions
 
     public override void ProcessInteractAction() {
-        SetCookingTier();
-        ShowSelectionUI();
+        SetCookingInteractable();
+        if (!IsCookingObjectLit()) {
+            LightFire();
+        }
+        else {
+            SetCookingTier();
+            ShowSelectionUI();
+        }
     }
 
     public override void ProcessInteractAnimationEnding() {
@@ -62,6 +70,19 @@ public class CookingHandler : InteractionHandler {
         cookItemQuantity = cookInterface.Find("Quantity").Find("Text").GetComponent<Text>();
 
         cookAmountText = cookInterface.Find("Cook X").Find("Text").GetComponent<Text>();
+    }
+
+    private void SetCookingInteractable() {
+        cookingObject = StaticVariables.interactScript.closestInteractable.transform;
+    }
+
+    private bool IsCookingObjectLit() {
+        return cookingObject.Find("Campfire Wood").gameObject.activeSelf;
+    }
+
+    private void LightFire() {
+        cookingObject.Find("Campfire Wood").gameObject.SetActive(true);
+        cookingObject.parent.Find("Campfire Flame").gameObject.SetActive(true);
     }
 
     private void DisplayRawFoodFromInventory() {
