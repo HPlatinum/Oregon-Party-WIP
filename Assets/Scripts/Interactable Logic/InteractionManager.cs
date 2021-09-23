@@ -150,12 +150,15 @@ public class InteractionManager : MonoBehaviour {
     }
 
     public void DestroyCurrentInteractable() {
-        interactablesInRange.Remove(closestInteractable);
-        if (closestInteractable.destroyParentAlso)
-            closestInteractable.transform.parent.gameObject.AddComponent<AnimatedObjectRemoval>();
+        Interactable i = closestInteractable;
+        closestInteractable = null;
+        interactablesInRange.Remove(i);
+        if (i.destroyParentAlso)
+            i.transform.parent.gameObject.AddComponent<AnimatedObjectRemoval>();
         //Destroy(closestInteractable.transform.parent.gameObject);
         else
-            closestInteractable.gameObject.AddComponent<AnimatedObjectRemoval>();
+            i.gameObject.AddComponent<AnimatedObjectRemoval>();
+        Destroy(i);
         //Destroy(closestInteractable.gameObject);
     }
 

@@ -7,14 +7,17 @@ public class MiningHandler : ToolHandler
     #region Inherited Functions
 
     public override void ProcessInteractAction() {
-        // //put the fishing rod in the hand
-        StaticVariables.interactScript.SetPreviousItemInHand();
-        StaticVariables.interactScript.PutFirstToolOfTypeInHand(Tool.ToolTypes.pickaxe);
+        if (!StaticVariables.interactScript.currentlyInteracting) {
+            StaticVariables.interactScript.SetPreviousItemInHand();
+            StaticVariables.interactScript.PutFirstToolOfTypeInHand(Tool.ToolTypes.pickaxe);
 
-        AssignLocalVariables();
-        StaticVariables.SetupPlayerInteractionWithHighlightedObject();
-        StaticVariables.PlayAnimation("Swing Pickaxe", 1);
-        StaticVariables.WaitTimeThenCallFunction(.6f, blade.EnableBlade);
+            AssignLocalVariables();
+            StaticVariables.SetupPlayerInteractionWithHighlightedObject();
+            StaticVariables.interactScript.currentlyInteracting = true;
+            StaticVariables.PlayAnimation("Swing Pickaxe", 1);
+            StaticVariables.WaitTimeThenCallFunction(.6f, blade.EnableBlade);
+
+        }
     }
 
     public override void ProcessInteractAnimationEnding() {

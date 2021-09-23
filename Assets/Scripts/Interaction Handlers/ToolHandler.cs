@@ -10,8 +10,8 @@ public class ToolHandler : InteractionHandler
         particleEffect.Play();
         CountInteractSubjectHits();
         if(StaticVariables.interactScript.closestInteractable.hitsCurrentlyAppliedToResource == StaticVariables.interactScript.closestInteractable.hitsRequiredToGatherResource) {
-            StaticVariables.interactScript.DestroyCurrentInteractable();
             StaticVariables.interactScript.AddCurrentInteractableItemToInventory();
+            StaticVariables.interactScript.DestroyCurrentInteractable();
         }
     }
 

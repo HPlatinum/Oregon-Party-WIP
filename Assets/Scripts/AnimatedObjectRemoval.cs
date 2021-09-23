@@ -12,7 +12,7 @@ public class AnimatedObjectRemoval : MonoBehaviour {
     }
 
     private void StartSquash() {
-        transform.DOScale(new Vector3(transform.localScale.x * 1.2f, transform.localScale.y * 0.8f, transform.localScale.z * 1.2f), 0.2f).OnComplete(StartShrink);
+        transform.DOScale(CalculateNewScale(1.2f, 0.8f, 1.2f), 0.2f).OnComplete(StartShrink);
     }
 
     private void StartShrink() {
@@ -21,6 +21,10 @@ public class AnimatedObjectRemoval : MonoBehaviour {
 
     private void Remove() {
         Destroy(gameObject);
+    }
+
+    private Vector3 CalculateNewScale(float x, float y, float z) {
+        return new Vector3(transform.localScale.x * x, transform.localScale.y * y, transform.localScale.z * z);
     }
     
 }
