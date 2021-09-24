@@ -1466,14 +1466,12 @@ MonoBehaviour:
   interactablesInRange: []
   objectInHand: {fileID: 0}
   itemInHand: {fileID: 0}
+  itemInHandBeforeInteraction: {fileID: 0}
   currentlyInteracting: 0
   rightHand: {fileID: 8147239266399355231}
   leftHand: {fileID: 8353189296552790741}
-  fishingRod: {fileID: 11400000, guid: b2f757954ad222f458fff8100c5aefd6, type: 2}
-  axe: {fileID: 11400000, guid: 6461446679dfdab4183f9ed0b6b2573c, type: 2}
-  pickaxe: {fileID: 11400000, guid: 1cd2e219a6c320a4685478842a25dfb2, type: 2}
   inventory: {fileID: 11400000, guid: 2bc05075b34179940bb487cba622012c, type: 2}
-  removeItemWhenFinishedWithInteraction: 1
+  dustPrefab: {fileID: 8879458784740900748, guid: da0e17722e633ef40820e9fa6ef97a52, type: 3}
 --- !u!1 &8560800492045140676
 GameObject:
   m_ObjectHideFlags: 0

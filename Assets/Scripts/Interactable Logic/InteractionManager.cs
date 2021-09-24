@@ -25,6 +25,9 @@ public class InteractionManager : MonoBehaviour {
     public Inventory inventory;
     private bool doNotPickupAfterAnimation = false;
 
+
+    public GameObject dustPrefab;
+
     void Start() {
         StaticVariables.playerInventory = inventory;
     }
@@ -153,11 +156,12 @@ public class InteractionManager : MonoBehaviour {
         Interactable i = closestInteractable;
         closestInteractable = null;
         interactablesInRange.Remove(i);
+        UnhighlightInteractable(i);
         if (i.destroyParentAlso)
-            i.transform.parent.gameObject.AddComponent<AnimatedObjectRemoval>();
+            i.transform.parent.gameObject.AddComponent<AnimatedObjectRemoval>().dustPrefab = dustPrefab;
         //Destroy(closestInteractable.transform.parent.gameObject);
         else
-            i.gameObject.AddComponent<AnimatedObjectRemoval>();
+            i.gameObject.AddComponent<AnimatedObjectRemoval>().dustPrefab = dustPrefab;
         Destroy(i);
         //Destroy(closestInteractable.gameObject);
     }
@@ -177,6 +181,8 @@ public class InteractionManager : MonoBehaviour {
     }
     
     private bool CanPlayerInteractWithCurrentInteractable() {
+        if (closestInteractable == null)
+            return false;
         Interactable.InteractTypes type = closestInteractable.interactType;
         return GetInteractionHandlerForClosestInteractable().CanPlayerInteractWithObject(closestInteractable);
     }

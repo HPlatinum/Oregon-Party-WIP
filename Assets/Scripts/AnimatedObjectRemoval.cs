@@ -5,6 +5,8 @@ using DG.Tweening;
 
 public class AnimatedObjectRemoval : MonoBehaviour {
 
+    public GameObject dustPrefab;
+
     //as soon as this script is added to an object, animate it moving and then delete it
 
     private void Start() {
@@ -20,6 +22,10 @@ public class AnimatedObjectRemoval : MonoBehaviour {
     }
 
     private void Remove() {
+        GameObject dust = Instantiate(dustPrefab);
+        //dust.transform.SetParent(transform.parent);
+        dust.transform.position = transform.position; // positions object in hand
+
         Destroy(gameObject);
     }
 
