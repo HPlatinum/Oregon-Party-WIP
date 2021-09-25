@@ -139,7 +139,7 @@ public class InteractionManager : MonoBehaviour {
         //    OpenChest();
     }
 
-    private void SetVariablesOnInteractAnimationEnd() {
+    public void SetVariablesOnInteractAnimationEnd() {
         interactAnimationStarted = false;
         currentlyInteracting = false;
         StaticVariables.controller.lockMovement = false;

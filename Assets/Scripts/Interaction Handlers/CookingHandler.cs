@@ -27,24 +27,39 @@ public class CookingHandler : InteractionHandler {
 
     List<int> allowedCookableQuantities;
     
-    private Transform cookingObject;
+    private Transform interactableObject;
+    private GameObject flameObject;
+    private GameObject woodObject;
 
+    private bool showCookingUIWhenAnimatorIsIdle = false;
 
     #region Inherited Functions
 
     public override void ProcessInteractAction() {
-        SetCookingInteractable();
-        if (!IsCookingObjectLit()) {
-            LightFire();
-        }
-        else {
-            SetCookingTier();
-            ShowSelectionUI();
+        if (!StaticVariables.interactScript.currentlyInteracting) {
+            StaticVariables.SetupPlayerInteractionWithHighlightedObject();
+            StaticVariables.interactScript.currentlyInteracting = true;
+            SetCookingInteractable();
+            if (!IsCookingObjectLit()) {
+                LightFire();
+            }
+            else {
+                SetCookingTier();
+                StaticVariables.SetupPlayerInteractionWithHighlightedObject();
+                StaticVariables.PlayAnimation("Cooking - Down");
+                showCookingUIWhenAnimatorIsIdle = true;
+                
+
+
+                //StaticVariables.PlayAnimation("Kneel");
+                //SetCookingTier();
+                //ShowSelectionUI();
+            }
         }
     }
 
     public override void ProcessInteractAnimationEnding() {
-
+        StaticVariables.currentInteractionHandler = null;
     }
 
     public override bool CanPlayerInteractWithObject(Interactable interactable) {
@@ -58,7 +73,20 @@ public class CookingHandler : InteractionHandler {
         HideAllUI();
     }
 
-    private void AssignLocalVariables() {
+    private void Update() {
+        if (ShouldCookingUIBeShown()) {
+            ShowSelectionUI();
+            showCookingUIWhenAnimatorIsIdle = false;
+        }
+    }
+
+
+
+
+private bool ShouldCookingUIBeShown() {
+    return (showCookingUIWhenAnimatorIsIdle && StaticVariables.IsPlayerAnimatorInState("Cooking - Idle"));
+}
+private void AssignLocalVariables() {
         selectionInterface = transform.Find("Selection");
         cookInterface = transform.Find("Cook Item");
         background = transform.Find("Background").gameObject;
@@ -73,16 +101,32 @@ public class CookingHandler : InteractionHandler {
     }
 
     private void SetCookingInteractable() {
-        cookingObject = StaticVariables.interactScript.closestInteractable.transform;
+        interactableObject = StaticVariables.interactScript.closestInteractable.transform;
+
+        flameObject = interactableObject.parent.Find("Campfire Flame").gameObject;
+        woodObject = interactableObject.Find("Campfire Wood").gameObject;
     }
 
     private bool IsCookingObjectLit() {
-        return cookingObject.Find("Campfire Wood").gameObject.activeSelf;
+        return flameObject.activeSelf;
     }
 
     private void LightFire() {
-        cookingObject.Find("Campfire Wood").gameObject.SetActive(true);
-        cookingObject.parent.Find("Campfire Flame").gameObject.SetActive(true);
+        StaticVariables.PlayAnimation("Standing To Kneeling");
+        float timeUntilWoodAppears = 2.5f;
+        float timeUntilFireLights = .5f;
+
+        StaticVariables.WaitTimeThenCallFunction(timeUntilWoodAppears, ShowWood);
+        StaticVariables.WaitTimeThenCallFunction(timeUntilWoodAppears + timeUntilFireLights, ShowFlame);
+    }
+
+    private void ShowWood() {
+        woodObject.SetActive(true);
+        woodObject.AddComponent<AnimatedObjectAppearing>();
+    }
+
+    private void ShowFlame() {
+        flameObject.SetActive(true);
     }
 
     private void DisplayRawFoodFromInventory() {
@@ -135,6 +179,7 @@ public class CookingHandler : InteractionHandler {
         HideAllUI();
         StaticVariables.mainUI.ShowUI();
         StaticVariables.currentInteractionHandler = null;
+        StaticVariables.PlayAnimation("Cooking - Stand");
     }
 
     public void QuitCookingUI() {
