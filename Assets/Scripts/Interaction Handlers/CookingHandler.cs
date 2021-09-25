@@ -84,7 +84,7 @@ public class CookingHandler : InteractionHandler {
 
 
 private bool ShouldCookingUIBeShown() {
-    return (showCookingUIWhenAnimatorIsIdle && StaticVariables.IsPlayerAnimatorInState("Cooking - Idle"));
+    return (showCookingUIWhenAnimatorIsIdle && StaticVariables.IsPlayerAnimatorInState("Cooking - Idle Part 1"));
 }
 private void AssignLocalVariables() {
         selectionInterface = transform.Find("Selection");
