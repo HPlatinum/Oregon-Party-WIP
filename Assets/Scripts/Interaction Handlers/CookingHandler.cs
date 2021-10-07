@@ -33,6 +33,9 @@ public class CookingHandler : InteractionHandler {
 
     private bool showCookingUIWhenAnimatorIsIdle = false;
 
+    public Item requiredWoodItem;
+    private bool currentlyLightingFire = false;
+
     #region Inherited Functions
 
     public override void ProcessInteractAction() {
@@ -48,22 +51,24 @@ public class CookingHandler : InteractionHandler {
                 StaticVariables.SetupPlayerInteractionWithHighlightedObject();
                 StaticVariables.PlayAnimation("Cooking - Down");
                 showCookingUIWhenAnimatorIsIdle = true;
-                
-
-
-                //StaticVariables.PlayAnimation("Kneel");
-                //SetCookingTier();
-                //ShowSelectionUI();
             }
         }
     }
 
     public override void ProcessInteractAnimationEnding() {
+        if (currentlyLightingFire) {
+            currentlyLightingFire = false;
+            StaticVariables.playerInventory.RemoveItemFromInventory(requiredWoodItem, 1);
+        }
         StaticVariables.currentInteractionHandler = null;
     }
 
     public override bool CanPlayerInteractWithObject(Interactable interactable) {
-        return true;
+        SetCookingInteractable();
+        if (!IsCookingObjectLit())
+            return CanPlayerLightFire();
+        else
+            return true;
     }
 
     #endregion
@@ -80,7 +85,14 @@ public class CookingHandler : InteractionHandler {
         }
     }
 
-
+    private bool CanPlayerLightFire() {
+        if (StaticVariables.playerInventory.DoesInventoryContainToolWithType(Tool.ToolTypes.firelighter)) {
+            if (StaticVariables.playerInventory.GetQuantityOfSpecificItem(requiredWoodItem) > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
 private bool ShouldCookingUIBeShown() {
@@ -113,6 +125,8 @@ private void AssignLocalVariables() {
 
     private void LightFire() {
         StaticVariables.PlayAnimation("Standing To Kneeling");
+        currentlyLightingFire = true;
+
         float timeUntilWoodAppears = 2.5f;
         float timeUntilFireLights = .5f;
 

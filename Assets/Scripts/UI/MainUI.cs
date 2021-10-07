@@ -45,8 +45,11 @@ public class MainUI : MonoBehaviour {
             t.gameObject.SetActive(false);
     }
 
-    public void ShowItemBeingAdded(Item item, int quantity) {
-        addItemDisplayText.text = "+" + quantity + " " + item.name;
+    public void ShowItemQuantityChange(Item item, int quantity) {
+        if (quantity > 0)
+            addItemDisplayText.text = "+" + quantity + " " + item.name;
+        else
+            addItemDisplayText.text = "-" + (quantity * -1f) + " " + item.name;
 
         //fade out the text
         Color transparent = Color.black;
