@@ -51,4 +51,39 @@ public class StaticVariables
     static public void PlayAnimation(string animationName, float transitionDuration = 0.2f) {
         playerAnimator.CrossFadeInFixedTime(animationName, transitionDuration);
     }
+
+    static public IEnumerator AnimateChildObjectsAppearing(Transform transform) {
+        foreach (Transform t in transform) {
+            t.gameObject.AddComponent<AnimatedUIAppearing>();
+            t.gameObject.SetActive(true);
+        }
+
+        //delay the animation start for each child object
+        foreach (Transform t in transform) {
+            yield return new WaitForSeconds(0.1f);
+            t.gameObject.GetComponent<AnimatedUIAppearing>().StartGrowth();
+        }
+
+        //wait until the final child has finished animating
+        yield return new WaitForSeconds(transform.GetChild(transform.childCount - 1).GetComponent<AnimatedUIAppearing>().GetTotalAnimationTime());
+        yield return null;
+    }
+
+    static public IEnumerator AnimateChildObjectsDisappearing(Transform transform, bool SetParentInactiveAfterwards=false) {
+        foreach (Transform t in transform)
+            t.gameObject.AddComponent<AnimatedUIRemoval>();
+
+        //delay the animation start for each child object
+        foreach (Transform t in transform) {
+            yield return new WaitForSeconds(0.1f);
+            t.gameObject.GetComponent<AnimatedUIRemoval>().StartSquash();
+        }
+
+        //wait until the final child has finished animating
+        yield return new WaitForSeconds(transform.GetChild(transform.childCount - 1).GetComponent<AnimatedUIRemoval>().GetTotalAnimationTime());
+
+        if (SetParentInactiveAfterwards)
+            transform.gameObject.SetActive(false);
+        yield return null;
+    }
 }

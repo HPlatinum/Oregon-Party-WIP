@@ -73,14 +73,99 @@ public class CookingHandler : InteractionHandler {
 
     #endregion
 
+    #region Show/Hide UI Functions
+
+    private IEnumerator ShowSelectionUI() {
+
+        yield return StaticVariables.mainUI.HideUI2();
+        yield return HideAllUI();
+        background.SetActive(true);
+        selectionInterface.gameObject.SetActive(true);
+
+        yield return StaticVariables.AnimateChildObjectsAppearing(selectionInterface);
+
+        DisplayRawFoodFromInventory();
+
+        yield return null;
+    }
+
+    private IEnumerator ShowCookingUI(Item item, int quantity) {
+        yield return StaticVariables.mainUI.HideUI2();
+        yield return HideAllUI();
+        background.SetActive(true);
+        cookInterface.gameObject.SetActive(true);
+
+        yield return StaticVariables.AnimateChildObjectsAppearing(cookInterface);
+
+        DisplayItemInCookingInterface(item, quantity);
+        DisplayCookAmount();
+
+        yield return null;
+    }
+
+    public void QuitSelectionUI() {
+        StaticVariables.currentInteractionHandler = null;
+        StaticVariables.PlayAnimation("Cooking - Stand");
+        StartCoroutine(ReturnToMainUI());
+    }
+
+    private IEnumerator ReturnToMainUI() {
+        yield return HideAllUI();
+        background.SetActive(false);
+        yield return StaticVariables.mainUI.ShowUI2();
+    }
+
+    private IEnumerator HideAllUI() {
+
+        if (selectionInterface.gameObject.activeSelf)
+            yield return StaticVariables.AnimateChildObjectsDisappearing(selectionInterface, true);
+
+        else if (cookInterface.gameObject.activeSelf)
+            yield return StaticVariables.AnimateChildObjectsDisappearing(cookInterface, true);
+        
+        yield return null;
+    }
+
+    public void QuitCookingUI() {
+        StartCoroutine(ShowSelectionUI());
+        cookableItem = null;
+        cookableItemTotalQuantity = -1;
+        allowedCookableQuantities = null;
+    }
+    
+    private void DisplayItemInCookingInterface(Item item, int quantity) {
+
+        cookItemName.text = item.name;
+        cookItemQuantity.text = quantity + " in full Inventory";
+
+        displayItem.AddItemAsChild(item, 1.2f);
+        displayItem.shouldRotate = true;
+
+    }
+
+    private void DisplayRawFoodFromInventory() {
+        ItemType itemType = ItemType.RawFood;
+        Inventory inventory = StaticVariables.playerInventory;
+        InventorySlotUI.OnClickEffect onClick = InventorySlotUI.OnClickEffect.CookingInterface;
+        string inventoryTitle = "Raw Food";
+
+        compactInventory.SetupValues(onClick, inventoryTitle);
+        compactInventory.ClearAllItemDisplay();
+        allRawFood = compactInventory.DisplayAllItemsOfTypeFromInventory(itemType, inventory);
+    }
+
+    #endregion
+
     void Start() {
         AssignLocalVariables();
-        HideAllUI();
+        background.SetActive(false);
+        selectionInterface.gameObject.SetActive(false);
+        cookInterface.gameObject.SetActive(false);
     }
 
     private void Update() {
         if (ShouldCookingUIBeShown()) {
-            ShowSelectionUI();
+            StartCoroutine(ShowSelectionUI());
             showCookingUIWhenAnimatorIsIdle = false;
         }
     }
@@ -94,11 +179,11 @@ public class CookingHandler : InteractionHandler {
         return false;
     }
 
-
-private bool ShouldCookingUIBeShown() {
+    private bool ShouldCookingUIBeShown() {
     return (showCookingUIWhenAnimatorIsIdle && StaticVariables.IsPlayerAnimatorInState("Cooking - Idle Part 1"));
 }
-private void AssignLocalVariables() {
+
+    private void AssignLocalVariables() {
         selectionInterface = transform.Find("Selection");
         cookInterface = transform.Find("Cook Item");
         background = transform.Find("Background").gameObject;
@@ -143,74 +228,12 @@ private void AssignLocalVariables() {
         flameObject.SetActive(true);
     }
 
-    private void DisplayRawFoodFromInventory() {
-        ItemType itemType = ItemType.RawFood;
-        Inventory inventory = StaticVariables.playerInventory;
-        InventorySlotUI.OnClickEffect onClick = InventorySlotUI.OnClickEffect.CookingInterface;
-        string inventoryTitle = "Raw Food";
-
-        compactInventory.SetupValues(onClick, inventoryTitle);
-        compactInventory.ClearAllItemDisplay();
-        allRawFood = compactInventory.DisplayAllItemsOfTypeFromInventory(itemType, inventory);
-    }
-
     public void ClickedRawFood(Item item, int quantity) {
         cookableItem = item;
         cookableItemTotalQuantity = quantity;
         allowedCookableQuantities = GetQuantitiesThatPlayerEnoughRoomToCook();
         SetCurrentCookQuantityToMinAllowed();
-        ShowCookingUI(item, quantity);
-    }
-
-    public void ShowSelectionUI() {
-        background.SetActive(true);
-        selectionInterface.gameObject.SetActive(true);
-        cookInterface.gameObject.SetActive(false);
-
-        StaticVariables.mainUI.HideUI();
-
-        DisplayRawFoodFromInventory();
-    }
-
-    private void ShowCookingUI(Item item, int quantity) {
-        background.SetActive(true);
-        selectionInterface.gameObject.SetActive(false);
-        cookInterface.gameObject.SetActive(true);
-
-        StaticVariables.mainUI.HideUI();
-
-        DisplayItemInCookingInterface(item, quantity);
-        DisplayCookAmount();
-    }
-
-    private void HideAllUI() {
-        background.SetActive(false);
-        selectionInterface.gameObject.SetActive(false);
-        cookInterface.gameObject.SetActive(false);
-    }
-
-    public void QuitSelectionUI() {
-        HideAllUI();
-        StaticVariables.mainUI.ShowUI();
-        StaticVariables.currentInteractionHandler = null;
-        StaticVariables.PlayAnimation("Cooking - Stand");
-    }
-
-    public void QuitCookingUI() {
-        ShowSelectionUI();
-        cookableItem = null;
-        cookableItemTotalQuantity = -1;
-        allowedCookableQuantities = null;
-    }
-    
-    private void DisplayItemInCookingInterface(Item item, int quantity) {
-
-        cookItemName.text = item.name;
-        cookItemQuantity.text = quantity + " in full Inventory";
-
-        displayItem.AddItemAsChild(item, 1.2f);
-        displayItem.shouldRotate = true;
-
+        StartCoroutine(ShowCookingUI(item, quantity));
     }
     
     public void CookAllOfItem() {

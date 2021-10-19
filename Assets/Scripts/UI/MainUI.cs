@@ -45,6 +45,21 @@ public class MainUI : MonoBehaviour {
             t.gameObject.SetActive(false);
     }
 
+    //new function, used for animated UI Pop-In and Pop-Out
+    public IEnumerator HideUI2() {
+        if (transform.GetChild(0).gameObject.activeSelf)
+            yield return StaticVariables.AnimateChildObjectsDisappearing(transform);
+        yield return null;
+    }
+
+    //new function, used for animated UI Pop-In and Pop-Out
+    public IEnumerator ShowUI2() {
+        if (!isItemAddedPopupBeingDisplayed)
+            addItemDisplay.SetActive(false);
+        yield return StaticVariables.AnimateChildObjectsAppearing(transform);
+        yield return null;
+    }
+
     public void ShowItemQuantityChange(Item item, int quantity) {
         if (quantity > 0)
             addItemDisplayText.text = "+" + quantity + " " + item.name;
