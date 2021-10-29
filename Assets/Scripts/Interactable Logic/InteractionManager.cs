@@ -338,6 +338,11 @@ public class InteractionManager : MonoBehaviour {
         itemInHandBeforeInteraction = itemInHand;
     }
 
+    public int GetToolTier() {
+        return 2;
+
+    }
+
     public void PutFirstToolOfTypeInHand(Tool.ToolTypes type) {
         Item item = StaticVariables.playerInventory.GetFirstToolWithType(type);
         PutItemInPlayerHand(item);

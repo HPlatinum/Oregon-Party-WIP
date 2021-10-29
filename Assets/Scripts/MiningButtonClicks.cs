@@ -5,12 +5,13 @@ using UnityEngine;
 public class MiningButtonClicks : MonoBehaviour
 {
     GameObject interactButton;
-    // Start is called before the first frame update
+    public ParticleSystem particle;
     public void ReturnButtonMineableLayer(GameObject go) {
         interactButton = go;
         StaticVariables.WaitTimeThenCallFunction(.6f, DestroyButton);
     }
-    public void PlayParticleEffect(ParticleSystem particle) {
+    public void PlayParticleEffect() {
+        Debug.Log("Playing...");
         particle.Play();
     }
 

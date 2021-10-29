@@ -15,8 +15,8 @@ public class MiningHandler : ToolHandler
     private Vector3 metal2Pos;
     private Vector3 metal3Pos;
     private Vector3 metal4Pos;
-    private Vector3 metal5pos;
-    private Vector3 metal6pos;
+    private Vector3 metal5Pos;
+    private Vector3 metal6Pos;
     
     public Item collectableObject1;
     public Item collectableObject2;
@@ -25,6 +25,10 @@ public class MiningHandler : ToolHandler
     public Item obstructionObject2;
     public Item obstructionObject3;
     public Item obstructionObject4;
+    public GameObject collectableObject4;
+    public GameObject collectableObject5;
+    public GameObject collectableObject6;
+
     private int randomlyChosenObstructionObject;
     private DisplayItem displayItem;
 
@@ -35,6 +39,7 @@ public class MiningHandler : ToolHandler
             StaticVariables.interactScript.SetPreviousItemInHand();
             StaticVariables.interactScript.PutFirstToolOfTypeInHand(Tool.ToolTypes.pickaxe);
             AssignLocalVariables();
+            DetermineNumberOfCollectables();
             StaticVariables.SetupPlayerInteractionWithHighlightedObject();
             StaticVariables.interactScript.currentlyInteracting = true;
             StaticVariables.PlayAnimation("Swing Pickaxe", 1);
@@ -62,6 +67,9 @@ public class MiningHandler : ToolHandler
         collectable1 = transform.Find("Background").Find("Items Parent").Find("Collectable");
         collectable2 = transform.Find("Background").Find("Items Parent").Find("Collectable (1)");
         collectable3 = transform.Find("Background").Find("Items Parent").Find("Collectable (2)");
+        collectable4 = transform.Find("Background").Find("Items Parent").Find("Collectable (3)");
+        collectable5 = transform.Find("Background").Find("Items Parent").Find("Collectable (4)");
+        collectable6 = transform.Find("Background").Find("Items Parent").Find("Collectable (5)");
         blade = StaticVariables.interactScript.objectInHand.transform.GetChild(0).GetComponent<BladeInteraction>();
     }
 
@@ -76,11 +84,9 @@ public class MiningHandler : ToolHandler
 
     private void CreateMiningObstructions() {
         System.Random rand = new System.Random();
-        print("here in create mining obstructions");
         foreach (Transform child in transform.Find("Background").Find("Mining Parent")) {
             randomlyChosenObstructionObject = rand.Next(1, 4);
             displayItem = child.Find("Mine Area").Find("Display Obstruction").GetComponent<DisplayItem>();
-            print(randomlyChosenObstructionObject);
             if(randomlyChosenObstructionObject == 1)
                 displayItem.AddItemAsChild(obstructionObject1, 3);
             if(randomlyChosenObstructionObject == 2)
@@ -92,27 +98,49 @@ public class MiningHandler : ToolHandler
         }
     }
 
-    private void CreateMiningCollectables() {
-        System.Random rand = new System.Random();
-        foreach (Transform child in transform.Find("Background").Find("Items Parent")) {
-            randomlyChosenObstructionObject = rand.Next(1,3);
-            if(randomlyChosenObstructionObject == 1)
-                displayItem.AddItemAsChild(collectableObject1, 3);
-            if(randomlyChosenObstructionObject == 2)
-                displayItem.AddItemAsChild(collectableObject2, 3);
-            if(randomlyChosenObstructionObject == 3)
-                displayItem.AddItemAsChild(collectableObject3, 3);
+    private void DetermineNumberOfCollectables() {
+        if(StaticVariables.interactScript.GetToolTier() == 1){
+            Debug.Log("Here 11111");
+            collectableObject4.SetActive(false);
+            collectableObject5.SetActive(false);
+            collectableObject6.SetActive(false);
+        }
+        if(StaticVariables.interactScript.GetToolTier() == 2){
+            collectableObject6.SetActive(false);
         }
     }
 
-    private void PositionMiningCollectables() {
+    private void CreateMiningCollectables() {
         System.Random rand = new System.Random();
-        metal1Pos = new Vector3 (rand.Next(0,400), rand.Next(0,350), 0);
+        foreach (Transform child in transform.Find("Background").Find("Items Parent")) {
+            displayItem = child.Find("Item Holder").GetComponent<DisplayItem>();
+            randomlyChosenObstructionObject = rand.Next(1,3);
+            if(randomlyChosenObstructionObject == 1)
+                displayItem.AddItemAsChild(collectableObject1, .1f);
+            if(randomlyChosenObstructionObject == 2)
+                displayItem.AddItemAsChild(collectableObject2, .1f);
+            if(randomlyChosenObstructionObject == 3)
+                displayItem.AddItemAsChild(collectableObject3, .1f);
+            displayItem.transform.localPosition = new Vector3(0, 0, -12);
+        }
+    }
+
+    public void PositionMiningCollectables() {
+        System.Random rand = new System.Random();
+        while(Vector3.Distance(metal1Pos, metal2Pos) <= 150 || Vector3.Distance(metal3Pos, metal1Pos) <= 150 || Vector3.Distance(metal3Pos, metal2Pos) <= 150) {
+            metal1Pos = new Vector3 (rand.Next(0,400), rand.Next(0,350), 0);
+            metal2Pos = new Vector3 (rand.Next(0,400), rand.Next(0,350), 0);
+            metal3Pos = new Vector3 (rand.Next(0,400), rand.Next(0,350), 0);
+            metal4Pos = new Vector3 (rand.Next(0,400), rand.Next(0,350), 0);
+            metal5Pos = new Vector3 (rand.Next(0,400), rand.Next(0,350), 0);
+            metal6Pos = new Vector3 (rand.Next(0,400), rand.Next(0,350), 0);
+        }
         collectable1.localPosition = metal1Pos;
-        metal2Pos = new Vector3 (rand.Next(0,400), rand.Next(0,350), 0);
         collectable2.localPosition = metal2Pos;
-        metal3Pos = new Vector3 (rand.Next(0,400), rand.Next(0,350), 0);
         collectable3.localPosition = metal3Pos;
+        collectable4.localPosition = metal4Pos;
+        collectable5.localPosition = metal5Pos;
+        collectable6.localPosition = metal6Pos;
     }
 
     public void DestroyMineableLayer(GameObject go) {
