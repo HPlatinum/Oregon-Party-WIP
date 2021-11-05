@@ -25,7 +25,7 @@ public class Inventory : ScriptableObject
 
 
     public void AddItemToInventory(Item item, int pickedUpItemQuantity) {
-        StaticVariables.mainUI.ShowItemQuantityChange(item, pickedUpItemQuantity);
+        StaticVariables.commonUI.ShowItemQuantityChange(item, pickedUpItemQuantity);
 
         // Check if stack has met cap > if it has create new cap.
         for(int i = 0; i < inventorySlots.Count; i++) {
@@ -107,7 +107,7 @@ public class Inventory : ScriptableObject
     public void AddItemToNewSlot(Item item, int quantity) { 
         inventorySlots.Add(new InventorySlot(item, quantity));
         onItemChangedCallback.Invoke();
-        StaticVariables.mainUI.ShowItemQuantityChange(item, quantity);
+        StaticVariables.commonUI.ShowItemQuantityChange(item, quantity);
     }
 
     public int RemainingItemQuantity(int slotNumber, int quantity) {
@@ -154,7 +154,7 @@ public class Inventory : ScriptableObject
     }
 
     public void RemoveItemFromInventory(Item item, int quantity) {
-        StaticVariables.mainUI.ShowItemQuantityChange(item, -quantity);
+        StaticVariables.commonUI.ShowItemQuantityChange(item, -quantity);
 
         int totalQuantity = GetTotalItemQuantity(item);
         int diff = totalQuantity - quantity;
