@@ -27,6 +27,7 @@ public class AnimatedUIRemoval : MonoBehaviour {
     private void FinishShrinking() {
         transform.localScale = originalScale;
         gameObject.SetActive(false);
+        HandleCompactInventoryRemoval();
         Destroy(this);
     }
 
@@ -40,6 +41,18 @@ public class AnimatedUIRemoval : MonoBehaviour {
 
     public float GetTotalAnimationTime() {
         return squashTime + shrinkTime;
+    }
+
+    private void HandleCompactInventoryRemoval() {
+        if (DoesObjectContainCompactInventory()) {
+            foreach(Transform t in transform.Find("ItemsParent")) {
+                Destroy(t.gameObject);
+            }
+        }
+    }
+
+    private bool DoesObjectContainCompactInventory() {
+        return (GetComponent<CompactInventory>() != null);
     }
 
 }

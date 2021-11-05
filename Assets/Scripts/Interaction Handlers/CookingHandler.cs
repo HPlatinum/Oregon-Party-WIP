@@ -81,9 +81,9 @@ public class CookingHandler : InteractionHandler {
         yield return HideAllUI();
         background.SetActive(true);
         selectionInterface.gameObject.SetActive(true);
-
+       
         yield return StaticVariables.AnimateChildObjectsAppearing(selectionInterface);
-
+        
         DisplayRawFoodFromInventory();
 
         yield return null;
@@ -95,11 +95,11 @@ public class CookingHandler : InteractionHandler {
         background.SetActive(true);
         cookInterface.gameObject.SetActive(true);
 
-        yield return StaticVariables.AnimateChildObjectsAppearing(cookInterface);
-
         DisplayItemInCookingInterface(item, quantity);
         DisplayCookAmount();
 
+        yield return StaticVariables.AnimateChildObjectsAppearing(cookInterface);
+        
         yield return null;
     }
 
@@ -132,7 +132,7 @@ public class CookingHandler : InteractionHandler {
         cookableItemTotalQuantity = -1;
         allowedCookableQuantities = null;
     }
-    
+
     private void DisplayItemInCookingInterface(Item item, int quantity) {
 
         cookItemName.text = item.name;
