@@ -43,6 +43,8 @@ public class CompactInventory : MonoBehaviour {
             s.clickEffect = onClick;
         }
 
+        StartCoroutine(StaticVariables.AnimateChildObjectsAppearing(inventoryParent));
+
         return itemData;
     }
 
