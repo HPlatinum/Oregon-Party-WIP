@@ -262,11 +262,7 @@ public class InteractionManager : MonoBehaviour {
     }
 
     public void StartInteractionWithCurrentInteractable() {
-        if (StaticVariables.currentInteractionHandler != null) {
-            PassInteractionToCurrentHandler();
-            return;
-        }
-        else if (closestInteractable == null)
+        if (closestInteractable == null)
             return;
         else if (!CanPlayerInteractWithCurrentInteractable()) {
             print("you cannot perform the " + closestInteractable.interactType.ToString() + " action");
@@ -278,11 +274,6 @@ public class InteractionManager : MonoBehaviour {
         
         StaticVariables.currentInteractionHandler = GetInteractionHandlerForClosestInteractable();
         StaticVariables.currentInteractionHandler.ProcessInteractAction();
-    }
-
-    private void PassInteractionToCurrentHandler() {
-        if (StaticVariables.currentInteractionHandler != null) 
-            StaticVariables.currentInteractionHandler.ProcessInteractAction();
     }
 
     private void PreparePlayerForInteraction() {

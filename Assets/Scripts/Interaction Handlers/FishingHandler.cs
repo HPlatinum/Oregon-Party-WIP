@@ -43,17 +43,17 @@ public class FishingHandler : InteractionHandler {
     private ParticleSystem bobberSplash;
     private ParticleSystem bobberBigSplash;
 
+    //interface elements to show/hide
+    GameObject background;
+    Transform uiParent;
+
     //misc
     private bool showFishingUIWhenAnimatorIsIdle = false;
 
     #region Inherited Functions
 
     public override void ProcessInteractAction() {
-        if (StaticVariables.IsPlayerAnimatorInState("Fishing - Idle")) {
-            ReelIn();
-            return;
-        }
-        else if (!StaticVariables.interactScript.currentlyInteracting) {
+        if (!StaticVariables.interactScript.currentlyInteracting) {
             StaticVariables.SetupPlayerInteractionWithHighlightedObject();
             StaticVariables.PlayAnimation("Fishing - Cast");
             showFishingUIWhenAnimatorIsIdle = true;
@@ -90,13 +90,14 @@ public class FishingHandler : InteractionHandler {
 
     void Start() {
         AssignLocalVariables();
-        HideFishingUI();
+
+        uiParent.gameObject.SetActive(false);
+        background.SetActive(false);
     }
 
     private void Update() {
         if (ShouldFishingUIBeShown()) {
             StartCoroutine(BeginFishing());
-
             showFishingUIWhenAnimatorIsIdle = false;
         }
     }
@@ -109,46 +110,45 @@ public class FishingHandler : InteractionHandler {
     public IEnumerator BeginFishing() {
         ResetLocalVariables();
         yield return ShowFishingUI();
-        StaticVariables.SetInteractButtonText("Reel In");
         RandomlyChooseStartingBobAmount();
         RandomlyChooseFirstFish();
         StaticVariables.WaitTimeThenCallFunction(timeBetweenUIOpeningAndMinigameStart, StartFishMovement);
     }
 
     private void AssignLocalVariables() {
-        fish1 = transform.Find("Fish Circle").Find("Fish 1");
+        uiParent = transform.Find("UI");
+        background = transform.Find("Background").gameObject;
+
+
+        Transform fishCircle = uiParent.Find("Fish Circle");
+        fish1 = fishCircle.Find("Fish 1");
         fish1Origin = fish1.localPosition;
         fish1Destination = new Vector3(0, 90, fish1.localPosition.z);
-        fish2 = transform.Find("Fish Circle").Find("Fish 2");
+        fish2 = fishCircle.Find("Fish 2");
         fish2Origin = fish2.localPosition;
         fish2Destination = new Vector3(77.95229f, -45, fish2.localPosition.z);
-        fish3 = transform.Find("Fish Circle").Find("Fish 3");
+        fish3 = fishCircle.Find("Fish 3");
         fish3Origin = fish3.localPosition;
         fish3Destination = new Vector3(-77.95229f, -45, fish3.localPosition.z);
-        bobberSplash = transform.Find("Fish Circle").Find("Bobber").Find("Splash").GetComponent<ParticleSystem>();
-        bobberBigSplash = transform.Find("Fish Circle").Find("Bobber").Find("Big Splash").GetComponent<ParticleSystem>();
-    }
+        bobberSplash = fishCircle.Find("Bobber").Find("Splash").GetComponent<ParticleSystem>();
+        bobberBigSplash = fishCircle.Find("Bobber").Find("Big Splash").GetComponent<ParticleSystem>();
 
-    /*
-    private void ShowFishingUI() {
-        transform.Find("Fish Circle").gameObject.SetActive(true);
+
     }
-    */
 
     private IEnumerator ShowFishingUI() {
-
         yield return StaticVariables.mainUI.HideUI2();
-        //yield return HideAllUI();
-        //background.SetActive(true);
-        transform.Find("Fish Circle").gameObject.SetActive(true);
-
-        yield return StaticVariables.AnimateChildObjectsAppearing(transform);
+        uiParent.gameObject.SetActive(true);
+        background.SetActive(true);
+        yield return StaticVariables.AnimateChildObjectsAppearing(uiParent);
 
         yield return null;
     }
 
-    private void HideFishingUI() {
-        transform.Find("Fish Circle").gameObject.SetActive(false);
+    private IEnumerator ReturnToMainUI() {
+        yield return StaticVariables.AnimateChildObjectsDisappearing(uiParent);
+        background.SetActive(false);
+        yield return StaticVariables.mainUI.ShowUI2();
     }
 
     private void RandomlyChooseStartingBobAmount() {
@@ -248,7 +248,7 @@ public class FishingHandler : InteractionHandler {
         if (!playerReeled) {
             fishHooked = false;
             StaticVariables.PlayAnimation("Shake Fist");
-            CloseFishingUI();
+            StartCoroutine(ReturnToMainUI());
         }
     }
 
@@ -258,18 +258,13 @@ public class FishingHandler : InteractionHandler {
         if (fishHooked) {
             playerGotFish = true;
             StaticVariables.PlayAnimation("Fishing - Reeling");
-            CloseFishingUI();
+            StartCoroutine(ReturnToMainUI());
         }
 
         else { //reel in too early
             StaticVariables.PlayAnimation("Shake Fist");
-            CloseFishingUI();
+            StartCoroutine(ReturnToMainUI());
         }
-    }
-
-    public void CloseFishingUI() {
-        HideFishingUI();
-        StaticVariables.SetInteractButtonText("Interact");
     }
 
     private void ResetLocalVariables() {
