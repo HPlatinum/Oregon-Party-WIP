@@ -95,7 +95,8 @@ public class FishingHandler : InteractionHandler {
 
     private void Update() {
         if (ShouldFishingUIBeShown()) {
-            BeginFishing();
+            StartCoroutine(BeginFishing());
+
             showFishingUIWhenAnimatorIsIdle = false;
         }
     }
@@ -105,9 +106,9 @@ public class FishingHandler : InteractionHandler {
         return (showFishingUIWhenAnimatorIsIdle && StaticVariables.IsPlayerAnimatorInState("Fishing - Idle"));
     }
 
-    public void BeginFishing() {
+    public IEnumerator BeginFishing() {
         ResetLocalVariables();
-        ShowFishingUI();
+        yield return ShowFishingUI();
         StaticVariables.SetInteractButtonText("Reel In");
         RandomlyChooseStartingBobAmount();
         RandomlyChooseFirstFish();
@@ -128,8 +129,22 @@ public class FishingHandler : InteractionHandler {
         bobberBigSplash = transform.Find("Fish Circle").Find("Bobber").Find("Big Splash").GetComponent<ParticleSystem>();
     }
 
+    /*
     private void ShowFishingUI() {
         transform.Find("Fish Circle").gameObject.SetActive(true);
+    }
+    */
+
+    private IEnumerator ShowFishingUI() {
+
+        yield return StaticVariables.mainUI.HideUI2();
+        //yield return HideAllUI();
+        //background.SetActive(true);
+        transform.Find("Fish Circle").gameObject.SetActive(true);
+
+        yield return StaticVariables.AnimateChildObjectsAppearing(transform);
+
+        yield return null;
     }
 
     private void HideFishingUI() {
