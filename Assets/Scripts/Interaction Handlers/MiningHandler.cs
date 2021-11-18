@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class MiningHandler : ToolHandler
 {
@@ -11,12 +12,11 @@ public class MiningHandler : ToolHandler
     private Transform collectable4;
     private Transform collectable5;
     private Transform collectable6;
-    private Vector3 metal1Pos;
-    private Vector3 metal2Pos;
-    private Vector3 metal3Pos;
-    private Vector3 metal4Pos;
-    private Vector3 metal5Pos;
-    private Vector3 metal6Pos;
+    private Vector3 metalPos;
+    private List<int> possibleXNumbers;
+    private List<int> possibleYNumbers;
+    private List<int> listXNumbers;
+    private List<int> listYNumbers;
     
     public Item collectableObject1;
     public Item collectableObject2;
@@ -25,12 +25,16 @@ public class MiningHandler : ToolHandler
     public Item obstructionObject2;
     public Item obstructionObject3;
     public Item obstructionObject4;
-    public GameObject collectableObject4;
-    public GameObject collectableObject5;
-    public GameObject collectableObject6;
+    public GameObject collectableGameObject1;
+    public GameObject collectableGameObject2;
+    public GameObject collectableGameObject3;
+    public GameObject collectableGameObject4;
+    public GameObject collectableGameObject5;
+    public GameObject collectableGameObject6;
 
     private int randomlyChosenObstructionObject;
     private DisplayItem displayItem;
+    CollectableColliderTest colliderTest;
 
     #region Inherited Functions
 
@@ -79,7 +83,9 @@ public class MiningHandler : ToolHandler
         transform.Find("Background").gameObject.SetActive(true);
         CreateMiningObstructions();
         CreateMiningCollectables();
+        DisableMeshes();
         PositionMiningCollectables();
+
     }
 
     private void CreateMiningObstructions() {
@@ -101,15 +107,23 @@ public class MiningHandler : ToolHandler
     private void DetermineNumberOfCollectables() {
         if(StaticVariables.interactScript.GetToolTier() == 1){
             Debug.Log("Here 11111");
-            collectableObject4.SetActive(false);
-            collectableObject5.SetActive(false);
-            collectableObject6.SetActive(false);
+            collectableGameObject4.SetActive(false);
+            collectableGameObject5.SetActive(false);
+            collectableGameObject6.SetActive(false);
         }
         if(StaticVariables.interactScript.GetToolTier() == 2){
-            collectableObject6.SetActive(false);
+            collectableGameObject6.SetActive(false);
         }
     }
 
+    private void DisableMeshes() {
+        collectableGameObject1.GetComponentInChildren<MeshCollider>().enabled = false;
+        collectableGameObject2.GetComponentInChildren<MeshCollider>().enabled = false;
+        collectableGameObject3.GetComponentInChildren<MeshCollider>().enabled = false;
+        collectableGameObject4.GetComponentInChildren<MeshCollider>().enabled = false;
+        collectableGameObject5.GetComponentInChildren<MeshCollider>().enabled = false;
+        collectableGameObject6.GetComponentInChildren<MeshCollider>().enabled = false;
+    }
     private void CreateMiningCollectables() {
         System.Random rand = new System.Random();
         foreach (Transform child in transform.Find("Background").Find("Items Parent")) {
@@ -125,22 +139,118 @@ public class MiningHandler : ToolHandler
         }
     }
 
-    public void PositionMiningCollectables() {
+    public void CreateLists() {
+        possibleXNumbers = Enumerable.Range(-450, 900 + 1).ToList();
+        possibleYNumbers = Enumerable.Range(-325, 650 + 1).ToList();
+        listXNumbers = new List<int>();
+        listYNumbers = new List<int>();
+    }
+
+    private void GeneratePositionXYValues(){
         System.Random rand = new System.Random();
-        while(Vector3.Distance(metal1Pos, metal2Pos) <= 150 || Vector3.Distance(metal3Pos, metal1Pos) <= 150 || Vector3.Distance(metal3Pos, metal2Pos) <= 150) {
-            metal1Pos = new Vector3 (rand.Next(0,400), rand.Next(0,350), 0);
-            metal2Pos = new Vector3 (rand.Next(0,400), rand.Next(0,350), 0);
-            metal3Pos = new Vector3 (rand.Next(0,400), rand.Next(0,350), 0);
-            metal4Pos = new Vector3 (rand.Next(0,400), rand.Next(0,350), 0);
-            metal5Pos = new Vector3 (rand.Next(0,400), rand.Next(0,350), 0);
-            metal6Pos = new Vector3 (rand.Next(0,400), rand.Next(0,350), 0);
+        for(int i = 0; i < 6; i++){
+            int indexX = rand.Next(0, possibleXNumbers.Count);
+            int indexY = rand.Next(0, possibleYNumbers.Count);
+            listXNumbers.Add(possibleXNumbers[indexX]);
+            listYNumbers.Add(possibleYNumbers[indexY]);
+            RemoveNumbersFromPossibleNumbersList(indexX, possibleXNumbers);
+            RemoveNumbersFromPossibleNumbersList(indexY, possibleYNumbers);
         }
-        collectable1.localPosition = metal1Pos;
-        collectable2.localPosition = metal2Pos;
-        collectable3.localPosition = metal3Pos;
-        collectable4.localPosition = metal4Pos;
-        collectable5.localPosition = metal5Pos;
-        collectable6.localPosition = metal6Pos;
+    }
+
+    public bool IndexPlusEightyIsLessThanMaximumIndexOfPossibleNumbers(int index, List<int> possibleNumbers){
+        return(index + 80 < possibleNumbers.Count);
+    }
+
+    public bool NumbersAreContinuousFromIndexToIndexPlusEightyForward(int index, List<int> possibleNumbers){
+        return possibleNumbers[index] + 80 == possibleNumbers[index + 80];
+    }
+    public bool NumbersAreContinuousFromIndexToIndexMinusEightyBackward(int index, List<int> possibleNumbers){
+        return possibleNumbers[index] - 80 == possibleNumbers[index - 80];
+    }
+    public bool IndexDoesntExceedMaximumLengthOfList(int index, List<int> possibleNumbers){
+        return possibleNumbers.Count > index + 2;
+    }
+    public bool IndexMinusEightyIsZeroOrHigher(int index, List<int> possibleNumbers){
+        return index - 80 > -1;
+    }
+    public bool NumbersAtIndexMinusXEqualsTheSameAsOriginalIndexNumberMinusX(int index, int x, List<int> possibleNumbers){
+        return possibleNumbers[index]-x == possibleNumbers[index-x];
+    }
+    public int GetDifferenceBetweenListMaximumAndIndex(int index, List<int> possibleNumbers){
+        return possibleNumbers.Count - 2 - index;
+    }
+
+    public void RemoveAtIndex(int index, List<int> possibleNumbers){
+        possibleNumbers.RemoveAt(index);
+    }
+    public void RemoveNumbersFromPossibleNumbersList(int index, List<int> possibleNumbers) {
+        int removeIndex;
+        // remove from right
+        if(IndexPlusEightyIsLessThanMaximumIndexOfPossibleNumbers(index, possibleNumbers)) { //bugged doesn't except if the numbers don't match
+            removeIndex = index + 1;
+            if(NumbersAreContinuousFromIndexToIndexPlusEightyForward(index, possibleNumbers)){
+                for(int x = 0; x < 80; x++) {
+                    if(IndexDoesntExceedMaximumLengthOfList(index, possibleNumbers)){
+                        RemoveAtIndex(removeIndex,possibleNumbers);
+                    }
+                }
+            }
+            else { 
+                int difference = GetDifferenceBetweenListMaximumAndIndex(index, possibleNumbers);
+                for(int x = 0; x < difference; x++) {
+                    RemoveAtIndex(removeIndex,possibleNumbers);
+                }
+            }
+        }
+        // remove from left
+        if(IndexMinusEightyIsZeroOrHigher(index, possibleNumbers)) {
+            if(NumbersAreContinuousFromIndexToIndexMinusEightyBackward(index, possibleNumbers)) {
+                removeIndex = index-80;
+                for(int x = 0; x < 81; x++) {
+                    RemoveAtIndex(removeIndex,possibleNumbers);
+                }
+            }
+            else {
+            //count the difference
+            int difference = 0;
+            for(int x = 0; x < 80; x++) {
+                if(NumbersAtIndexMinusXEqualsTheSameAsOriginalIndexNumberMinusX(index, x, possibleNumbers)){
+                    difference++;
+                    continue;
+                }
+                else {
+                    break;
+                }
+            }
+            removeIndex = index-difference;
+            for(int x = 0; x < difference; x++) {
+                RemoveAtIndex(removeIndex,possibleNumbers);
+                }
+            }
+        }
+        else {
+            removeIndex = 0;
+            for(int x = 0; x < index; x++) {
+                RemoveAtIndex(removeIndex,possibleNumbers);
+            }
+        }
+    }
+
+    public void PositionMiningCollectables() {
+        CreateLists();
+        GeneratePositionXYValues();
+        MoveCollectables(collectable1, 0);
+        MoveCollectables(collectable2, 1);
+        MoveCollectables(collectable3, 2);
+        MoveCollectables(collectable4, 3);
+        MoveCollectables(collectable5, 4);
+        MoveCollectables(collectable6, 5);
+    }
+
+    private void MoveCollectables(Transform collectable, int metalNumber) {
+        metalPos = new Vector3 (listXNumbers[metalNumber], listYNumbers[metalNumber], 0);
+        collectable.localPosition = metalPos;
     }
 
     public void DestroyMineableLayer(GameObject go) {
@@ -148,4 +258,5 @@ public class MiningHandler : ToolHandler
             go.SetActive(false);
         }
     }
+
 }

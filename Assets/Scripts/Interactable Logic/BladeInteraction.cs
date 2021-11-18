@@ -13,7 +13,7 @@ public class BladeInteraction : MonoBehaviour
         DisableBlade();
     }
 
-     private void OnTriggerExit(Collider obj) {
+    private void OnTriggerExit(Collider obj) {
     }
 
     public void EnableBlade() {
