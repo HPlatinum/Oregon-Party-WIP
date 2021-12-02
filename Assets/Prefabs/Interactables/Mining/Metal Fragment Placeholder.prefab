@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5175691228367118791}
   - component: {fileID: 5186095604548863593}
   - component: {fileID: 5138459229357775859}
+  - component: {fileID: 3598350454242519129}
   m_Layer: 0
   m_Name: Metal Fragment Placeholder
   m_TagString: Untagged
@@ -97,3 +98,22 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 5138ac4430a9545d8b6eba531f6a738e, type: 3}
+--- !u!114 &3598350454242519129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5165613018412713149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db4957fd4b801fe4bbf2cf4c52ccacf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactType: 6
+  item: {fileID: 11400000, guid: a44bd8f491ecd0d488c9f0422d9d0143, type: 2}
+  requiredItem: {fileID: 0}
+  inventory: {fileID: 0}
+  hitsRequiredToGatherResource: 0
+  hitsCurrentlyAppliedToResource: 0
+  destroyParentAlso: 0

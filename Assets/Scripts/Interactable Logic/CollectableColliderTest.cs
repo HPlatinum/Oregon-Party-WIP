@@ -4,21 +4,25 @@ using UnityEngine;
 
 public class CollectableColliderTest : MonoBehaviour
 {
-    public bool collectableIsTouching;
+    public GameObject collectable;
+    public ParticleSystem destroyParticle;
 
     public void Start() {
     }
 
     private void OnTriggerEnter(Collider other) {
-        collectableIsTouching = true;
-        print("colliding with " + other);
+        PlayDestroyParticle();
+        StaticVariables.WaitTimeThenCallFunction(2f, SetCollectableInactive);
     }
     
     private void OnTriggerExit(Collider other) {
-        collectableIsTouching = false;
-        print("Exiting Collision");
     }
-    public bool CheckIfCollectablesAreTouching() {
-        return collectableIsTouching;
+
+    public void PlayDestroyParticle() {
+        destroyParticle.Play();
+    }
+
+    public void SetCollectableInactive() {
+        collectable.SetActive(false);
     }
 }
