@@ -44,6 +44,7 @@ public class MiningHandler : ToolHandler
     CollectableColliderTest colliderTest;
     private bool largeDestroy;
     private bool gameOver;
+    Transform uiParent;
     public void Update() {
     }
 
@@ -68,6 +69,12 @@ public class MiningHandler : ToolHandler
         StaticVariables.interactScript.PutPreviousItemBackInHand();
     }
 
+    private IEnumerator ReturnToMainUI() {
+        yield return StaticVariables.AnimateChildObjectsDisappearing(uiParent);
+        // background.SetActive(false);
+        yield return StaticVariables.mainUI.ShowUI2();
+    }
+
     public override bool CanPlayerInteractWithObject(Interactable interactable) {
         if (StaticVariables.playerInventory.DoesInventoryContainToolWithType(Tool.ToolTypes.pickaxe)) {
             if (StaticVariables.playerInventory.CanAddItemToInventory(interactable.item, 1)) {
@@ -78,15 +85,16 @@ public class MiningHandler : ToolHandler
     }
 
     public override void AssignLocalVariables() {
+        uiParent = transform.Find("Background");
         CreateListForCollectablesGathered();
         hitCount = 0;
         maximumHits = 30;
-        collectable1 = transform.Find("Background").Find("Items Parent").Find("Collectable");
-        collectable2 = transform.Find("Background").Find("Items Parent").Find("Collectable (1)");
-        collectable3 = transform.Find("Background").Find("Items Parent").Find("Collectable (2)");
-        collectable4 = transform.Find("Background").Find("Items Parent").Find("Collectable (3)");
-        collectable5 = transform.Find("Background").Find("Items Parent").Find("Collectable (4)");
-        collectable6 = transform.Find("Background").Find("Items Parent").Find("Collectable (5)");
+        collectable1 = uiParent.Find("Items Parent").Find("Collectable");
+        collectable2 = uiParent.Find("Items Parent").Find("Collectable (1)");
+        collectable3 = uiParent.Find("Items Parent").Find("Collectable (2)");
+        collectable4 = uiParent.Find("Items Parent").Find("Collectable (3)");
+        collectable5 = uiParent.Find("Items Parent").Find("Collectable (4)");
+        collectable6 = uiParent.Find("Items Parent").Find("Collectable (5)");
         blade = StaticVariables.interactScript.objectInHand.transform.GetChild(0).GetComponent<BladeInteraction>();
         largeDestroy = false;
     }
@@ -95,7 +103,7 @@ public class MiningHandler : ToolHandler
 
     
     private void ShowMiningUI() {
-        transform.Find("Background").gameObject.SetActive(true);
+        uiParent.gameObject.SetActive(true);
         CreateMiningObstructions();
         CreateMiningCollectables();
         CreateListsOfBorderMineableAreaObjects();
@@ -105,7 +113,7 @@ public class MiningHandler : ToolHandler
     }
 
     private void CloseMiningUI() {
-        transform.Find("Background").gameObject.SetActive(false);
+        uiParent.gameObject.SetActive(false);
     }
 
     private void ShowMiningFinishUI() {
@@ -118,7 +126,7 @@ public class MiningHandler : ToolHandler
 
     private void CreateMiningObstructions() {
         System.Random rand = new System.Random();
-        foreach (Transform child in transform.Find("Background").Find("Mining Parent")) {
+        foreach (Transform child in uiParent.Find("Mining Parent")) {
             randomlyChosenObstructionObject = rand.Next(1, 4);
             displayItem = child.Find("Mine Area").Find("Display Obstruction").GetComponent<DisplayItem>();
             if(randomlyChosenObstructionObject == 1)
@@ -154,7 +162,7 @@ public class MiningHandler : ToolHandler
     }
     private void CreateMiningCollectables() {
         System.Random rand = new System.Random();
-        foreach (Transform child in transform.Find("Background").Find("Items Parent")) {
+        foreach (Transform child in uiParent.Find("Items Parent")) {
             displayItem = child.Find("Item Holder").GetComponent<DisplayItem>();
             randomlyChosenObstructionObject = rand.Next(1,3);
             if(randomlyChosenObstructionObject == 1)
@@ -174,11 +182,11 @@ public class MiningHandler : ToolHandler
         for(int i = 0; i < 130; i++) {
             if(i == 0) {
                 str = "Mineable Slot";
-                gameObject = transform.Find("Background").Find("Mining Parent").Find(str).GetChild(0).gameObject;
+                gameObject = uiParent.Find("Mining Parent").Find(str).GetChild(0).gameObject;
             }
             else {
                 str = "Mineable Slot ("+ i.ToString() +")";
-                gameObject = transform.Find("Background").Find("Mining Parent").Find(str).GetChild(0).gameObject;
+                gameObject = uiParent.Find("Mining Parent").Find(str).GetChild(0).gameObject;
             }
             mineableLayerGO.Add(gameObject);
         }
@@ -483,6 +491,7 @@ public class MiningHandler : ToolHandler
         StaticVariables.WaitTimeThenCallFunction(1f, CloseFinishUI);
         StaticVariables.WaitTimeThenCallFunction(2f, StaticVariables.interactScript.DestroyCurrentInteractable);
         ProcessInteractAnimationEnding();
+        StartCoroutine(ReturnToMainUI());
     }
 
     private Item GetItemFromCollectable(Transform collectable) {
