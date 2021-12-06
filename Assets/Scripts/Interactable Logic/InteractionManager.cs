@@ -256,6 +256,7 @@ public class InteractionManager : MonoBehaviour {
 
     public void RemoveItemFromHand() {
         if (objectInHand != null) {
+            print("Removing Item From hand for some reason");
             DestroyImmediate(objectInHand);
             itemInHand = null;
         }
@@ -330,8 +331,7 @@ public class InteractionManager : MonoBehaviour {
     }
 
     public int GetToolTier() {
-        return 2;
-
+        return itemInHand.itemTier;
     }
 
     public void PutFirstToolOfTypeInHand(Tool.ToolTypes type) {

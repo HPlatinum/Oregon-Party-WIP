@@ -44,35 +44,33 @@ public class MiningHandler : ToolHandler
     CollectableColliderTest colliderTest;
     private bool largeDestroy;
     private bool gameOver;
+    public bool gameOverFR;
+    private bool showMiningUI;
+    private bool showFinishUI;
     Transform uiParent;
-    public void Update() {
-    }
+    Transform finishScreen;
+    GameObject background;
 
     #region Inherited Functions
     public override void ProcessInteractAction() {
         if (!StaticVariables.interactScript.currentlyInteracting) {
             StaticVariables.interactScript.SetPreviousItemInHand();
             StaticVariables.interactScript.PutFirstToolOfTypeInHand(Tool.ToolTypes.pickaxe);
-            AssignLocalVariables();
-            DetermineNumberOfCollectables();
             StaticVariables.SetupPlayerInteractionWithHighlightedObject();
             StaticVariables.interactScript.currentlyInteracting = true;
             StaticVariables.PlayAnimation("Swing Pickaxe", 1);
+            FindBlade();
             StaticVariables.WaitTimeThenCallFunction(.6f, blade.EnableBlade);
-            StaticVariables.WaitTimeThenCallFunction(2.5f, ShowMiningUI);
+            StaticVariables.WaitTimeThenCallFunction(2.5f, SetShowMiningUIToTrue);
             StaticVariables.mainUI.HideUI();
         }
     }
 
     public override void ProcessInteractAnimationEnding() {
-        StaticVariables.currentInteractionHandler = null;
-        StaticVariables.interactScript.PutPreviousItemBackInHand();
-    }
-
-    private IEnumerator ReturnToMainUI() {
-        yield return StaticVariables.AnimateChildObjectsDisappearing(uiParent);
-        // background.SetActive(false);
-        yield return StaticVariables.mainUI.ShowUI2();
+        if(gameOverFR) {
+            StaticVariables.currentInteractionHandler = null;
+            StaticVariables.interactScript.PutPreviousItemBackInHand();
+        }
     }
 
     public override bool CanPlayerInteractWithObject(Interactable interactable) {
@@ -85,43 +83,98 @@ public class MiningHandler : ToolHandler
     }
 
     public override void AssignLocalVariables() {
-        uiParent = transform.Find("Background");
-        CreateListForCollectablesGathered();
-        hitCount = 0;
-        maximumHits = 30;
+        uiParent = transform.Find("Mining Game Parent");
+        finishScreen = transform.Find("Finish Screen");
+        background = transform.Find("Background").gameObject;
         collectable1 = uiParent.Find("Items Parent").Find("Collectable");
         collectable2 = uiParent.Find("Items Parent").Find("Collectable (1)");
         collectable3 = uiParent.Find("Items Parent").Find("Collectable (2)");
         collectable4 = uiParent.Find("Items Parent").Find("Collectable (3)");
         collectable5 = uiParent.Find("Items Parent").Find("Collectable (4)");
         collectable6 = uiParent.Find("Items Parent").Find("Collectable (5)");
-        blade = StaticVariables.interactScript.objectInHand.transform.GetChild(0).GetComponent<BladeInteraction>();
-        largeDestroy = false;
     }
 
     #endregion
 
-    
-    private void ShowMiningUI() {
-        uiParent.gameObject.SetActive(true);
-        CreateMiningObstructions();
-        CreateMiningCollectables();
-        CreateListsOfBorderMineableAreaObjects();
+    public void Start(){
+        AssignLocalVariables();
         CreateListOfMineableAreaObjects();
-        DisableMeshes();
+        CreateListsOfBorderMineableAreaObjects();
+        AddMineableSlotsToListOfMineableAreaObjects();
+    }
+    public void Update() {
+        if(ShouldMiningUIBeShown()) {
+            StartCoroutine(BeginMining());
+            showMiningUI = false;
+        }
+        if(GameISOver()) {
+            gameOver = false;
+            gameOverFR = true;
+        }
+        if(ShouldFinishUIBeShown()) {
+            showFinishUI = false;
+            StartCoroutine(CloseMiningUIAndOpenFinishUI());
+        }
+    }
+
+    private void FindBlade() {
+        blade = StaticVariables.interactScript.objectInHand.transform.GetChild(0).GetComponent<BladeInteraction>();
+    }
+    private bool ShouldMiningUIBeShown() {
+        return showMiningUI;
+    }
+
+    private bool ShouldFinishUIBeShown() {
+        return showFinishUI;
+    }
+
+    private bool GameISOver() {
+        return gameOver;
+    }
+
+    private void SetShowMiningUIToTrue() {
+        showMiningUI = true;
+    }
+
+    private void SetShowFinishUIToTrue() {
+        showFinishUI = true;
+    }
+
+    public IEnumerator BeginMining() {
+        ResetLocalVariables();
+        yield return ShowMiningUI();
+        DetermineNumberOfCollectables();
         PositionMiningCollectables();
+        DetermineNumberOfCollectables();
     }
 
-    private void CloseMiningUI() {
+
+    public IEnumerator ShowMiningUI() {
+        yield return StaticVariables.mainUI.HideUI2();
+        uiParent.gameObject.SetActive(true);
+        background.SetActive(true);
+        yield return StaticVariables.AnimateChildObjectsAppearing(uiParent);
+        yield return null;
+    }
+
+    private IEnumerator CloseMiningUIAndOpenFinishUI() {
+        yield return StaticVariables.AnimateChildObjectsDisappearing(uiParent);
         uiParent.gameObject.SetActive(false);
+        finishScreen.gameObject.SetActive(true);
+        yield return StaticVariables.AnimateChildObjectsAppearing(finishScreen);
+        yield return null;
     }
 
-    private void ShowMiningFinishUI() {
-        transform.Find("Finish Screen").gameObject.SetActive(true);
+
+    private IEnumerator CloseFinishUI() {
+        yield return StaticVariables.AnimateChildObjectsDisappearing(finishScreen);
+        finishScreen.gameObject.SetActive(false);
     }
 
-    private void CloseFinishUI() {
-        transform.Find("Finish Screen").gameObject.SetActive(false);
+    private IEnumerator ReturnToMainUI() {
+        yield return CloseFinishUI();
+        background.SetActive(false);
+        yield return StaticVariables.mainUI.ShowUI2();
     }
 
     private void CreateMiningObstructions() {
@@ -141,14 +194,18 @@ public class MiningHandler : ToolHandler
     }
 
     private void DetermineNumberOfCollectables() {
-        if(StaticVariables.interactScript.GetToolTier() == 1){
-            Debug.Log("Here 11111");
-            collectableGameObject4.SetActive(false);
-            collectableGameObject5.SetActive(false);
-            collectableGameObject6.SetActive(false);
+        if(StaticVariables.interactScript.GetToolTier() >= 1){
+            collectableGameObject1.SetActive(true);
+            collectableGameObject2.SetActive(true);
+            collectableGameObject3.SetActive(true);
+
         }
-        if(StaticVariables.interactScript.GetToolTier() == 2){
-            collectableGameObject6.SetActive(false);
+        if(StaticVariables.interactScript.GetToolTier() >= 2){
+            collectableGameObject4.SetActive(true);
+            collectableGameObject5.SetActive(true);
+        }
+        if(StaticVariables.interactScript.GetToolTier() == 3){
+            collectableGameObject6.SetActive(true);
         }
     }
 
@@ -177,6 +234,8 @@ public class MiningHandler : ToolHandler
 
     public void CreateListOfMineableAreaObjects() {
         mineableLayerGO = new List<GameObject>();
+    }    
+    public void AddMineableSlotsToListOfMineableAreaObjects() {
         GameObject gameObject;
         string str;
         for(int i = 0; i < 130; i++) {
@@ -334,7 +393,6 @@ public class MiningHandler : ToolHandler
     }
 
     private void MoveMinedCollectablesOut(Transform collectable) {
-        print("HEHHERHEHHRHERHEHE");
         collectable.transform.position = new Vector3 (collectable.position.x, collectable.position.y, 5.9f);
     }
 
@@ -366,7 +424,7 @@ public class MiningHandler : ToolHandler
             }
             else {
                 if(hitCount + 5 <= 30){
-                        int goAbove = goPosition - 13;
+                    int goAbove = goPosition - 13;
                     int goBelow = goPosition + 13;
                     int goLeft = goPosition - 1;
                     int goRight = goPosition + 1;
@@ -423,8 +481,8 @@ public class MiningHandler : ToolHandler
         StaticVariables.WaitTimeThenCallFunction(.5f,ShowRevealedCollectableItems);
         StaticVariables.WaitTimeThenCallFunction(2.5f, SetMiningParentInactive);
         StaticVariables.WaitTimeThenCallFunction(2.7f, AddRevealedCollectablesToFinishScreen);
-        StaticVariables.WaitTimeThenCallFunction(4.5f, CloseMiningUI);
-        StaticVariables.WaitTimeThenCallFunction(6f, ShowMiningFinishUI);
+        StaticVariables.WaitTimeThenCallFunction(4.5f, SetGameOverToTrue);
+        StaticVariables.WaitTimeThenCallFunction(6f, SetShowFinishUIToTrue);
     }
 
     private void ShowRevealedCollectableItems() { 
@@ -449,7 +507,6 @@ public class MiningHandler : ToolHandler
 
     private void AddItemToCollectedItemList(GameObject collectableGO, Transform collectable) {
         if(collectableGO.activeSelf){
-            print(GetItemFromCollectable(collectable));
             collectedItems.Add(GetItemFromCollectable(collectable));
         }
     }
@@ -488,13 +545,67 @@ public class MiningHandler : ToolHandler
         foreach(Item item in collectedItems) {
             StaticVariables.playerInventory.AddItemToInventory(item, 1);
         }
-        StaticVariables.WaitTimeThenCallFunction(1f, CloseFinishUI);
         StaticVariables.WaitTimeThenCallFunction(2f, StaticVariables.interactScript.DestroyCurrentInteractable);
-        ProcessInteractAnimationEnding();
         StartCoroutine(ReturnToMainUI());
+        ProcessInteractAnimationEnding();
     }
 
     private Item GetItemFromCollectable(Transform collectable) {
         return collectable.Find("Item Holder").GetComponentInChildren<Interactable>().GetItem();
+    }
+
+    public void ResetLocalVariables() {
+        largeDestroy = false;
+        gameOverFR = false;
+        hitCount = 0;
+        maximumHits = 30;
+        CreateListForCollectablesGathered();
+        ResetMiningParentSlots();
+        ClearItemsFromCollectables();
+        ClearCollectablesFromFinishScreen(); 
+        CreateMiningObstructions();
+        CreateMiningCollectables();
+        DisableMeshes();
+        print("resetting variables..");
+    }
+
+    public void ClearItemsFromCollectables() {
+        ClearDisplayCollectableItems(collectable1);
+        ClearDisplayCollectableItems(collectable2);
+        ClearDisplayCollectableItems(collectable3);
+        ClearDisplayCollectableItems(collectable4);
+        ClearDisplayCollectableItems(collectable5);
+        ClearDisplayCollectableItems(collectable6);
+    }
+
+    private void ClearCollectablesFromFinishScreen() {
+        int i = 0;
+        string str;
+        foreach(Item item in collectedItems) {
+        if(i == 0) {
+            str = "Collectable";
+        }
+        else {
+            str = "Collectable (" + i.ToString() +")";
+        }
+        transform.Find("Finish Screen").Find("Grid").Find(str).GetComponentInChildren<DisplayItem>().ClearDisplay();
+        transform.Find("Finish Screen").Find("Grid").Find(str).gameObject.SetActive(false);
+        i++;
+        }
+        
+    }
+
+    private void ResetMiningParentSlots() {
+        print("Length of mineableLayerGO " + mineableLayerGO.Count);
+        foreach(GameObject go in mineableLayerGO) {
+            if(!go.activeSelf){
+                go.SetActive(true);
+            }
+            go.GetComponentInChildren<DisplayItem>().ClearDisplay();
+        }
+    }
+    public void ClearDisplayCollectableItems(Transform collectable) {
+        collectable.GetComponentInChildren<DisplayItem>().ClearDisplay();
+        collectable.gameObject.SetActive(false);
     }
 }

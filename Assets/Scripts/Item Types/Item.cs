@@ -9,6 +9,8 @@ public class Item : ScriptableObject {
     new public string name = "New Item"; 
     [HideInInspector]
     public ItemType type;
+    [HideInInspector]
+    public int itemTier;
     public bool defaultItem = false;
     [TextArea(15,20)]
     public string description;
