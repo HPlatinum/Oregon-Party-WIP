@@ -14,6 +14,7 @@ public class Interactable : MonoBehaviour
     public int hitsCurrentlyAppliedToResource;
 
     public bool destroyParentAlso = false;
+    public bool resourceMined = false;
 
     public void Start() {
 
@@ -31,6 +32,10 @@ public class Interactable : MonoBehaviour
 
     public Item GetItem() {
         return item;
+    }
+
+    public void SetResourceMinedTrue() {
+        resourceMined = true;
     }
 
     // can be used to toggle chest/trunk inventories. You may have a better way of doing this though

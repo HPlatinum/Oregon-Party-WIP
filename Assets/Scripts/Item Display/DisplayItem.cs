@@ -46,7 +46,6 @@ public class DisplayItem : MonoBehaviour {
             SetLayerRecursively(child.gameObject, newLayer);
         }
     }
-
     public void ClearDisplay() {
         shouldRotate = false;
         foreach (Transform t in transform)

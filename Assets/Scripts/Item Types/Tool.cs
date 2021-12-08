@@ -8,9 +8,9 @@ public class Tool : Item {
     public double wear;
     public enum ToolTypes { rod, axe, pickaxe, firelighter }
     public ToolTypes toolType;
-    public int tier;
+
     public void Awake(){
         type = ItemType.Tool;
-        itemTier = tier;
     }
+
 }

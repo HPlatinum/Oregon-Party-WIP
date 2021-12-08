@@ -9,8 +9,6 @@ public class Item : ScriptableObject {
     new public string name = "New Item"; 
     [HideInInspector]
     public ItemType type;
-    [HideInInspector]
-    public int itemTier;
     public bool defaultItem = false;
     [TextArea(15,20)]
     public string description;
@@ -27,4 +25,7 @@ public class Item : ScriptableObject {
     public Vector3 inHandRotation = Vector3.zero;
     public float inHandScale = 1f;
     public bool useRightHand;
+
+    [Header ("Universal Item Stats")]
+    public int itemTier;
 }
