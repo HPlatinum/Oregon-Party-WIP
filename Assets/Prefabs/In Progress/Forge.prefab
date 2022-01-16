@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1885701069530033148
 Transform:
   m_ObjectHideFlags: 0
@@ -118,7 +118,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4502923109610909803
 Transform:
   m_ObjectHideFlags: 0
@@ -310,6 +310,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7700152561319707561}
+  - component: {fileID: 76975328955128958}
+  - component: {fileID: 2758543639484530213}
   m_Layer: 0
   m_Name: Forge
   m_TagString: Untagged
@@ -335,6 +337,40 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &76975328955128958
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7032299734542244115}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.8939922
+  m_Height: 3.2554035
+  m_Direction: 0
+  m_Center: {x: -0.10541439, y: 0.31370175, z: -0.3020599}
+--- !u!114 &2758543639484530213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7032299734542244115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db4957fd4b801fe4bbf2cf4c52ccacf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactType: 7
+  item: {fileID: 0}
+  requiredItem: {fileID: 0}
+  inventory: {fileID: 0}
+  hitsRequiredToGatherResource: 0
+  hitsCurrentlyAppliedToResource: 0
+  destroyParentAlso: 0
+  resourceMined: 0
 --- !u!1 &7327231011477218680
 GameObject:
   m_ObjectHideFlags: 0

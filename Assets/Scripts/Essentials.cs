@@ -29,6 +29,7 @@ public class Essentials : MonoBehaviour{
         StaticVariables.pickupHandler = canvas.Find("Pickup Interface").GetComponent<PickupHandler>();
         StaticVariables.woodcuttingHandler = canvas.Find("Woodcutting Interface").GetComponent<WoodcuttingHandler>();
         StaticVariables.miningHandler = canvas.Find("Mining Interface").GetComponent<MiningHandler>();
+        StaticVariables.forgeHandler = canvas.Find("Forge Interface").GetComponent<ForgeHandler>();
 
         //turn on all UI elements
         //they usually hide themselves on startup, after setting local variables

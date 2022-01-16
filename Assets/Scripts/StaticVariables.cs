@@ -28,6 +28,7 @@ public class StaticVariables
     static public PickupHandler pickupHandler;
     static public WoodcuttingHandler woodcuttingHandler;
     static public MiningHandler miningHandler;
+    static public ForgeHandler forgeHandler;
 
     static public void SetInteractButtonText(string newText) {
         interactButtonText.text = newText;

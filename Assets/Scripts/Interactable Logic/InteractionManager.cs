@@ -201,6 +201,8 @@ public class InteractionManager : MonoBehaviour {
                 return StaticVariables.woodcuttingHandler;
             case (Interactable.InteractTypes.Mining):
                 return StaticVariables.miningHandler;
+            case (Interactable.InteractTypes.Forge):
+                return StaticVariables.forgeHandler;
         }
         return null;
     }
