@@ -50,6 +50,7 @@ public class MiningHandler : ToolHandler
     public bool gameOverFR;
     private bool showMiningUI;
     private bool showFinishUI;
+    Transform miningUI;
     Transform uiParent;
     Transform finishScreen;
     Transform messageUI;
