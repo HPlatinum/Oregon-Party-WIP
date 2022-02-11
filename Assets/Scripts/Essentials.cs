@@ -31,6 +31,9 @@ public class Essentials : MonoBehaviour{
         StaticVariables.miningHandler = canvas.Find("Mining Interface").GetComponent<MiningHandler>();
         StaticVariables.forgeHandler = canvas.Find("Forge Interface").GetComponent<ForgeHandler>();
 
+        //Scene Handler
+        StaticVariables.sceneHandler = transform.Find("EventSystem").GetComponent<SceneHandler>();
+
         //turn on all UI elements
         //they usually hide themselves on startup, after setting local variables
         foreach (Transform t in transform.Find("Canvas")) {

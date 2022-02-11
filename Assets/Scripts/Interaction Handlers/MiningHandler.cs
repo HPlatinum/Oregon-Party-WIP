@@ -156,7 +156,6 @@ public class MiningHandler : ToolHandler
 
     public IEnumerator BeginMining() {
         ResetLocalVariables();
-        ShowHitUI();
         yield return ShowMiningUI();
         DetermineNumberOfCollectables();
         PositionMiningCollectables();
@@ -166,6 +165,7 @@ public class MiningHandler : ToolHandler
 
     public IEnumerator ShowMiningUI() {
         yield return StaticVariables.mainUI.HideUI2();
+        ShowHitUI();
         uiParent.gameObject.SetActive(true);
         background.SetActive(true);
         yield return StaticVariables.AnimateChildObjectsAppearing(uiParent);

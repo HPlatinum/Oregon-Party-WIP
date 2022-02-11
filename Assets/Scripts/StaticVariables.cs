@@ -10,6 +10,7 @@ public class StaticVariables
     //contains all the variables that need to be retained in between scenes
 
     static public InteractionManager interactScript;
+    static public SceneHandler sceneHandler;
     static public Invector.vCharacterController.vThirdPersonController controller;
     static public Animator playerAnimator;
     static public Essentials essentials;
