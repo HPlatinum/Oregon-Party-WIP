@@ -30,6 +30,7 @@ public class StaticVariables
     static public WoodcuttingHandler woodcuttingHandler;
     static public MiningHandler miningHandler;
     static public ForgeHandler forgeHandler;
+    static public Timer timer;
 
     static public void SetInteractButtonText(string newText) {
         interactButtonText.text = newText;

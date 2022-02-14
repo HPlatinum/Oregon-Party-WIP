@@ -34,6 +34,9 @@ public class Essentials : MonoBehaviour{
         //Scene Handler
         StaticVariables.sceneHandler = transform.Find("EventSystem").GetComponent<SceneHandler>();
 
+        //Timer
+        StaticVariables.timer = transform.Find("EventSystem").GetComponent<Timer>();
+
         //turn on all UI elements
         //they usually hide themselves on startup, after setting local variables
         foreach (Transform t in transform.Find("Canvas")) {

@@ -10,7 +10,6 @@ public class WoodcuttingHandler : ToolHandler
     public bool inWoodcuttingScene;
     public bool gameOver;
     public bool showFinishUI;
-    public Text timerText;
     public Text timerUIText;
     public float counter;
     Transform uiParent;
@@ -74,7 +73,10 @@ public class WoodcuttingHandler : ToolHandler
             showFinishUI = false;
             // StartCoroutine(CloseMiningUIAndOpenFinishUI());
         }
-
+        if(StaticVariables.timer.TimerIsRunning() && timerUIText.text != StaticVariables.timer.GetTimeForDisplaying()) {
+            timerUIText.text = StaticVariables.timer.GetTimeForDisplaying();
+            SetTimerTextColor();
+        }
     }
 
     public void StartWoodcuttingGame() {
@@ -91,23 +93,7 @@ public class WoodcuttingHandler : ToolHandler
         blade = StaticVariables.interactScript.objectInHand.transform.GetChild(0).GetComponent<BladeInteraction>();
     }
 
-    // public IEnumerator ShowTimer() {
-    //     yield return StaticVariables.AnimateChildObjectsAppearing(timerUI);
-    // }
-
-    // public IEnumerator restartTimer(float timerTimeInSeconds) {
-    //     counter = 0;
-    //     while(counter < timerTimeInSeconds) {
-    //         counter += Time.deltaTime;
-    //         timerText.text = counter.ToString();
-    //         SetTimerText();
-    //         yield return null;
-    //     }
-    // }
-
-    // public void SetTimerText() {
-    //     timerUIText = timerText;
-    // }
+    
 
     public bool GameISOver() {
         return gameOver;
@@ -118,8 +104,8 @@ public class WoodcuttingHandler : ToolHandler
     }
 
     public IEnumerator BeginWoodcutting() {
+        StaticVariables.timer.StartGameTimer(40);
         yield return ShowWoodcuttingUI();
-        // StartCoroutine(restartTimer(30));
     }
 
     public IEnumerator ShowWoodcuttingUI() {
@@ -127,6 +113,22 @@ public class WoodcuttingHandler : ToolHandler
         uiParent.gameObject.SetActive(true);
         yield return StaticVariables.AnimateChildObjectsAppearing(uiParent);
         yield return null;
+    }
+
+    public void SetTimerTextColor() {
+        if (GetCurrentTimerTime() >= 30 && timerUIText.color != Color.green) {
+            timerUIText.color = Color.green;
+        }
+        else if(GetCurrentTimerTime() < 30 && GetCurrentTimerTime() > 10 && timerUIText.color != Color.yellow) {
+            timerUIText.color = Color.yellow;
+        }
+        else if(GetCurrentTimerTime() < 10 && timerUIText.color != Color.red) {
+            timerUIText.color = Color.red;
+        }
+    }
+
+    public float GetCurrentTimerTime() {
+        return StaticVariables.timer.GetTimeForChangingDisplayColor();
     }
 
 }
