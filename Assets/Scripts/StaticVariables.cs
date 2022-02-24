@@ -57,6 +57,9 @@ public class StaticVariables
     }
 
     static public IEnumerator AnimateChildObjectsAppearing(Transform transform) {
+        if (transform.childCount == 0)
+            yield break;
+
         foreach (Transform t in transform) {
             t.gameObject.AddComponent<AnimatedUIAppearing>();
             t.gameObject.SetActive(true);
@@ -74,6 +77,9 @@ public class StaticVariables
     }
 
     static public IEnumerator AnimateChildObjectsDisappearing(Transform transform, bool SetParentInactiveAfterwards=false) {
+        if (transform.childCount == 0)
+            yield break;
+
         foreach (Transform t in transform)
             t.gameObject.AddComponent<AnimatedUIRemoval>();
 

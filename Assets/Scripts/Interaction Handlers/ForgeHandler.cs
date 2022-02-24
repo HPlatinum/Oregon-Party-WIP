@@ -5,7 +5,9 @@ using DG.Tweening;
 using UnityEngine.UI;
 
 public class ForgeHandler : InteractionHandler {
-    
+
+    private Transform forgeInterface;
+    private GameObject background;
     /*
     private Transform selectionInterface;
     private Transform cookInterface;
@@ -40,6 +42,10 @@ public class ForgeHandler : InteractionHandler {
 
     //public Material unlitMaterial;
     //public Material litMaterial;
+
+    private int scrapRemaining = 0;
+    public float timeBetweenUIOpeningAndMinigameStart = 1f;
+    public float timeBetweenScrapDrops = 0.5f;
 
     #region Inherited Functions
 
@@ -76,6 +82,63 @@ public class ForgeHandler : InteractionHandler {
     #endregion
 
     #region Show/Hide UI Functions
+
+    private IEnumerator ShowForgeUI() {
+
+        yield return StaticVariables.mainUI.HideUI2();
+        //yield return HideAllUI();
+        background.SetActive(true);
+        forgeInterface.gameObject.SetActive(true);
+
+        yield return StaticVariables.AnimateChildObjectsAppearing(forgeInterface);
+
+        StartForging();
+
+        yield return null;
+    }
+
+    private void QuitForgeUI() {
+        StaticVariables.currentInteractionHandler = null;
+        StaticVariables.PlayAnimation("Cooking - Stand");
+        StartCoroutine(ReturnToMainUI());
+    }
+
+    private IEnumerator ReturnToMainUI() {
+        yield return HideAllUI();
+        background.SetActive(false);
+        yield return StaticVariables.mainUI.ShowUI2();
+    }
+
+    private IEnumerator HideAllUI() {
+
+        if (forgeInterface.gameObject.activeSelf)
+            yield return StaticVariables.AnimateChildObjectsDisappearing(forgeInterface, true);
+
+        yield return null;
+    }
+
+    private void StartForging() {
+        scrapRemaining = 20;
+
+        StaticVariables.WaitTimeThenCallFunction(timeBetweenUIOpeningAndMinigameStart, DropOneScrap);
+
+    }
+
+    private void DropOneScrap() {
+        print(scrapRemaining);
+        scrapRemaining--;
+        if (scrapRemaining > 0)
+            StaticVariables.WaitTimeThenCallFunction(timeBetweenScrapDrops, DropOneScrap);
+        else //there should be no else clause here - end forging should go in the "process scrap hitting bottom" function
+            EndForging();
+    }
+
+    private void EndForging() {
+        print("the last scrap made it to the bottom, ending forging");
+        //give player the amount of metal they are owed
+        //remove the scrap from their inventory
+        QuitForgeUI();
+    }
 
     /*
     private IEnumerator ShowSelectionUI() {
@@ -161,6 +224,8 @@ public class ForgeHandler : InteractionHandler {
 
     void Start() {
         AssignLocalVariables();
+        background.SetActive(false);
+        forgeInterface.gameObject.SetActive(false);
         /*
         background.SetActive(false);
         selectionInterface.gameObject.SetActive(false);
@@ -170,7 +235,7 @@ public class ForgeHandler : InteractionHandler {
 
     private void Update() {
         if (ShouldForgeUIBeShown()) {
-            //StartCoroutine(ShowSelectionUI());
+            StartCoroutine(ShowForgeUI());
             print("show UI now");
             showForgeUIWhenAnimatorIsIdle = false;
         }
@@ -185,6 +250,8 @@ public class ForgeHandler : InteractionHandler {
 }
 
     private void AssignLocalVariables() {
+        forgeInterface = transform.Find("forge interface");
+        background = transform.Find("Background").gameObject;
         /*
         selectionInterface = transform.Find("Selection");
         cookInterface = transform.Find("Cook Item");
