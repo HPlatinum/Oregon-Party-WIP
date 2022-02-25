@@ -32,20 +32,20 @@ public class ForgeHandler : InteractionHandler {
     private GameObject flameObject;
     private GameObject woodObject;
     */
-    private GameObject litForge;
-    private GameObject unlitForge;
+    private GameObject forgeObject;
+    private GameObject lightSource;
+    private GameObject smoke;
 
     private bool showForgeUIWhenAnimatorIsIdle = false;
 
     //public Item requiredWoodItem;
     private bool currentlyLightingForge = false;
 
-    //public Material unlitMaterial;
-    //public Material litMaterial;
-
     private int scrapRemaining = 0;
     public float timeBetweenUIOpeningAndMinigameStart = 1f;
     public float timeBetweenScrapDrops = 0.5f;
+
+    public Material litForgeMaterial;
 
     #region Inherited Functions
 
@@ -270,12 +270,13 @@ public class ForgeHandler : InteractionHandler {
     private void SetForgeInteractable() {
         interactableObject = StaticVariables.interactScript.closestInteractable.transform;
 
-        litForge = interactableObject.Find("Lit Forge").gameObject;
-        unlitForge = interactableObject.Find("Unlit Forge").gameObject;
+        forgeObject = interactableObject.Find("Forge Object").gameObject;
+        lightSource = forgeObject.transform.Find("Lightsource").gameObject;
+        smoke = forgeObject.transform.Find("Smoke").gameObject;
     }
 
     private bool IsForgeLit() {
-        return litForge.activeSelf;
+        return lightSource.activeSelf;
     }
 
     private void LightForge() {
@@ -289,7 +290,12 @@ public class ForgeHandler : InteractionHandler {
     
 
     private void ShowLitForge() {
-        unlitForge.SetActive(false);
-        litForge.SetActive(true);
+        lightSource.SetActive(true);
+        smoke.SetActive(true);
+
+        //change the material of the forge
+        Material[] newMaterials = forgeObject.GetComponent<MeshRenderer>().materials;
+        newMaterials[1] = litForgeMaterial;
+        forgeObject.GetComponent<MeshRenderer>().materials = newMaterials;
     }
 }
