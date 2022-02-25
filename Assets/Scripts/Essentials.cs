@@ -32,10 +32,10 @@ public class Essentials : MonoBehaviour{
         StaticVariables.forgeHandler = canvas.Find("Forge Interface").GetComponent<ForgeHandler>();
 
         //Scene Handler
-        StaticVariables.sceneHandler = transform.Find("EventSystem").GetComponent<SceneHandler>();
+        StaticVariables.sceneHandler = transform.Find("Scene Handler").GetComponent<SceneHandler>();
 
         //Timer
-        StaticVariables.timer = transform.Find("EventSystem").GetComponent<Timer>();
+        StaticVariables.timer = transform.Find("Timer").GetComponent<Timer>();
 
         //turn on all UI elements
         //they usually hide themselves on startup, after setting local variables

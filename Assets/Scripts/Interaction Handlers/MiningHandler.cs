@@ -70,7 +70,7 @@ public class MiningHandler : ToolHandler
             FindBlade();
             StaticVariables.WaitTimeThenCallFunction(.6f, blade.EnableBlade);
             StaticVariables.WaitTimeThenCallFunction(2.5f, SetShowMiningUIToTrue);
-            StaticVariables.mainUI.HideUI();
+            StaticVariables.mainUI.HideUI2();
         }
     }
 

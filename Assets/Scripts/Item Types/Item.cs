@@ -28,4 +28,8 @@ public class Item : ScriptableObject {
 
     [Header ("Universal Item Stats")]
     public int itemTier;
+
+    public virtual double ReturnWear() {
+        return 1110;
+    }
 }

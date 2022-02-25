@@ -1,35 +1,54 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
+using DG.Tweening;
 
 public class WoodcuttingHandler : ToolHandler
 {
+    public float scaleUP;
+    public int totalGameTime;
     public bool showWoodcuttingUI;
     public bool inWoodcuttingScene;
     public bool gameOver;
     public bool showFinishUI;
+    public bool tweenRunning;
+    public bool playerInWoodcuttingState;
+    public bool playerInSharpeningState;
     public Text timerUIText;
     public float counter;
+    Timer timeForReward;
     Transform uiParent;
     Transform finishScreen;
     Transform messageUI;
     Transform timerUI;
+    GameObject treeMiningSpot;
+    GameObject storageArea;
+    GameObject sharpeningStation;
 
     #region Inherited Functions
 
     public override void ProcessInteractAction() {
         if (!StaticVariables.interactScript.currentlyInteracting) {
-            StaticVariables.interactScript.SetPreviousItemInHand();
-            StaticVariables.interactScript.PutFirstToolOfTypeInHand(Tool.ToolTypes.axe);
-            StaticVariables.SetupPlayerInteractionWithHighlightedObject();
-            StaticVariables.interactScript.currentlyInteracting = true;
-            StaticVariables.PlayAnimation("Swing Axe", 1);
-            FindBlade();
-            StaticVariables.WaitTimeThenCallFunction(.6f, blade.EnableBlade);
-            StaticVariables.WaitTimeThenCallFunction(2.5f,StartWoodcuttingGame);
+            if(StaticVariables.sceneHandler.GetSceneName() != "Woodcutting Minigame") {
+                StaticVariables.interactScript.SetPreviousItemInHand();
+                StaticVariables.interactScript.PutFirstToolOfTypeInHand(Tool.ToolTypes.axe);
+                StaticVariables.SetupPlayerInteractionWithHighlightedObject();
+                StaticVariables.interactScript.currentlyInteracting = true;
+                StaticVariables.PlayAnimation("Swing Axe", 1);
+                FindBlade();
+                StaticVariables.WaitTimeThenCallFunction(.6f, blade.EnableBlade);
+                StaticVariables.WaitTimeThenCallFunction(2.5f,StartWoodcuttingGame);
+            }
+            else {
+                StaticVariables.interactScript.SetPreviousItemInHand();
+                StaticVariables.interactScript.PutFirstToolOfTypeInHand(Tool.ToolTypes.axe);
+                StaticVariables.SetupPlayerInteractionWithHighlightedObject();
+                StaticVariables.interactScript.currentlyInteracting = true;
+                StaticVariables.PlayAnimation("Swing Axe", 1);
+                StaticVariables.WaitTimeThenCallFunction(.5f,ActivePlayerCuttingWood);
+            }
         }
+        
     }
 
     public override void ProcessInteractAnimationEnding() {
@@ -52,6 +71,7 @@ public class WoodcuttingHandler : ToolHandler
         messageUI = transform.Find("Message UI");
         timerUI = uiParent.Find("Timer");
         timerUIText = timerUI.GetComponentInChildren<Text>();
+        totalGameTime = 150;
     }
     #endregion
 
@@ -63,6 +83,7 @@ public class WoodcuttingHandler : ToolHandler
     public void Update() {
         if(ShouldWoodcuttingUIBeShown()) {
             StartCoroutine(BeginWoodcutting());
+            ResetLocalVariables();
             showWoodcuttingUI = false;
         }
         if(GameISOver()) {
@@ -76,11 +97,41 @@ public class WoodcuttingHandler : ToolHandler
         if(StaticVariables.timer.TimerIsRunning() && timerUIText.text != StaticVariables.timer.GetTimeForDisplaying()) {
             timerUIText.text = StaticVariables.timer.GetTimeForDisplaying();
             SetTimerTextColor();
+            ResizeTimer();
         }
-    }
 
+        if(PlayerIsCuttingWood()) {
+            if(timeForReward.GetTimeForChangingDisplayColor() == 0) {
+                StaticVariables.playerInventory.AddItemToInventory(StaticVariables.interactScript.GetClosestInteractable().GetItem(), 1);
+                playerInWoodcuttingState = false;
+            }
+        }
+        if(PlayerIsSharpeningAxe()) {
+            if(timeForReward.GetTimeForChangingDisplayColor() == 0) {
+                //check wear. Set wear
+                playerInSharpeningState = false;
+            }
+        }
+        
+    }
     public void StartWoodcuttingGame() {
         StaticVariables.sceneHandler.LoadScene(1);
+    }
+
+    private void ActivePlayerCuttingWood() {
+        print("Here");
+        if(StaticVariables.interactScript.GetClosestInteractable().GetComponent<Interactable>().storedItemCount > 0) {
+            playerInWoodcuttingState = true;
+            timeForReward = StaticVariables.interactScript.GetClosestInteractable().GetComponentInChildren<Timer>();
+            if(!timeForReward.TimerIsRunning()) {
+            timeForReward.StartGameTimer(3.5f);
+        }
+        }
+        playerInWoodcuttingState = true;
+        timeForReward = StaticVariables.interactScript.GetClosestInteractable().GetComponentInChildren<Timer>();
+        if(!timeForReward.TimerIsRunning()) {
+            timeForReward.StartGameTimer(3.5f);
+        }
     }
     private bool ShouldWoodcuttingUIBeShown() {
         if(StaticVariables.sceneHandler.GetSceneName() == "Woodcutting Minigame" && !inWoodcuttingScene){
@@ -89,11 +140,29 @@ public class WoodcuttingHandler : ToolHandler
         }
         return showWoodcuttingUI;
     }
+
+    public bool PlayerIsCuttingWood() {
+        return playerInWoodcuttingState;
+    }
+
+    public bool PlayerIsSharpeningAxe() {
+        return playerInSharpeningState;
+    }
     private void FindBlade() {
         blade = StaticVariables.interactScript.objectInHand.transform.GetChild(0).GetComponent<BladeInteraction>();
     }
 
     
+    public void ResetLocalVariables() { 
+        treeMiningSpot = GameObject.Find("Tree");
+        storageArea = GameObject.Find("Storage");
+        sharpeningStation = GameObject.Find("Sharpening Station");
+        print(treeMiningSpot);
+        print(storageArea);
+        print(sharpeningStation);
+        tweenRunning = false;
+        scaleUP = 1f;
+    }
 
     public bool GameISOver() {
         return gameOver;
@@ -104,7 +173,7 @@ public class WoodcuttingHandler : ToolHandler
     }
 
     public IEnumerator BeginWoodcutting() {
-        StaticVariables.timer.StartGameTimer(40);
+        StaticVariables.timer.StartGameTimer(totalGameTime);
         yield return ShowWoodcuttingUI();
     }
 
@@ -127,8 +196,67 @@ public class WoodcuttingHandler : ToolHandler
         }
     }
 
+    public void ResizeTimer() {
+        if(IsTimeWithinSecondsRangeForScaling(9)){
+            float scaleUP = 1.5f;
+            float duration = .2f;
+            ScaleUpTimer(scaleUP, duration);
+            StaticVariables.WaitTimeThenCallFunction(.2f,ScaleDownTimer);
+        }
+        if(IsTimeWithinTensOfSecondsRangeForScaling()) {
+            float scaleUP = 1.2f;
+            float duration = .2f;
+            ScaleUpTimer(scaleUP, duration);
+            StaticVariables.WaitTimeThenCallFunction(.2f,ScaleDownTimer);
+        }
+
+    }
+
+    public bool IsTimeWithinSecondsRangeForScaling(int time) {
+        bool withinRange = false;
+        for(int i = time; i > 0; i--) {
+            withinRange = GetCurrentTimerTime() < i + .05 && GetCurrentTimerTime() > i && !tweenRunning;
+            if(withinRange == true) {
+                break;
+            }
+        }
+        return withinRange;
+    }
+
+    public bool IsTimeWithinTensOfSecondsRangeForScaling() {
+        bool withinRange = false;
+        if(GetCurrentTimerTime() >= 10) {
+            for(int i = totalGameTime / 10; i > 0; i--) {
+                if(GetCurrentTimerTime() - Mathf.Round(GetCurrentTimerTime()) < .05 && Mathf.Round(GetCurrentTimerTime()) / 10 == i && !tweenRunning) {
+                    withinRange = true;
+                    break;
+                }
+            }
+        }
+        return withinRange;
+    }
+
     public float GetCurrentTimerTime() {
         return StaticVariables.timer.GetTimeForChangingDisplayColor();
     }
+
+    public void ScaleUpTimer(float scaleUP, float duration) {
+        ChangeTweenRunningStatus();
+        timerUI.transform.DOScale(scaleUP, duration);
+    }
+    public void ScaleDownTimer() {
+        StaticVariables.WaitTimeThenCallFunction(.7f, ChangeTweenRunningStatus);
+        float endScale = 1f;
+        float duration = .2f;
+        timerUI.transform.DOScale(endScale, duration);
+    }
+
+    public void ChangeTweenRunningStatus() {
+        tweenRunning = !tweenRunning;
+    }
+
+    //drop twist timer, then drop it
+
+    //pop up end screen
 
 }
