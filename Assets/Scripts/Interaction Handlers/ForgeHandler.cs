@@ -6,46 +6,38 @@ using UnityEngine.UI;
 
 public class ForgeHandler : InteractionHandler {
 
-    private Transform forgeInterface;
+    private Transform forgeUI;
     private GameObject background;
-    /*
-    private Transform selectionInterface;
-    private Transform cookInterface;
-    private GameObject background;
-    private DisplayItem displayItem;
+    private Text scrapRemainingText;
+    private Text metalForgedText;
+    private Transform scrapMovingInterface;
+    private Transform scrapSpawnArea;
+    private Transform metalDestination;
+    private Transform dirtDestination;
 
-    private Text cookItemName;
-    private Text cookItemQuantity;
-
-    private int cookAmount = 1;
-    private Item cookableItem;
-    private int cookableItemTotalQuantity = -1;
-
-    private Text cookAmountText;
-
-    List<(Item, int)> allRawFood;
-
-    List<int> allowedCookableQuantities;
-    */
     private Transform interactableObject;
-    /*
-    private GameObject flameObject;
-    private GameObject woodObject;
-    */
+
     private GameObject forgeObject;
     private GameObject lightSource;
     private GameObject smoke;
 
     private bool showForgeUIWhenAnimatorIsIdle = false;
-
-    //public Item requiredWoodItem;
+    
     private bool currentlyLightingForge = false;
 
     private int scrapRemaining = 0;
+    private int metalForged = 0;
     public float timeBetweenUIOpeningAndMinigameStart = 1f;
     public float timeBetweenScrapDrops = 0.5f;
 
     public Material litForgeMaterial;
+
+    public GameObject metalGO;
+    public GameObject dirtGO;
+    private List<GameObject> fallingObjects = new List<GameObject>();
+
+    [Range(1, 100)]
+    public int percentScrapIsMetal = 80;
 
     #region Inherited Functions
 
@@ -86,11 +78,15 @@ public class ForgeHandler : InteractionHandler {
     private IEnumerator ShowForgeUI() {
 
         yield return StaticVariables.mainUI.HideUI2();
-        //yield return HideAllUI();
         background.SetActive(true);
-        forgeInterface.gameObject.SetActive(true);
+        forgeUI.gameObject.SetActive(true);
 
-        yield return StaticVariables.AnimateChildObjectsAppearing(forgeInterface);
+        scrapRemaining = 20;
+        metalForged = 0;
+        UpdateScrapRemainingText();
+        UpdateMetalForgedText();
+
+        yield return StaticVariables.AnimateChildObjectsAppearing(forgeUI);
 
         StartForging();
 
@@ -111,26 +107,112 @@ public class ForgeHandler : InteractionHandler {
 
     private IEnumerator HideAllUI() {
 
-        if (forgeInterface.gameObject.activeSelf)
-            yield return StaticVariables.AnimateChildObjectsDisappearing(forgeInterface, true);
+        if (forgeUI.gameObject.activeSelf)
+            yield return StaticVariables.AnimateChildObjectsDisappearing(forgeUI, true);
 
         yield return null;
     }
 
     private void StartForging() {
-        scrapRemaining = 20;
-
+        
         StaticVariables.WaitTimeThenCallFunction(timeBetweenUIOpeningAndMinigameStart, DropOneScrap);
 
     }
 
     private void DropOneScrap() {
-        print(scrapRemaining);
+        CreateRandomScrap();
         scrapRemaining--;
+        UpdateScrapRemainingText();
         if (scrapRemaining > 0)
             StaticVariables.WaitTimeThenCallFunction(timeBetweenScrapDrops, DropOneScrap);
-        else //there should be no else clause here - end forging should go in the "process scrap hitting bottom" function
+    }
+
+    private void CreateRandomScrap() {
+        //randomly determine if the scrap is metal or dirt
+        int r = Random.Range(1, 101);
+        bool isMetal = r <= percentScrapIsMetal;
+        GameObject prefab = metalGO;
+        if (!isMetal)
+            prefab = dirtGO;
+
+        //create the new object
+        GameObject newItem = GameObject.Instantiate(prefab);
+        fallingObjects.Add(newItem);
+
+        //set the transforms
+        newItem.transform.SetParent(scrapMovingInterface);
+        newItem.transform.localPosition = scrapSpawnArea.localPosition;
+        newItem.layer = 5;
+        newItem.transform.rotation = Quaternion.Euler(Random.Range(0, 359), 90, -90);
+        newItem.transform.localScale *= 4;
+
+        //randomly determine if the scrap moves to the metal or dirt destination
+        bool movesToMetal = Random.Range(0, 2) == 1;
+        Transform dest = metalDestination;
+        if (!movesToMetal)
+            dest = dirtDestination;
+
+        //start the object moving down the interface
+        if (isMetal)
+            newItem.transform.DOLocalMove(dest.localPosition, 3f).SetEase(Ease.Linear).OnComplete(MetalHitBottom);
+        else
+            newItem.transform.DOLocalMove(dest.localPosition, 3f).SetEase(Ease.Linear).OnComplete(DirtHitBottom);
+    }
+
+    private void MetalHitBottom() {
+        if (IsObjectInMetalDestination(fallingObjects[0])) {
+            metalForged++;
+            UpdateMetalForgedText();
+        }
+
+        DestroyFirstFallingObject();
+        CheckIfThereAreNoMoreFallingObjects();
+    }
+
+    private bool IsObjectInMetalDestination(GameObject go) {
+        //get the object's local position
+        Vector2 objPos = new Vector2(go.transform.localPosition.x, go.transform.localPosition.y);
+        
+        
+        //get the recttransform's bounds
+        RectTransform rt = metalDestination.GetComponent<RectTransform>();
+        float leftSide = rt.anchoredPosition.x - rt.rect.width / 2;
+        float rightSide = rt.anchoredPosition.x + rt.rect.width / 2;
+        float topSide = rt.anchoredPosition.y + rt.rect.height / 2;
+        float bottomSide = rt.anchoredPosition.y - rt.rect.height / 2;
+
+        //see uf the object is inside the bounds
+        if (objPos.x >= leftSide &&
+            objPos.x <= rightSide &&
+            objPos.y >= bottomSide &&
+            objPos.y <= topSide)
+                return true;
+        
+         return false;
+    }
+
+    private void DirtHitBottom() {
+        DestroyFirstFallingObject();
+        CheckIfThereAreNoMoreFallingObjects();
+    }
+
+    private void CheckIfThereAreNoMoreFallingObjects() {
+        if ((fallingObjects.Count == 0) && (scrapRemaining == 0))
             EndForging();
+    }
+
+    private void DestroyFirstFallingObject() {
+        GameObject obj = fallingObjects[0];
+        GameObject.Destroy(obj);
+        fallingObjects.RemoveAt(0);
+    }
+
+    private void UpdateScrapRemainingText() {
+        scrapRemainingText.text = scrapRemaining + " Scrap Remaining";
+    }
+
+    private void UpdateMetalForgedText() {
+        metalForgedText.text = metalForged + " Metal Forged";
     }
 
     private void EndForging() {
@@ -140,97 +222,12 @@ public class ForgeHandler : InteractionHandler {
         QuitForgeUI();
     }
 
-    /*
-    private IEnumerator ShowSelectionUI() {
-
-        yield return StaticVariables.mainUI.HideUI2();
-        yield return HideAllUI();
-        background.SetActive(true);
-        selectionInterface.gameObject.SetActive(true);
-       
-        yield return StaticVariables.AnimateChildObjectsAppearing(selectionInterface);
-        
-        DisplayRawFoodFromInventory();
-
-        yield return null;
-    }
-
-    private IEnumerator ShowCookingUI(Item item, int quantity) {
-        yield return StaticVariables.mainUI.HideUI2();
-        yield return HideAllUI();
-        background.SetActive(true);
-        cookInterface.gameObject.SetActive(true);
-
-        DisplayItemInCookingInterface(item, quantity);
-        DisplayCookAmount();
-
-        yield return StaticVariables.AnimateChildObjectsAppearing(cookInterface);
-        
-        yield return null;
-    }
-
-    public void QuitSelectionUI() {
-        StaticVariables.currentInteractionHandler = null;
-        StaticVariables.PlayAnimation("Cooking - Stand");
-        StartCoroutine(ReturnToMainUI());
-    }
-
-    private IEnumerator ReturnToMainUI() {
-        yield return HideAllUI();
-        background.SetActive(false);
-        yield return StaticVariables.mainUI.ShowUI2();
-    }
-
-    private IEnumerator HideAllUI() {
-
-        if (selectionInterface.gameObject.activeSelf)
-            yield return StaticVariables.AnimateChildObjectsDisappearing(selectionInterface, true);
-
-        else if (cookInterface.gameObject.activeSelf)
-            yield return StaticVariables.AnimateChildObjectsDisappearing(cookInterface, true);
-        
-        yield return null;
-    }
-
-    public void QuitCookingUI() {
-        StartCoroutine(ShowSelectionUI());
-        cookableItem = null;
-        cookableItemTotalQuantity = -1;
-        allowedCookableQuantities = null;
-    }
-
-    private void DisplayItemInCookingInterface(Item item, int quantity) {
-
-        cookItemName.text = item.name;
-        cookItemQuantity.text = quantity + " in full Inventory";
-
-        displayItem.AddItemAsChild(item, 1.2f);
-        displayItem.shouldRotate = true;
-
-    }
-
-    private void DisplayRawFoodFromInventory() {
-        ItemType itemType = ItemType.RawFood;
-        Inventory inventory = StaticVariables.playerInventory;
-        InventorySlotUI.OnClickEffect onClick = InventorySlotUI.OnClickEffect.CookingInterface;
-        string inventoryTitle = "Raw Food";
-
-        compactInventory.SetupValues(onClick, inventoryTitle);
-        compactInventory.ClearAllItemDisplay();
-        allRawFood = compactInventory.DisplayAllItemsOfTypeFromInventory(itemType, inventory);
-    }
-    */
     #endregion
 
     void Start() {
         AssignLocalVariables();
         background.SetActive(false);
-        forgeInterface.gameObject.SetActive(false);
-        /*
-        background.SetActive(false);
-        selectionInterface.gameObject.SetActive(false);
-        cookInterface.gameObject.SetActive(false);
-        */
+        forgeUI.gameObject.SetActive(false);
     }
 
     private void Update() {
@@ -250,21 +247,14 @@ public class ForgeHandler : InteractionHandler {
 }
 
     private void AssignLocalVariables() {
-        forgeInterface = transform.Find("forge interface");
+        forgeUI = transform.Find("UI");
         background = transform.Find("Background").gameObject;
-        /*
-        selectionInterface = transform.Find("Selection");
-        cookInterface = transform.Find("Cook Item");
-        background = transform.Find("Background").gameObject;
-        compactInventory = selectionInterface.Find("Compact Inventory").GetComponent<CompactInventory>();
-        displayItem = cookInterface.Find("Item Model").Find("Display Item").GetComponent<DisplayItem>();
-
-
-        cookItemName = cookInterface.Find("Name").Find("Text").GetComponent<Text>();
-        cookItemQuantity = cookInterface.Find("Quantity").Find("Text").GetComponent<Text>();
-
-        cookAmountText = cookInterface.Find("Cook X").Find("Text").GetComponent<Text>();
-        */
+        scrapRemainingText = forgeUI.Find("Scrap Remaining").Find("Text").GetComponent<Text>();
+        metalForgedText = forgeUI.Find("Metal Forged").Find("Text").GetComponent<Text>();
+        scrapMovingInterface = forgeUI.Find("Scrap Moving Interface");
+        scrapSpawnArea = scrapMovingInterface.Find("Spawn Area");
+        metalDestination = scrapMovingInterface.Find("Metal Destination");
+        dirtDestination = scrapMovingInterface.Find("Dirt Destination");
     }
 
     private void SetForgeInteractable() {
