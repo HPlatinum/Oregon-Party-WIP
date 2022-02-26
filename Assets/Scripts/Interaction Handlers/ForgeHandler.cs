@@ -143,8 +143,8 @@ public class ForgeHandler : InteractionHandler {
         newItem.transform.SetParent(scrapMovingInterface);
         newItem.transform.localPosition = scrapSpawnArea.localPosition;
         newItem.layer = 5;
-        newItem.transform.rotation = Quaternion.Euler(Random.Range(0, 359), 90, -90);
-        newItem.transform.localScale *= 4;
+        newItem.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 359));
+        newItem.transform.localScale *= 200;
 
         //randomly determine if the scrap moves to the metal or dirt destination
         bool movesToMetal = Random.Range(0, 2) == 1;
