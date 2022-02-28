@@ -14,6 +14,7 @@ public class WoodcuttingHandler : ToolHandler
     public bool tweenRunning;
     public bool playerInWoodcuttingState;
     public bool playerInSharpeningState;
+    public bool playerIsInFinalAnimationState;
     public Text timerUIText;
     public float counter;
     Timer timeForReward;
@@ -33,7 +34,6 @@ public class WoodcuttingHandler : ToolHandler
                 StaticVariables.interactScript.SetPreviousItemInHand();
                 StaticVariables.interactScript.PutFirstToolOfTypeInHand(Tool.ToolTypes.axe);
                 StaticVariables.SetupPlayerInteractionWithHighlightedObject();
-                StaticVariables.interactScript.currentlyInteracting = true;
                 StaticVariables.PlayAnimation("Swing Axe", 1);
                 FindBlade();
                 StaticVariables.WaitTimeThenCallFunction(.6f, blade.EnableBlade);
@@ -43,9 +43,7 @@ public class WoodcuttingHandler : ToolHandler
                 StaticVariables.interactScript.SetPreviousItemInHand();
                 StaticVariables.interactScript.PutFirstToolOfTypeInHand(Tool.ToolTypes.axe);
                 StaticVariables.SetupPlayerInteractionWithHighlightedObject();
-                StaticVariables.interactScript.currentlyInteracting = true;
-                StaticVariables.PlayAnimation("Swing Axe", 1);
-                StaticVariables.WaitTimeThenCallFunction(.5f,ActivePlayerCuttingWood);
+                ActivePlayerCuttingWood();
             }
         }
         
@@ -101,9 +99,14 @@ public class WoodcuttingHandler : ToolHandler
         }
 
         if(PlayerIsCuttingWood()) {
+            if(Mathf.Round(timeForReward.GetTimeForChangingDisplayColor()) == 2 && !playerIsInFinalAnimationState) {
+                playerIsInFinalAnimationState = true;
+                StaticVariables.PlayAnimation("Swing Axe", 1);
+            }
             if(timeForReward.GetTimeForChangingDisplayColor() == 0) {
                 StaticVariables.playerInventory.AddItemToInventory(StaticVariables.interactScript.GetClosestInteractable().GetItem(), 1);
                 playerInWoodcuttingState = false;
+                playerIsInFinalAnimationState = false;
             }
         }
         if(PlayerIsSharpeningAxe()) {
@@ -119,20 +122,18 @@ public class WoodcuttingHandler : ToolHandler
     }
 
     private void ActivePlayerCuttingWood() {
-        print("Here");
         if(StaticVariables.interactScript.GetClosestInteractable().GetComponent<Interactable>().storedItemCount > 0) {
+            StaticVariables.PlayAnimation("Swing Axe Loop", 1);
             playerInWoodcuttingState = true;
             timeForReward = StaticVariables.interactScript.GetClosestInteractable().GetComponentInChildren<Timer>();
             if(!timeForReward.TimerIsRunning()) {
-            timeForReward.StartGameTimer(3.5f);
-        }
-        }
-        playerInWoodcuttingState = true;
-        timeForReward = StaticVariables.interactScript.GetClosestInteractable().GetComponentInChildren<Timer>();
-        if(!timeForReward.TimerIsRunning()) {
-            timeForReward.StartGameTimer(3.5f);
+                print("Weeeeeeeee");
+                timeForReward.StartGameTimer(7f);
+                print(timeForReward);
+            }
         }
     }
+
     private bool ShouldWoodcuttingUIBeShown() {
         if(StaticVariables.sceneHandler.GetSceneName() == "Woodcutting Minigame" && !inWoodcuttingScene){
             inWoodcuttingScene = true;
@@ -162,6 +163,7 @@ public class WoodcuttingHandler : ToolHandler
         print(sharpeningStation);
         tweenRunning = false;
         scaleUP = 1f;
+        playerIsInFinalAnimationState = false;
     }
 
     public bool GameISOver() {
@@ -178,7 +180,7 @@ public class WoodcuttingHandler : ToolHandler
     }
 
     public IEnumerator ShowWoodcuttingUI() {
-        yield return StaticVariables.mainUI.HideUI2();
+        // yield return StaticVariables.mainUI.HideUI2();
         uiParent.gameObject.SetActive(true);
         yield return StaticVariables.AnimateChildObjectsAppearing(uiParent);
         yield return null;

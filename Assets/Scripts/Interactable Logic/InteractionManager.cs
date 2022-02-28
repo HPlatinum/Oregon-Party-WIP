@@ -203,6 +203,8 @@ public class InteractionManager : MonoBehaviour {
                 return StaticVariables.miningHandler;
             case (Interactable.InteractTypes.Forge):
                 return StaticVariables.forgeHandler;
+            case (Interactable.InteractTypes.SharpeningStation):
+                return StaticVariables.sharpeningHandler;
         }
         return null;
     }
