@@ -194,6 +194,13 @@ public class ForgeHandler : InteractionHandler {
     }
 
     private void DirtHitBottom() {
+        if (IsObjectInMetalDestination(fallingObjects[0])) {
+            if (metalForged > 0) {
+                metalForged--;
+                UpdateMetalForgedText();
+            }
+        }
+
         DestroyFirstFallingObject();
         CheckIfThereAreNoMoreFallingObjects();
     }
