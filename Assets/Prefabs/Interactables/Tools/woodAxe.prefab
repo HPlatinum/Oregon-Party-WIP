@@ -72,6 +72,7 @@ GameObject:
   - component: {fileID: 3602409199395940338}
   - component: {fileID: 8824240210954749081}
   - component: {fileID: 4730724942243923570}
+  - component: {fileID: 355374206}
   m_Layer: 0
   m_Name: woodAxe
   m_TagString: Untagged
@@ -125,9 +126,24 @@ MonoBehaviour:
   item: {fileID: 11400000, guid: 6461446679dfdab4183f9ed0b6b2573c, type: 2}
   requiredItem: {fileID: 0}
   inventory: {fileID: 0}
-  hitsRequiredToGatherResource: 0
-  hitsCurrentlyAppliedToResource: 0
+  storedItemCount: 0
   destroyParentAlso: 0
+  resourceMined: 0
+--- !u!114 &355374206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3602409199396436946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36047c6b75bf6fc4484232ceff1f4e43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tool: {fileID: 11400000, guid: 6461446679dfdab4183f9ed0b6b2573c, type: 2}
+  broken: 0
+  wear: 0
 --- !u!1001 &4897837470906348703
 PrefabInstance:
   m_ObjectHideFlags: 0

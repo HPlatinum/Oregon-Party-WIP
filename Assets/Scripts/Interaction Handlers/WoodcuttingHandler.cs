@@ -25,6 +25,7 @@ public class WoodcuttingHandler : ToolHandler
     GameObject treeMiningSpot;
     GameObject storageArea;
     GameObject sharpeningStation;
+    ToolStats toolStats;
 
     #region Inherited Functions
 
@@ -42,6 +43,7 @@ public class WoodcuttingHandler : ToolHandler
             else {
                 StaticVariables.interactScript.SetPreviousItemInHand();
                 StaticVariables.interactScript.PutFirstToolOfTypeInHand(Tool.ToolTypes.axe);
+                GetToolStats();
                 StaticVariables.SetupPlayerInteractionWithHighlightedObject();
                 ActivePlayerCuttingWood();
             }
@@ -51,7 +53,7 @@ public class WoodcuttingHandler : ToolHandler
 
     public override void ProcessInteractAnimationEnding() {
         StaticVariables.currentInteractionHandler = null;
-        StaticVariables.interactScript.PutPreviousItemBackInHand();
+        // StaticVariables.interactScript.PutPreviousItemBackInHand();
     }
 
     public override bool CanPlayerInteractWithObject(Interactable interactable) {
@@ -107,6 +109,7 @@ public class WoodcuttingHandler : ToolHandler
                 StaticVariables.playerInventory.AddItemToInventory(StaticVariables.interactScript.GetClosestInteractable().GetItem(), 1);
                 playerInWoodcuttingState = false;
                 playerIsInFinalAnimationState = false;
+                toolStats.SubtractFromWear(20);
             }
         }
         if(PlayerIsSharpeningAxe()) {
@@ -122,7 +125,7 @@ public class WoodcuttingHandler : ToolHandler
     }
 
     private void ActivePlayerCuttingWood() {
-        if(StaticVariables.interactScript.GetClosestInteractable().GetComponent<Interactable>().storedItemCount > 0) {
+        if(StaticVariables.interactScript.GetClosestInteractable().GetComponent<Interactable>().storedItemCount > 0 && !toolStats.isBroken) {
             StaticVariables.PlayAnimation("Swing Axe Loop", 1);
             playerInWoodcuttingState = true;
             timeForReward = StaticVariables.interactScript.GetClosestInteractable().GetComponentInChildren<Timer>();
@@ -131,6 +134,9 @@ public class WoodcuttingHandler : ToolHandler
                 timeForReward.StartGameTimer(7f);
                 print(timeForReward);
             }
+        }
+        if(toolStats.isBroken) {
+            print("You need to sharpen your tool");
         }
     }
 
@@ -151,6 +157,10 @@ public class WoodcuttingHandler : ToolHandler
     }
     private void FindBlade() {
         blade = StaticVariables.interactScript.objectInHand.transform.GetChild(0).GetComponent<BladeInteraction>();
+    }
+
+    private void GetToolStats() {
+        toolStats = StaticVariables.interactScript.objectInHand.transform.GetComponentInChildren<ToolStats>();
     }
 
     
