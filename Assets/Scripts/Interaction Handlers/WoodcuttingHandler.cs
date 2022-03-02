@@ -25,7 +25,7 @@ public class WoodcuttingHandler : ToolHandler
     GameObject treeMiningSpot;
     GameObject storageArea;
     GameObject sharpeningStation;
-    ToolStats toolStats;
+    public ToolStats toolStats;
 
     #region Inherited Functions
 
@@ -43,9 +43,13 @@ public class WoodcuttingHandler : ToolHandler
             else {
                 StaticVariables.interactScript.SetPreviousItemInHand();
                 StaticVariables.interactScript.PutFirstToolOfTypeInHand(Tool.ToolTypes.axe);
-                GetToolStats();
                 StaticVariables.SetupPlayerInteractionWithHighlightedObject();
+                if(toolStats == null) {
+                    GetToolStats();
+                    ResetToolStats();
+                }
                 ActivePlayerCuttingWood();
+                
             }
         }
         
@@ -53,12 +57,18 @@ public class WoodcuttingHandler : ToolHandler
 
     public override void ProcessInteractAnimationEnding() {
         StaticVariables.currentInteractionHandler = null;
-        // StaticVariables.interactScript.PutPreviousItemBackInHand();
+        StaticVariables.interactScript.PutPreviousItemBackInHand();
     }
 
     public override bool CanPlayerInteractWithObject(Interactable interactable) {
         if (StaticVariables.playerInventory.DoesInventoryContainToolWithType(Tool.ToolTypes.axe)) {
             if (StaticVariables.playerInventory.CanAddItemToInventory(interactable.item, 1)) {
+                if(inWoodcuttingScene && toolStats != null) {
+                    if(toolStats.isBroken) {
+                        Debug.Log("You need to sharpen your axe, home-skillet");
+                        return false;
+                    }
+                }
                 return true;
             }
         }
@@ -99,17 +109,19 @@ public class WoodcuttingHandler : ToolHandler
             SetTimerTextColor();
             ResizeTimer();
         }
-
         if(PlayerIsCuttingWood()) {
             if(Mathf.Round(timeForReward.GetTimeForChangingDisplayColor()) == 2 && !playerIsInFinalAnimationState) {
                 playerIsInFinalAnimationState = true;
                 StaticVariables.PlayAnimation("Swing Axe", 1);
+                toolStats.SubtractFromWear(20);
+                if(toolStats.wear == 0) {
+                    toolStats.SetToolToBroken();
+                }
             }
             if(timeForReward.GetTimeForChangingDisplayColor() == 0) {
                 StaticVariables.playerInventory.AddItemToInventory(StaticVariables.interactScript.GetClosestInteractable().GetItem(), 1);
                 playerInWoodcuttingState = false;
                 playerIsInFinalAnimationState = false;
-                toolStats.SubtractFromWear(20);
             }
         }
         if(PlayerIsSharpeningAxe()) {
@@ -125,18 +137,13 @@ public class WoodcuttingHandler : ToolHandler
     }
 
     private void ActivePlayerCuttingWood() {
-        if(StaticVariables.interactScript.GetClosestInteractable().GetComponent<Interactable>().storedItemCount > 0 && !toolStats.isBroken) {
+        if(StaticVariables.interactScript.GetClosestInteractable().GetComponent<Interactable>().storedItemCount > 0) {
             StaticVariables.PlayAnimation("Swing Axe Loop", 1);
             playerInWoodcuttingState = true;
             timeForReward = StaticVariables.interactScript.GetClosestInteractable().GetComponentInChildren<Timer>();
             if(!timeForReward.TimerIsRunning()) {
-                print("Weeeeeeeee");
                 timeForReward.StartGameTimer(7f);
-                print(timeForReward);
             }
-        }
-        if(toolStats.isBroken) {
-            print("You need to sharpen your tool");
         }
     }
 
@@ -160,7 +167,12 @@ public class WoodcuttingHandler : ToolHandler
     }
 
     private void GetToolStats() {
-        toolStats = StaticVariables.interactScript.objectInHand.transform.GetComponentInChildren<ToolStats>();
+        toolStats = StaticVariables.playerInventory.GetToolScriptFromItem(StaticVariables.interactScript.itemInHand);
+        print("wear = " + toolStats.wear);
+    }
+
+    private void ResetToolStats() {
+        toolStats.wear = 100;
     }
 
     
@@ -174,6 +186,7 @@ public class WoodcuttingHandler : ToolHandler
         tweenRunning = false;
         scaleUP = 1f;
         playerIsInFinalAnimationState = false;
+        toolStats = null;
     }
 
     public bool GameISOver() {

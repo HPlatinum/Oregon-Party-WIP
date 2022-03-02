@@ -24,7 +24,12 @@ public class SharpeningHandler : InteractionHandler
     }
 
     public override bool CanPlayerInteractWithObject(Interactable interactable) {
-        return true;
+        if(StaticVariables.woodcuttingHandler.toolStats != null) {
+            if(StaticVariables.woodcuttingHandler.toolStats.wear < 100) {
+                return true;
+            }
+        }
+        return false;
     }
     #endregion
 
@@ -38,6 +43,13 @@ public class SharpeningHandler : InteractionHandler
                 playerIsSharpening = false;
             }
         }
+
+        if(timeForReward != null) {
+            if(timeForReward.GetTimeForChangingDisplayColor() == 0) {
+                StaticVariables.woodcuttingHandler.toolStats.RepairTool();
+            }
+        }
+        
     }
 
     private bool PlayerStartedSharpening() {

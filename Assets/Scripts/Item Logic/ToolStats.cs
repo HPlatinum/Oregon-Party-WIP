@@ -8,13 +8,10 @@ public class ToolStats : MonoBehaviour
     public bool isBroken;
     public double wear;
 
-    public void Awake() {
-        if(wear == 0) {
-            ResetWear();
-        }
-        
-    }
     public void Start() {
+    }
+
+    private void Update() {
     }
 
     public double ReturnWear() {
@@ -25,7 +22,12 @@ public class ToolStats : MonoBehaviour
         wear -= valueToSubtract;
     }
 
-    public void ResetWear() {
-        wear = tool.initialWear;
+    public void SetToolToBroken() {
+        isBroken = true;
+    }
+
+    public void RepairTool() {
+        isBroken = false;
+        wear = 100;
     }
 }

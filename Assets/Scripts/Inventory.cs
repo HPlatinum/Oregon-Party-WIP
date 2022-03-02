@@ -41,8 +41,9 @@ public class Inventory : ScriptableObject
                 }
             }
         }
+
         // adds item & quantity to new InventorySlot
-        AddItemToNewSlot(item, pickedUpItemQuantity);
+        AddItemToNewSlot(item, pickedUpItemQuantity, item.model);
     }
     
     public bool CanAddItemToInventory(Item item, int quantity) {
@@ -104,8 +105,8 @@ public class Inventory : ScriptableObject
         onItemChangedCallback.Invoke();
     }
 
-    public void AddItemToNewSlot(Item item, int quantity) { 
-        inventorySlots.Add(new InventorySlot(item, quantity));
+    public void AddItemToNewSlot(Item item, int quantity, GameObject newGameObject) { 
+        inventorySlots.Add(new InventorySlot(item, quantity, newGameObject));
         onItemChangedCallback.Invoke();
         StaticVariables.commonUI.ShowItemQuantityChange(item, quantity);
     }
@@ -177,6 +178,7 @@ public class Inventory : ScriptableObject
             bool keepSlot = true;
             if (slot.item == item) {
                 slot.item = null;
+                slot.itemGameObject = null;
                 slot.quantity = 0;
                 keepSlot = false;
             }
@@ -185,6 +187,37 @@ public class Inventory : ScriptableObject
         }
         inventorySlots = newSlots;
         onItemChangedCallback.Invoke();
+    }
+
+    // This may be useful later, but it likely isn't
+
+    // public void UpdateGameObjectForItem(Item item, GameObject updatedGameObject) {
+    //     foreach (InventorySlot slot in inventorySlots) {
+    //         if (slot.item == item) {
+    //             slot.itemGameObject = updatedGameObject;
+    //             break;
+    //         }
+    //     }
+    // }
+
+    // public bool GameObjectExistsForItem(Item item) {
+    //     foreach (InventorySlot slot in inventorySlots) {
+    //         if (slot.item == item && slot.itemGameObject != null) {
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
+
+    public ToolStats GetToolScriptFromItem(Item item) {
+        ToolStats toolStats;
+        foreach (InventorySlot slot in inventorySlots) {
+            if (slot.item == item) {
+                toolStats = slot.itemGameObject.GetComponentInChildren<ToolStats>();
+                return toolStats;
+            }
+        }
+        return null;
     }
 
     public bool DoesInventoryContainToolWithType(Tool.ToolTypes toolType) {
@@ -200,7 +233,6 @@ public class Inventory : ScriptableObject
                     return slot.item;
             }
         }
-
         return null;
     }
 }
@@ -209,9 +241,11 @@ public class Inventory : ScriptableObject
 public class InventorySlot {
     public Item item;
     public int quantity;
-    public InventorySlot(Item item, int quantity) {
+    public GameObject itemGameObject;
+    public InventorySlot(Item item, int quantity, GameObject itemGameobject) {
         this.item = item;
         this.quantity = quantity;
+        this.itemGameObject = itemGameobject;
     }
 
     public void AddQuantity(int value) {
