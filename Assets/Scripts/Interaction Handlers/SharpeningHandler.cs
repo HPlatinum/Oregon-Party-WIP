@@ -45,7 +45,8 @@ public class SharpeningHandler : InteractionHandler
         }
 
         if(timeForReward != null) {
-            if(timeForReward.GetTimeForChangingDisplayColor() == 0) {
+            if(timeForReward.TimerWasStartedAndIsNowStopped()) {
+                timeForReward.SetTimerEndedBackToFalse();
                 StaticVariables.woodcuttingHandler.toolStats.RepairTool();
             }
         }
