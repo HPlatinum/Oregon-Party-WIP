@@ -710,7 +710,7 @@ MonoBehaviour:
   interactType: 9
   item: {fileID: 0}
   requiredItem: {fileID: 11400000, guid: 6461446679dfdab4183f9ed0b6b2573c, type: 2}
-  inventory: {fileID: 0}
+  inventory: {fileID: 11400000, guid: 4a8852c2968495c428dbd480b160c40b, type: 2}
   storedItemCount: 0
   destroyParentAlso: 0
   resourceMined: 0
@@ -1048,6 +1048,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 633779114, guid: 6265af582a63d2247a3d2560f69dd69e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3324970135051171734, guid: 6265af582a63d2247a3d2560f69dd69e, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -1278,6 +1282,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerIsSharpening: 0
   timeForReward: {fileID: 0}
+--- !u!114 &1938614840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1938614836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74926a4bc37569b43b1ce8b2cb005869, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1949557866
 GameObject:
   m_ObjectHideFlags: 0

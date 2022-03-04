@@ -18,6 +18,7 @@ public class WoodcuttingHandler : ToolHandler
     public Text timerUIText;
     public float counter;
     Timer timeForReward;
+    Timer gameTimer;
     Transform uiParent;
     Transform finishScreen;
     Transform messageUI;
@@ -32,9 +33,9 @@ public class WoodcuttingHandler : ToolHandler
     public override void ProcessInteractAction() {
         if (!StaticVariables.interactScript.currentlyInteracting) {
             if(StaticVariables.sceneHandler.GetSceneName() != "Woodcutting Minigame") {
+                StaticVariables.SetupPlayerInteractionWithHighlightedObject();
                 StaticVariables.interactScript.SetPreviousItemInHand();
                 StaticVariables.interactScript.PutFirstToolOfTypeInHand(Tool.ToolTypes.axe);
-                StaticVariables.SetupPlayerInteractionWithHighlightedObject();
                 StaticVariables.PlayAnimation("Swing Axe", 1);
                 FindBlade();
                 StaticVariables.WaitTimeThenCallFunction(.6f, blade.EnableBlade);
@@ -57,7 +58,8 @@ public class WoodcuttingHandler : ToolHandler
 
     public override void ProcessInteractAnimationEnding() {
         StaticVariables.currentInteractionHandler = null;
-        StaticVariables.interactScript.PutPreviousItemBackInHand();
+        StaticVariables.interactScript.PutItemInPlayerHand(StaticVariables.interactScript.GetClosestInteractable().GetItem());
+        
     }
 
     public override bool CanPlayerInteractWithObject(Interactable interactable) {
@@ -88,6 +90,7 @@ public class WoodcuttingHandler : ToolHandler
     public void Start() {
         AssignLocalVariables();
         inWoodcuttingScene = false;
+        gameOver = false;
     }
 
     public void Update() {
@@ -98,7 +101,10 @@ public class WoodcuttingHandler : ToolHandler
         }
         if(GameISOver()) {
             gameOver = false;
-            // gameOverFR = true;
+            gameTimer.SetTimerEndedBackToFalse();
+            StaticVariables.playerInventory.AddItemToInventory(StaticVariables.depositHandler.depositItem, StaticVariables.depositHandler.GetQuantityOfWoodCollected());
+            print("Game is over. You collected " +StaticVariables.depositHandler.GetQuantityOfWoodCollected() + " total wood.");
+            StaticVariables.depositHandler.gameIsOver = true;
         }
         if(ShouldFinishUIBeShown()) {
             showFinishUI = false;
@@ -119,14 +125,12 @@ public class WoodcuttingHandler : ToolHandler
                 }
             }
             if(timeForReward.GetTimeForChangingDisplayColor() == 0) {
-                StaticVariables.playerInventory.AddItemToInventory(StaticVariables.interactScript.GetClosestInteractable().GetItem(), 1);
                 playerInWoodcuttingState = false;
                 playerIsInFinalAnimationState = false;
             }
         }
         if(PlayerIsSharpeningAxe()) {
             if(timeForReward.GetTimeForChangingDisplayColor() == 0) {
-                //check wear. Set wear
                 playerInSharpeningState = false;
             }
         }
@@ -180,6 +184,7 @@ public class WoodcuttingHandler : ToolHandler
         treeMiningSpot = GameObject.Find("Tree");
         storageArea = GameObject.Find("Storage");
         sharpeningStation = GameObject.Find("Sharpening Station");
+        gameTimer = StaticVariables.timer;
         print(treeMiningSpot);
         print(storageArea);
         print(sharpeningStation);
@@ -190,7 +195,7 @@ public class WoodcuttingHandler : ToolHandler
     }
 
     public bool GameISOver() {
-        return gameOver;
+        return gameOver = gameTimer.TimerWasStartedAndIsNowStopped();
     }
 
     public bool ShouldFinishUIBeShown() {
