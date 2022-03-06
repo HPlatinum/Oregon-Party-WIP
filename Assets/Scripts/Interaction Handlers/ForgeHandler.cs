@@ -6,14 +6,15 @@ using UnityEngine.UI;
 
 public class ForgeHandler : InteractionHandler {
 
+    //add a timer to the minigame. if the last scrap dropped X seconds ago, the game ends
+    //X should be maybe 10?
+
     private Transform forgeUI;
     private GameObject background;
     private Text scrapRemainingText;
     private Text metalForgedText;
     private Transform scrapMovingInterface;
     private Transform scrapSpawnArea;
-    private Transform metalDestination;
-    private Transform dirtDestination;
 
     private Transform interactableObject;
 
@@ -25,7 +26,7 @@ public class ForgeHandler : InteractionHandler {
     
     private bool currentlyLightingForge = false;
 
-    private int scrapRemaining = 0;
+    private int scrapRemainingInBag = 0;
     private int metalForged = 0;
     public float timeBetweenUIOpeningAndMinigameStart = 1f;
     public float timeBetweenScrapDrops = 0.5f;
@@ -34,7 +35,7 @@ public class ForgeHandler : InteractionHandler {
 
     public GameObject metalGO;
     public GameObject dirtGO;
-    private List<GameObject> fallingObjects = new List<GameObject>();
+    private int scrapOnScreenCount = 0;
 
     [Range(1, 100)]
     public int percentScrapIsMetal = 80;
@@ -81,7 +82,8 @@ public class ForgeHandler : InteractionHandler {
         background.SetActive(true);
         forgeUI.gameObject.SetActive(true);
 
-        scrapRemaining = 20;
+        scrapRemainingInBag = 20;
+        scrapOnScreenCount = 0;
         metalForged = 0;
         UpdateScrapRemainingText();
         UpdateMetalForgedText();
@@ -121,9 +123,10 @@ public class ForgeHandler : InteractionHandler {
 
     private void DropOneScrap() {
         CreateRandomScrap();
-        scrapRemaining--;
+        scrapRemainingInBag--;
+        scrapOnScreenCount++;
         UpdateScrapRemainingText();
-        if (scrapRemaining > 0)
+        if (scrapRemainingInBag > 0)
             StaticVariables.WaitTimeThenCallFunction(timeBetweenScrapDrops, DropOneScrap);
     }
 
@@ -137,87 +140,45 @@ public class ForgeHandler : InteractionHandler {
 
         //create the new object
         GameObject newItem = GameObject.Instantiate(prefab);
-        fallingObjects.Add(newItem);
 
         //set the transforms
         newItem.transform.SetParent(scrapMovingInterface);
         newItem.transform.localPosition = scrapSpawnArea.localPosition;
-        newItem.layer = 5;
+        //newItem.layer = 5;
         foreach (Transform t in newItem.transform)
             t.gameObject.layer = 5;
         newItem.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 359));
         newItem.transform.localScale *= 1;
 
-        //randomly determine if the scrap moves to the metal or dirt destination
-        bool movesToMetal = Random.Range(0, 2) == 1;
-        Transform dest = metalDestination;
-        if (!movesToMetal)
-            dest = dirtDestination;
 
         //start the object moving down the interface
-        if (isMetal)
-            newItem.transform.DOLocalMove(dest.localPosition, 3f).SetEase(Ease.Linear).OnComplete(MetalHitBottom);
-        else
-            newItem.transform.DOLocalMove(dest.localPosition, 3f).SetEase(Ease.Linear).OnComplete(DirtHitBottom);
+        float horiz = 0.2f;
+        horiz *= (Random.Range(6, 15) / 10f); //multiply horiz by 0.6-1.4
+        if (Random.Range(0, 2) == 1) //set horiz direction to be left or right
+            horiz *= -1;
+        newItem.GetComponent<Rigidbody2D>().velocity = new Vector3(horiz, -1, 0);
+        newItem.GetComponent<ForgeSwipable>().forgeHandler = this;
     }
 
-    private void MetalHitBottom() {
-        if (IsObjectInMetalDestination(fallingObjects[0])) {
+    public void ItemEnteredCollectionArea(bool isMetal, bool isMetalArea, GameObject go) {
+        if (isMetal && isMetalArea) {
             metalForged++;
             UpdateMetalForgedText();
         }
-
-        DestroyFirstFallingObject();
-        CheckIfThereAreNoMoreFallingObjects();
-    }
-
-    private bool IsObjectInMetalDestination(GameObject go) {
-        //get the object's local position
-        Vector2 objPos = new Vector2(go.transform.localPosition.x, go.transform.localPosition.y);
-        
-        
-        //get the recttransform's bounds
-        RectTransform rt = metalDestination.GetComponent<RectTransform>();
-        float leftSide = rt.anchoredPosition.x - rt.rect.width / 2;
-        float rightSide = rt.anchoredPosition.x + rt.rect.width / 2;
-        float topSide = rt.anchoredPosition.y + rt.rect.height / 2;
-        float bottomSide = rt.anchoredPosition.y - rt.rect.height / 2;
-
-        //see uf the object is inside the bounds
-        if (objPos.x >= leftSide &&
-            objPos.x <= rightSide &&
-            objPos.y >= bottomSide &&
-            objPos.y <= topSide)
-                return true;
-        
-         return false;
-    }
-
-    private void DirtHitBottom() {
-        if (IsObjectInMetalDestination(fallingObjects[0])) {
-            if (metalForged > 0) {
-                metalForged--;
-                UpdateMetalForgedText();
-            }
+        if (!isMetal && isMetalArea) {
+            metalForged--;
+            UpdateMetalForgedText();
         }
 
-        DestroyFirstFallingObject();
-        CheckIfThereAreNoMoreFallingObjects();
-    }
-
-    private void CheckIfThereAreNoMoreFallingObjects() {
-        if ((fallingObjects.Count == 0) && (scrapRemaining == 0))
+        Destroy(go);
+        scrapOnScreenCount--;
+        if ((scrapRemainingInBag == 0) && (scrapOnScreenCount == 0)) {
             EndForging();
+        }
     }
-
-    private void DestroyFirstFallingObject() {
-        GameObject obj = fallingObjects[0];
-        GameObject.Destroy(obj);
-        fallingObjects.RemoveAt(0);
-    }
-
+    
     private void UpdateScrapRemainingText() {
-        scrapRemainingText.text = scrapRemaining + " Scrap Remaining";
+        scrapRemainingText.text = scrapRemainingInBag + " Scrap Remaining";
     }
 
     private void UpdateMetalForgedText() {
@@ -262,8 +223,6 @@ public class ForgeHandler : InteractionHandler {
         metalForgedText = forgeUI.Find("Metal Forged").Find("Text").GetComponent<Text>();
         scrapMovingInterface = forgeUI.Find("Scrap Moving Interface");
         scrapSpawnArea = scrapMovingInterface.Find("Spawn Area");
-        metalDestination = scrapMovingInterface.Find("Metal Destination");
-        dirtDestination = scrapMovingInterface.Find("Dirt Destination");
     }
 
     private void SetForgeInteractable() {
