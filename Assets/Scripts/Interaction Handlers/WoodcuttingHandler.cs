@@ -185,9 +185,6 @@ public class WoodcuttingHandler : ToolHandler
         storageArea = GameObject.Find("Storage");
         sharpeningStation = GameObject.Find("Sharpening Station");
         gameTimer = StaticVariables.timer;
-        print(treeMiningSpot);
-        print(storageArea);
-        print(sharpeningStation);
         tweenRunning = false;
         scaleUP = 1f;
         playerIsInFinalAnimationState = false;
