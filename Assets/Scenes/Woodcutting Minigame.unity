@@ -540,6 +540,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeb3b5b61df80c549aa216a84041c119, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timerStarted: 0
+  timerEnded: 0
   runTimer: 0
   remainingTime: 0
   timerText: 
@@ -690,7 +692,7 @@ GameObject:
   - component: {fileID: 839186314}
   m_Layer: 0
   m_Name: Storage
-  m_TagString: Untagged
+  m_TagString: Interact (Depositing)
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -708,9 +710,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactType: 9
-  item: {fileID: 0}
+  item: {fileID: 11400000, guid: 9ffadc37ec668f64aaa51e306f0d96c0, type: 2}
   requiredItem: {fileID: 11400000, guid: 6461446679dfdab4183f9ed0b6b2573c, type: 2}
-  inventory: {fileID: 0}
+  inventory: {fileID: 11400000, guid: 29ee4e7890094bb4e994aa3dbe617b2d, type: 2}
   storedItemCount: 0
   destroyParentAlso: 0
   resourceMined: 0
@@ -1259,25 +1261,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7a5de67ac14051143919c033e4fc8a9f, type: 3}
---- !u!1 &1938614836 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4949682841684481237, guid: 6265af582a63d2247a3d2560f69dd69e, type: 3}
-  m_PrefabInstance: {fileID: 1580267897}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1938614839
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1938614836}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d7d7ea5c48f86041a41c5f9b0da3387, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerIsSharpening: 0
-  timeForReward: {fileID: 0}
 --- !u!1 &1949557866
 GameObject:
   m_ObjectHideFlags: 0
@@ -1503,6 +1486,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeb3b5b61df80c549aa216a84041c119, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timerStarted: 0
+  timerEnded: 0
   runTimer: 0
   remainingTime: 0
   timerText: 

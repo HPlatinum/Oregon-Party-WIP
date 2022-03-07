@@ -4,14 +4,17 @@ using UnityEngine;
 
 public class DepositHandler : InteractionHandler
 {
+    public bool gameIsStarted;
+    public bool gameIsOver;
+    public Item depositItem;
+    public GameObject depositObject;
+    public Inventory depositInventory;
     #region Inherited Functions
 
     public override void ProcessInteractAction() {
         if (!StaticVariables.interactScript.currentlyInteracting) {
-            StaticVariables.interactScript.SetPreviousItemInHand();
-            StaticVariables.interactScript.PutFirstToolOfTypeInHand(Tool.ToolTypes.axe);
             StaticVariables.SetupPlayerInteractionWithHighlightedObject();
-            StaticVariables.PlayAnimation("Sharpening Axe Idle Loop", 1);
+            StaticVariables.PlayAnimation("Sharpening Axe", 1);
             ActivePlayerIsDeposittingWood();
         }
     }
@@ -22,22 +25,45 @@ public class DepositHandler : InteractionHandler
     }
 
     public override bool CanPlayerInteractWithObject(Interactable interactable) {
-        if(StaticVariables.interactScript.itemInHand.name == "Wood") {
-            return true;
+        if(StaticVariables.interactScript.itemInHand != null) {
+            if(StaticVariables.interactScript.itemInHand.name == "Wood") {
+                return true;
+            }
         }
         return false;
     }
     #endregion
 
-    private void Start() {
-        
-    }
-    private void Update() {
 
+    public void Start() {
+        gameIsStarted = false;
+        gameIsOver = false;
     }
-
+    public void Update() {
+        if(StaticVariables.woodcuttingHandler.inWoodcuttingScene) {
+            if(!gameIsStarted) {
+                ResetWoodcuttingLocalVariables();
+            }
+            if(gameIsOver) {
+                depositInventory.ClearInventory();
+            }
+        }
+    }
+    
     private void ActivePlayerIsDeposittingWood() {
         // ya ya player deposited wood, ding dong
+        StaticVariables.interactScript.closestInteractable.inventory.AddItemToInventory(StaticVariables.interactScript.itemInHand, 1);
     }
 
+    public void ResetWoodcuttingLocalVariables() {
+        depositObject = GameObject.FindGameObjectWithTag("Interact (Depositing)");
+        depositInventory = depositObject.GetComponent<Interactable>().inventory;
+        depositItem = depositObject.GetComponent<Interactable>().item;
+        gameIsStarted = true;
+        gameIsOver = false;
+    }
+
+    public int GetQuantityOfWoodCollected() {
+        return depositInventory.GetTotalItemQuantity(depositObject.GetComponent<Interactable>().item);
+    }
 }

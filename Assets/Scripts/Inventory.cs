@@ -16,6 +16,7 @@ public class Inventory : ScriptableObject
 {
     public InventorySize size;
     public List<InventorySlot> inventorySlots = new List<InventorySlot>();
+    private List<InventorySlot> emptySlots = new List<InventorySlot>();
 
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallback;
@@ -25,7 +26,7 @@ public class Inventory : ScriptableObject
 
 
     public void AddItemToInventory(Item item, int pickedUpItemQuantity) {
-        StaticVariables.commonUI.ShowItemQuantityChange(item, pickedUpItemQuantity);
+        ShowItemQuantityChangeInUI(item, pickedUpItemQuantity);
 
         // Check if stack has met cap > if it has create new cap.
         for(int i = 0; i < inventorySlots.Count; i++) {
@@ -62,7 +63,7 @@ public class Inventory : ScriptableObject
         return false;
     }
 
-    public int GetQuantityInSlot(int inventorySlotPosition) {
+    private int GetQuantityInSlot(int inventorySlotPosition) {
         return inventorySlots[inventorySlotPosition].quantity;
     }
 
@@ -76,15 +77,15 @@ public class Inventory : ScriptableObject
         return totalQuantity;
     }
 
-    public bool WouldAddingQuantityOverfillSlot(int slotNumber, int quantity) {
+    private bool WouldAddingQuantityOverfillSlot(int slotNumber, int quantity) {
         return inventorySlots[slotNumber].quantity + quantity > inventorySlots[slotNumber].item.stackLimit;
     }
 
-    public bool PickedUpQuantityIsLessThanOrEqualToStackLimit(int slotNumber, int quantity) {
+    private bool PickedUpQuantityIsLessThanOrEqualToStackLimit(int slotNumber, int quantity) {
         return inventorySlots[slotNumber].quantity + quantity <= inventorySlots[slotNumber].item.stackLimit;
     }
 
-    public bool IsSlotFull(int slotNumber) {
+    private bool IsSlotFull(int slotNumber) {
         return inventorySlots[slotNumber].quantity < inventorySlots[slotNumber].item.stackLimit;
     }
 
@@ -92,26 +93,42 @@ public class Inventory : ScriptableObject
         return (!(inventorySlots.Count < (int) size));
     }
 
-    public bool IsItemAlreadyInSlot(int slotNumber, Item item) {
+    private bool IsItemAlreadyInSlot(int slotNumber, Item item) {
         return inventorySlots[slotNumber].item == item;
     }
 
-    public void SetSlotQuantityToStackLimit(int slotNumber) {
+    private void SetSlotQuantityToStackLimit(int slotNumber) {
         inventorySlots[slotNumber].quantity = inventorySlots[slotNumber].item.stackLimit;
     }
 
-    public void AddQuantityToSlot(int slotNumber, int quantity) {
+    private void AddQuantityToSlot(int slotNumber, int quantity) {
         inventorySlots[slotNumber].AddQuantity(quantity);
-        onItemChangedCallback.Invoke();
+        OnItemChangedCheckIfCallbackNeeded();
     }
 
-    public void AddItemToNewSlot(Item item, int quantity, GameObject newGameObject) { 
+    private void OnItemChangedCheckIfCallbackNeeded() {
+        if(CheckIfInventoryIsPlayerInventory()) {
+            onItemChangedCallback.Invoke();
+        }
+    }
+
+    private void ShowItemQuantityChangeInUI(Item item, int quantity) {
+        if(CheckIfInventoryIsPlayerInventory()) {
+            StaticVariables.commonUI.ShowItemQuantityChange(item, quantity);
+        }
+    }
+
+    private bool CheckIfInventoryIsPlayerInventory() {
+        return inventorySlots == StaticVariables.playerInventory.inventorySlots;
+    }
+
+    private void AddItemToNewSlot(Item item, int quantity, GameObject newGameObject) { 
         inventorySlots.Add(new InventorySlot(item, quantity, newGameObject));
-        onItemChangedCallback.Invoke();
-        StaticVariables.commonUI.ShowItemQuantityChange(item, quantity);
+        OnItemChangedCheckIfCallbackNeeded();
+        ShowItemQuantityChangeInUI(item, quantity);
     }
 
-    public int RemainingItemQuantity(int slotNumber, int quantity) {
+    private int RemainingItemQuantity(int slotNumber, int quantity) {
         return inventorySlots[slotNumber].quantity + quantity - inventorySlots[slotNumber].item.stackLimit;
     }
 
@@ -155,7 +172,7 @@ public class Inventory : ScriptableObject
     }
 
     public void RemoveItemFromInventory(Item item, int quantity) {
-        StaticVariables.commonUI.ShowItemQuantityChange(item, -quantity);
+        ShowItemQuantityChangeInUI(item, -quantity);
 
         int totalQuantity = GetTotalItemQuantity(item);
         int diff = totalQuantity - quantity;
@@ -172,7 +189,7 @@ public class Inventory : ScriptableObject
             AddItemToInventory(item, diff);
     }
     
-    private void RemoveAllOfItem(Item item) {
+    public void RemoveAllOfItem(Item item) {
         List<InventorySlot> newSlots = new List<InventorySlot>();
         foreach (InventorySlot slot in inventorySlots) {
             bool keepSlot = true;
@@ -186,7 +203,11 @@ public class Inventory : ScriptableObject
                 newSlots.Add(slot);
         }
         inventorySlots = newSlots;
-        onItemChangedCallback.Invoke();
+        OnItemChangedCheckIfCallbackNeeded();
+    }
+
+    public void ClearInventory() {
+        inventorySlots = emptySlots;
     }
 
     // This may be useful later, but it likely isn't

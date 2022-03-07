@@ -205,6 +205,8 @@ public class InteractionManager : MonoBehaviour {
                 return StaticVariables.forgeHandler;
             case (Interactable.InteractTypes.SharpeningStation):
                 return StaticVariables.sharpeningHandler;
+            case (Interactable.InteractTypes.Deposit):
+                return StaticVariables.depositHandler;
         }
         return null;
     }
