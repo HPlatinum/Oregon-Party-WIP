@@ -23428,6 +23428,8 @@ MonoBehaviour:
   litForgeMaterial: {fileID: 2100002, guid: 932ffb7638170488a88c2fb8fca7eb3d, type: 3}
   metalGO: {fileID: 1190595963436806, guid: 7b34ed0d955f66b4cafd6fb5c3b5dbf7, type: 3}
   dirtGO: {fileID: 7610799933745657833, guid: 62961692603986949a0dd877317ecdd7, type: 3}
+  metalScrapItem: {fileID: 11400000, guid: a44bd8f491ecd0d488c9f0422d9d0143, type: 2}
+  refinedMetalItem: {fileID: 11400000, guid: 1108097309322cc47ae8dbe082f36084, type: 2}
   percentScrapIsMetal: 80
 --- !u!1 &2181134526801734046
 GameObject:
@@ -61601,7 +61603,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7788618, y: 1}
+    m_SensorSize: {x: 1.7766831, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0

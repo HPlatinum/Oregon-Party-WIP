@@ -110,11 +110,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db4957fd4b801fe4bbf2cf4c52ccacf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactType: 6
+  interactType: 0
   item: {fileID: 11400000, guid: a44bd8f491ecd0d488c9f0422d9d0143, type: 2}
   requiredItem: {fileID: 0}
   inventory: {fileID: 0}
-  hitsRequiredToGatherResource: 0
-  hitsCurrentlyAppliedToResource: 0
+  storedItemCount: 0
   destroyParentAlso: 0
   resourceMined: 0

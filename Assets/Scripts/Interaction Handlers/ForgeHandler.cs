@@ -37,6 +37,9 @@ public class ForgeHandler : InteractionHandler {
     public GameObject dirtGO;
     private int scrapOnScreenCount = 0;
 
+    public Item metalScrapItem;
+    public Item refinedMetalItem;
+
     [Range(1, 100)]
     public int percentScrapIsMetal = 80;
 
@@ -59,8 +62,11 @@ public class ForgeHandler : InteractionHandler {
     }
 
     public override void ProcessInteractAnimationEnding() {
+        
         if (currentlyLightingForge)
             currentlyLightingForge = false;
+
+            
         StaticVariables.currentInteractionHandler = null;
     }
 
@@ -69,7 +75,9 @@ public class ForgeHandler : InteractionHandler {
         if (!IsForgeLit())
             return CanPlayerLightForge();
         else
-            return true;
+            if (StaticVariables.playerInventory.GetTotalItemQuantity(metalScrapItem) > 0)
+                return true;
+        return false;
     }
 
     #endregion
@@ -82,7 +90,7 @@ public class ForgeHandler : InteractionHandler {
         background.SetActive(true);
         forgeUI.gameObject.SetActive(true);
 
-        scrapRemainingInBag = 20;
+        scrapRemainingInBag = StaticVariables.playerInventory.GetQuantityOfSpecificItem(metalScrapItem);
         scrapOnScreenCount = 0;
         metalForged = 0;
         UpdateScrapRemainingText();
@@ -105,6 +113,10 @@ public class ForgeHandler : InteractionHandler {
         yield return HideAllUI();
         background.SetActive(false);
         yield return StaticVariables.mainUI.ShowUI2();
+        if (metalForged > 0) {
+            StaticVariables.playerInventory.AddItemToInventory(refinedMetalItem, metalForged);
+            StaticVariables.playerInventory.RemoveAllOfItem(metalScrapItem);
+        }
     }
 
     private IEnumerator HideAllUI() {
