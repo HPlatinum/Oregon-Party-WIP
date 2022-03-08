@@ -192,7 +192,10 @@ public class WoodcuttingHandler : ToolHandler
     }
 
     public bool GameISOver() {
-        return gameOver = gameTimer.TimerWasStartedAndIsNowStopped();
+        if(StaticVariables.sceneHandler.GetSceneName() == "Woodcutting Minigame")
+            return gameOver = gameTimer.TimerWasStartedAndIsNowStopped();
+        else
+            return false;
     }
 
     public bool ShouldFinishUIBeShown() {
