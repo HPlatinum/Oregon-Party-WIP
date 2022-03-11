@@ -17,7 +17,8 @@ namespace Invector.vCharacterController
         {
             if (animator == null || !animator.enabled) return;
 
-            animator.SetBool(vAnimatorParameters.IsStrafing, isStrafing); ;
+            animator.SetBool(vAnimatorParameters.IsStrafing, isStrafing);
+            animator.SetBool(vAnimatorParameters.IsCarrying, isCarrying);
             animator.SetBool(vAnimatorParameters.IsSprinting, isSprinting);
             animator.SetBool(vAnimatorParameters.IsGrounded, isGrounded);
             animator.SetFloat(vAnimatorParameters.GroundDistance, groundDistance);
@@ -26,6 +27,10 @@ namespace Invector.vCharacterController
             {
                 animator.SetFloat(vAnimatorParameters.InputHorizontal, stopMove ? 0 : horizontalSpeed, strafeSpeed.animationSmooth, Time.deltaTime);
                 animator.SetFloat(vAnimatorParameters.InputVertical, stopMove ? 0 : verticalSpeed, strafeSpeed.animationSmooth, Time.deltaTime);
+            }
+            if (isCarrying)
+            {
+                animator.SetFloat(vAnimatorParameters.InputMagnitude, stopMove ? 0f : inputMagnitude, isStrafing ? strafeSpeed.animationSmooth : freeSpeed.animationSmooth, Time.deltaTime);
             }
             else
             {
@@ -57,6 +62,7 @@ namespace Invector.vCharacterController
         public static int InputMagnitude = Animator.StringToHash("InputMagnitude");
         public static int IsGrounded = Animator.StringToHash("IsGrounded");
         public static int IsStrafing = Animator.StringToHash("IsStrafing");
+        public static int IsCarrying = Animator.StringToHash("IsCarrying");
         public static int IsSprinting = Animator.StringToHash("IsSprinting");
         public static int GroundDistance = Animator.StringToHash("GroundDistance");
     }

@@ -21,10 +21,11 @@ namespace Invector.vCharacterController
             FreeWithStrafe,
             OnlyStrafe,
             OnlyFree,
+            OnlyCarry,
         }
         public LocomotionType locomotionType = LocomotionType.FreeWithStrafe;
 
-        public vMovementSpeed freeSpeed, strafeSpeed;
+        public vMovementSpeed freeSpeed, strafeSpeed, carrySpeed;
 
         [Header("- Airborne")]
 
@@ -80,6 +81,17 @@ namespace Invector.vCharacterController
                 _isStrafing = value;
             }
         }
+        internal bool isCarrying
+        {
+            get
+            {
+                return _isCarrying;
+            }
+            set
+            {
+                _isCarrying = value;
+            }
+        }
         internal bool isGrounded { get; set; }
         internal bool isSprinting { get; set; }
         public bool stopMove { get; protected set; }
@@ -97,6 +109,7 @@ namespace Invector.vCharacterController
         internal bool lockMovement = false;                 // lock the movement of the controller (not the animation)
         internal bool lockRotation = false;                 // lock the rotation of the controller (not the animation)        
         internal bool _isStrafing;                          // internally used to set the strafe movement                
+        internal bool _isCarrying;
         internal Transform rotateTarget;                    // used as a generic reference for the camera.transform
         internal Vector3 input;                             // generate raw input for the controller
         internal Vector3 colliderCenter;                    // storage the center of the capsule collider info                

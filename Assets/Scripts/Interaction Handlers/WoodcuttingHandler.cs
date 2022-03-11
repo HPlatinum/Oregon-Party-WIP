@@ -59,7 +59,7 @@ public class WoodcuttingHandler : ToolHandler
     public override void ProcessInteractAnimationEnding() {
         StaticVariables.currentInteractionHandler = null;
         StaticVariables.interactScript.PutItemInPlayerHand(StaticVariables.interactScript.GetClosestInteractable().GetItem());
-        
+        StaticVariables.controller.Carry();
     }
 
     public override bool CanPlayerInteractWithObject(Interactable interactable) {

@@ -53,6 +53,7 @@ public class DepositHandler : InteractionHandler
     private void ActivePlayerIsDeposittingWood() {
         // ya ya player deposited wood, ding dong
         StaticVariables.interactScript.closestInteractable.inventory.AddItemToInventory(StaticVariables.interactScript.itemInHand, 1);
+        StaticVariables.controller.Carry();
     }
 
     public void ResetWoodcuttingLocalVariables() {

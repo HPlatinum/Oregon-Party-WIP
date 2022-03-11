@@ -24,13 +24,21 @@ namespace Invector.vCharacterController
         {
             if (lockMovement) return;
 
-            if (locomotionType.Equals(LocomotionType.FreeWithStrafe) && !isStrafing || locomotionType.Equals(LocomotionType.OnlyFree))
+            if (locomotionType.Equals(LocomotionType.FreeWithStrafe) && !isStrafing && !isCarrying|| locomotionType.Equals(LocomotionType.OnlyFree))
             {
+                Debug.Log("Here 1");
                 SetControllerMoveSpeed(freeSpeed);
                 SetAnimatorMoveSpeed(freeSpeed);
             }
+            else if (locomotionType.Equals(LocomotionType.OnlyCarry) || locomotionType.Equals(LocomotionType.FreeWithStrafe) && isCarrying) 
+            {
+                Debug.Log("Here 2");
+                SetControllerMoveSpeed(carrySpeed);
+                SetAnimatorMoveSpeed(carrySpeed);
+            }
             else if (locomotionType.Equals(LocomotionType.OnlyStrafe) || locomotionType.Equals(LocomotionType.FreeWithStrafe) && isStrafing)
             {
+                Debug.Log("Here 3");
                 isStrafing = true;
                 SetControllerMoveSpeed(strafeSpeed);
                 SetAnimatorMoveSpeed(strafeSpeed);
@@ -112,6 +120,11 @@ namespace Invector.vCharacterController
         public virtual void Strafe()
         {
             isStrafing = !isStrafing;
+        }
+
+        public virtual void Carry() {
+            isCarrying = !isCarrying;
+            Debug.Log("Is Carrying = " +isCarrying);
         }
 
         public virtual void Jump()
