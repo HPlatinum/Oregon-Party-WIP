@@ -14,7 +14,7 @@ public class DepositHandler : InteractionHandler
     public override void ProcessInteractAction() {
         if (!StaticVariables.interactScript.currentlyInteracting) {
             StaticVariables.SetupPlayerInteractionWithHighlightedObject();
-            StaticVariables.PlayAnimation("Sharpening Axe", 1);
+            StaticVariables.PlayAnimation("Deposit Wood", 1);
             ActivePlayerIsDeposittingWood();
         }
     }

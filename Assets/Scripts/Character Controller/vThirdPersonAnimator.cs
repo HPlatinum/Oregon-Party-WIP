@@ -21,6 +21,8 @@ namespace Invector.vCharacterController
             animator.SetBool(vAnimatorParameters.IsCarrying, isCarrying);
             animator.SetBool(vAnimatorParameters.IsSprinting, isSprinting);
             animator.SetBool(vAnimatorParameters.IsGrounded, isGrounded);
+            animator.SetBool(vAnimatorParameters.DoneSwingingAxe, doneSwingingAxe);
+            animator.SetBool(vAnimatorParameters.DoneSharpeningAxe, doneSharpeningAxe);
             animator.SetFloat(vAnimatorParameters.GroundDistance, groundDistance);
 
             if (isStrafing)
@@ -65,5 +67,7 @@ namespace Invector.vCharacterController
         public static int IsCarrying = Animator.StringToHash("IsCarrying");
         public static int IsSprinting = Animator.StringToHash("IsSprinting");
         public static int GroundDistance = Animator.StringToHash("GroundDistance");
+        public static int DoneSwingingAxe = Animator.StringToHash("DoneSwingingAxe");
+        public static int DoneSharpeningAxe = Animator.StringToHash("DoneSharpeningAxe");
     }
 }

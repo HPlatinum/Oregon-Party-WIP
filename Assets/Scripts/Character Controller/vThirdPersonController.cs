@@ -123,6 +123,14 @@ namespace Invector.vCharacterController
             isCarrying = !isCarrying;
         }
 
+        public virtual void SwingAxe() {
+            doneSwingingAxe = !doneSwingingAxe;
+        }
+
+        public virtual void SharpenAxe() {
+            doneSharpeningAxe = !doneSharpeningAxe;
+        }
+
         public virtual void Jump()
         {
             // trigger jump behaviour

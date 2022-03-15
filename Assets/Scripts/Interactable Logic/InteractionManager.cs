@@ -159,11 +159,13 @@ public class InteractionManager : MonoBehaviour {
         UnhighlightInteractable(i);
         if (i.destroyParentAlso)
             i.transform.parent.gameObject.AddComponent<AnimatedObjectRemoval>().dustPrefab = dustPrefab;
-        //Destroy(closestInteractable.transform.parent.gameObject);
         else
             i.gameObject.AddComponent<AnimatedObjectRemoval>().dustPrefab = dustPrefab;
         Destroy(i);
-        //Destroy(closestInteractable.gameObject);
+    }
+
+    public void DestroyInteractable(Transform newObj) {
+        newObj.gameObject.AddComponent<AnimatedObjectRemoval>().dustPrefab = dustPrefab;
     }
 
     /*
@@ -225,6 +227,9 @@ public class InteractionManager : MonoBehaviour {
         if (item.useRightHand) hand = rightHand;
 
         GameObject newObj = InstantiatePrefabAsChild(item.model, hand, item);
+        if(newObj.GetComponent<Rigidbody>() != null) {
+            Destroy(newObj.GetComponent<Rigidbody>());
+        }
         RotateObjectToFitInHand(newObj, hand, item);
         TurnOffCollidersOnObject(newObj);
 

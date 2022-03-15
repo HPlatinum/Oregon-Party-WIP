@@ -9,10 +9,13 @@ public class SharpeningHandler : InteractionHandler
     #region Inherited Functions
 
     public override void ProcessInteractAction() {
-        if (!StaticVariables.interactScript.currentlyInteracting) {
+        if (!StaticVariables.interactScript.currentlyInteracting && !StaticVariables.woodcuttingHandler.WoodInPlayersHand()) {
             StaticVariables.interactScript.SetPreviousItemInHand();
             StaticVariables.interactScript.PutFirstToolOfTypeInHand(Tool.ToolTypes.axe);
             StaticVariables.SetupPlayerInteractionWithHighlightedObject();
+            if(StaticVariables.controller._doneSharpeningAxe) {
+                StaticVariables.controller.SharpenAxe();
+            }
             StaticVariables.PlayAnimation("Sharpening Axe Idle Loop", 1);
             ActivePlayerSharpeningAxe();
         }
@@ -39,7 +42,7 @@ public class SharpeningHandler : InteractionHandler
     private void Update() {
         if(PlayerStartedSharpening()) {
             if(Mathf.Round(timeForReward.GetTimeForChangingDisplayColor()) == 1) {
-                StaticVariables.PlayAnimation("Sharpening Axe", 0);
+                StaticVariables.controller.SharpenAxe();
                 playerIsSharpening = false;
             }
         }

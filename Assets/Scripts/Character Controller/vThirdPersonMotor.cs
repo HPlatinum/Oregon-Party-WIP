@@ -92,6 +92,28 @@ namespace Invector.vCharacterController
                 _isCarrying = value;
             }
         }
+        internal bool doneSwingingAxe
+        {
+            get
+            {
+                return _doneSwingingAxe;
+            }
+            set
+            {
+                _doneSwingingAxe = value;
+            }
+        }
+        internal bool doneSharpeningAxe
+        {
+            get
+            {
+                return _doneSharpeningAxe;
+            }
+            set
+            {
+                _doneSharpeningAxe = value;
+            }
+        }
         internal bool isGrounded { get; set; }
         internal bool isSprinting { get; set; }
         public bool stopMove { get; protected set; }
@@ -109,7 +131,9 @@ namespace Invector.vCharacterController
         internal bool lockMovement = false;                 // lock the movement of the controller (not the animation)
         internal bool lockRotation = false;                 // lock the rotation of the controller (not the animation)        
         internal bool _isStrafing;                          // internally used to set the strafe movement                
-        internal bool _isCarrying;
+        internal bool _isCarrying;                          // internally used to set the carrying movement
+        internal bool _doneSwingingAxe;                     // internally used to stop the Axe Swing Looping Animation
+        internal bool _doneSharpeningAxe;                   // internally used to stop the Sharpening Axe Looping Animation
         internal Transform rotateTarget;                    // used as a generic reference for the camera.transform
         internal Vector3 input;                             // generate raw input for the controller
         internal Vector3 colliderCenter;                    // storage the center of the capsule collider info                

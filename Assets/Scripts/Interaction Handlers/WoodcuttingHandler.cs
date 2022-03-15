@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
@@ -17,6 +18,7 @@ public class WoodcuttingHandler : ToolHandler
     public bool playerIsInFinalAnimationState;
     public Text timerUIText;
     public float counter;
+    public GameObject newObj;
     Timer timeForReward;
     Timer gameTimer;
     Transform uiParent;
@@ -26,12 +28,13 @@ public class WoodcuttingHandler : ToolHandler
     GameObject treeMiningSpot;
     GameObject storageArea;
     GameObject sharpeningStation;
+    GameObject woodDestination;
     public ToolStats toolStats;
 
     #region Inherited Functions
 
     public override void ProcessInteractAction() {
-        if (!StaticVariables.interactScript.currentlyInteracting) {
+        if (!StaticVariables.interactScript.currentlyInteracting && !WoodInPlayersHand()) {
             if(StaticVariables.sceneHandler.GetSceneName() != "Woodcutting Minigame") {
                 StaticVariables.SetupPlayerInteractionWithHighlightedObject();
                 StaticVariables.interactScript.SetPreviousItemInHand();
@@ -50,7 +53,6 @@ public class WoodcuttingHandler : ToolHandler
                     ResetToolStats();
                 }
                 ActivePlayerCuttingWood();
-                
             }
         }
         
@@ -58,7 +60,7 @@ public class WoodcuttingHandler : ToolHandler
 
     public override void ProcessInteractAnimationEnding() {
         StaticVariables.currentInteractionHandler = null;
-        StaticVariables.interactScript.PutItemInPlayerHand(StaticVariables.interactScript.GetClosestInteractable().GetItem());
+        StaticVariables.interactScript.PutPreviousItemBackInHand();
         StaticVariables.controller.Carry();
     }
 
@@ -116,13 +118,14 @@ public class WoodcuttingHandler : ToolHandler
             ResizeTimer();
         }
         if(PlayerIsCuttingWood()) {
-            if(Mathf.Round(timeForReward.GetTimeForChangingDisplayColor()) == 2 && !playerIsInFinalAnimationState) {
+            if(Mathf.Round(timeForReward.GetTimeForChangingDisplayColor()) == 1 && !playerIsInFinalAnimationState) {
                 playerIsInFinalAnimationState = true;
-                StaticVariables.PlayAnimation("Swing Axe", 1);
+                StaticVariables.controller.SwingAxe();
                 toolStats.SubtractFromWear(20);
                 if(toolStats.wear == 0) {
                     toolStats.SetToolToBroken();
                 }
+                StaticVariables.WaitTimeThenCallFunction(1f, InstantiateWoodObject);
             }
             if(timeForReward.GetTimeForChangingDisplayColor() == 0) {
                 playerInWoodcuttingState = false;
@@ -140,8 +143,28 @@ public class WoodcuttingHandler : ToolHandler
         StaticVariables.sceneHandler.LoadScene(1);
     }
 
+    private void InstantiateWoodObject() {
+        newObj = Instantiate(StaticVariables.interactScript.GetClosestInteractable().GetItem().model);
+        newObj.transform.localPosition = woodDestination.transform.localPosition;
+        newObj.GetComponent<Rigidbody>().AddForce(Vector3.up * 200);
+        newObj.GetComponent<Rigidbody>().AddForce(Vector3.back * 50);
+        StaticVariables.WaitTimeThenCallFunction(1f, DisappearInstantiatedWoodObject);
+        StaticVariables.WaitTimeThenCallFunction(1.75f, PlaceWoodInPlayersHand);
+    }
+
+    private void PlaceWoodInPlayersHand() {
+        StaticVariables.interactScript.PutItemInPlayerHand(StaticVariables.interactScript.GetClosestInteractable().GetItem());
+    }
+
+    private void DisappearInstantiatedWoodObject() {
+        StaticVariables.interactScript.DestroyInteractable(newObj.transform);
+    }
+
     private void ActivePlayerCuttingWood() {
         if(StaticVariables.interactScript.GetClosestInteractable().GetComponent<Interactable>().storedItemCount > 0) {
+            if(StaticVariables.controller._doneSwingingAxe) {
+                StaticVariables.controller.SwingAxe();
+            }
             StaticVariables.PlayAnimation("Swing Axe Loop", 1);
             playerInWoodcuttingState = true;
             timeForReward = StaticVariables.interactScript.GetClosestInteractable().GetComponentInChildren<Timer>();
@@ -184,6 +207,7 @@ public class WoodcuttingHandler : ToolHandler
         treeMiningSpot = GameObject.Find("Tree");
         storageArea = GameObject.Find("Storage");
         sharpeningStation = GameObject.Find("Sharpening Station");
+        woodDestination = GameObject.Find("Wood Destination");
         gameTimer = StaticVariables.timer;
         tweenRunning = false;
         scaleUP = 1f;
@@ -264,6 +288,14 @@ public class WoodcuttingHandler : ToolHandler
             }
         }
         return withinRange;
+    }
+
+    public bool WoodInPlayersHand() {
+        if(StaticVariables.interactScript.itemInHand != null) {
+            Debug.Log("You currently have wood in your hand.");
+            return StaticVariables.interactScript.itemInHand.name == "Wood";
+        }
+        return false;
     }
 
     public float GetCurrentTimerTime() {
