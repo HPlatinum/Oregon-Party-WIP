@@ -17,13 +17,16 @@ public class ForgeSwipable : MonoBehaviour {
 
     private void FixedUpdate() {
         //make the object fall, unless it is at the max fall speed
-        Vector2 force = new Vector2(0, -fallAcceleration);
-        rb.AddForce(force);
-        Vector2 v = rb.velocity;
-        if (v.y < -maxFallSpeed) {
-            v.y = -maxFallSpeed;
-            rb.velocity = v;
+        if (rb.velocity.y > -maxFallSpeed) {
+            Vector2 force = new Vector2(0, -fallAcceleration);
+            rb.AddForce(force);
+            Vector2 v = rb.velocity;
+            if (v.y < -maxFallSpeed) {
+                v.y = -maxFallSpeed;
+                rb.velocity = v;
+            }
         }
+
     }
 
     private void OnTriggerEnter2D(Collider2D coll) {
