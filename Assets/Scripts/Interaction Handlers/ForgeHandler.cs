@@ -263,9 +263,18 @@ public class ForgeHandler : InteractionHandler {
         lightSource.SetActive(true);
         smoke.SetActive(true);
 
+        //if the forge is highlighted, unhighlight it
+        bool isHighlighted = interactableObject.GetComponent<Outline>().enabled;
+        if (isHighlighted)
+            interactableObject.GetComponent<Outline>().enabled = false;
+
         //change the material of the forge
         Material[] newMaterials = forgeObject.GetComponent<MeshRenderer>().materials;
         newMaterials[1] = litForgeMaterial;
         forgeObject.GetComponent<MeshRenderer>().materials = newMaterials;
+
+        //if the forge was highlighted, re-highlight it
+        if (isHighlighted)
+            interactableObject.GetComponent<Outline>().enabled = true;
     }
 }
