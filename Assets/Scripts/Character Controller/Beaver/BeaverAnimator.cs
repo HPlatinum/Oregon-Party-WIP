@@ -8,6 +8,7 @@ public class BeaverAnimator : BeaverMotor
         animator.SetBool(BeaverAnimatorParameters.IsSquirming, isSquirming);
         animator.SetBool(BeaverAnimatorParameters.IsFarting, isFarting);
         animator.SetBool(BeaverAnimatorParameters.IsWalking, isWalking);
+        animator.SetFloat(BeaverAnimatorParameters.Speed, speed);
         // animator.SetFloat(BeaverAnimatorParameters.Speed)
     }
     // public virtual void SetAnimatorMoveSpeed(vMovementSpeed speed) {

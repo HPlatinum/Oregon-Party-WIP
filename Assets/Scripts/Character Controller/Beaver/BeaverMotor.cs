@@ -8,6 +8,8 @@ public class BeaverMotor : MonoBehaviour
 
     #region Components
     internal Animator animator;
+    internal GameObject beaver;
+    internal Rigidbody rigidBody;
     #endregion
 
     #region Internal Variables
@@ -44,10 +46,8 @@ public class BeaverMotor : MonoBehaviour
     internal bool _isSquirming;
     internal bool _isFarting;
     internal bool _IsWalking;
+    internal float speed;
     #endregion
 
-    public void Init() {
-        animator = GetComponent<Animator>();
 
-    }
 }
