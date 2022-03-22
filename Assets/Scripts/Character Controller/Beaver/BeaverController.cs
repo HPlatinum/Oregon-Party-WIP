@@ -5,11 +5,13 @@ public class BeaverController : BeaverAnimator
     bool stopMovement;
     bool hasWoodInHand;
     bool moveBeaver;
+    bool interacting;
     Vector3 depositPosition;
     Vector3 startPosition;
     Vector3 velocity;
     GameObject depositBox;
     BoxCollider beaverCollider;
+    NPCInteractionManager beaverInteractionManager;
     private void Start() {
         Init();
     }
@@ -34,19 +36,19 @@ public class BeaverController : BeaverAnimator
         GetAnimator();
         GetRigidBody();
         GetBeaverGameObject();
+        GetBeaverInteractionManager();
         GetDepositBoxGameObject();
         GetBeaverCollider();
         isWalking = true;
         isFarting = false;
         isSquirming = false;
+        interacting = false;
         stopMovement = true;
         moveBeaver = false;
-        hasWoodInHand = true;
-        moveBeaver = true;
+        hasWoodInHand = false;
         speed = 0;
         depositPosition = new Vector3(depositBox.transform.position.x, 0 ,depositBox.transform.position.z);
         startPosition = new Vector3(beaver.transform.position.x,0,beaver.transform.position.z);
-        StaticVariables.WaitTimeThenCallFunction(5f, MoveBeaver);
     }
 
     private void GetAnimator() {
@@ -62,36 +64,58 @@ public class BeaverController : BeaverAnimator
     }
     private void GetDepositBoxGameObject() {
         depositBox = GameObject.Find("Storage");
-        Debug.Log("Deposit box " + depositBox.name);
     }
 
     private void GetBeaverCollider() {
-        beaverCollider = beaver.transform.Find("Beaver").GetComponent<BoxCollider>();
+        // beaverCollider = beaver.transform.Find("Beaver").GetComponent<BoxCollider>();
+    }
+
+    private void GetBeaverInteractionManager() {
+        beaverInteractionManager = beaver.transform.Find("Interact Collider").GetComponent<NPCInteractionManager>();
+    }
+
+    private void ReleaseTheBeaver() {
+        MoveBeaver();
+    }
+
+    private void MoveBeaverToDestination(Vector3 destination) {
+        beaver.transform.position = Vector3.SmoothDamp(transform.position, destination, ref velocity, .5f, speed);
+        FaceToDirection(destination);
     }
 
     private void WoodInHand() {
-        hasWoodInHand = false;
+        hasWoodInHand = !hasWoodInHand;
     }
     private void MoveBeaver() { 
-        moveBeaver = true;
+        moveBeaver = !moveBeaver;
+    }
+    private void StopMovement() {
+        stopMovement = !stopMovement;
+    }
+    private void Interacting() {
+        interacting = !interacting;
     }
     private void FixedUpdate() {
         MoveToDepositBox();
         SetSpeed();
+        ReleaseTheBeaver();
     }
 
     
     private void MoveToDepositBox() {
-        if(moveBeaver) {
+        if(moveBeaver && !interacting) {
             if(!hasWoodInHand) {
-                stopMovement = false;
-                beaver.transform.position = Vector3.SmoothDamp(transform.position, depositPosition, ref velocity, .5f, speed);
-                FaceToDirection(depositPosition);
+                if(stopMovement) {
+                    stopMovement = false;
+                }
+                MoveBeaverToDestination(depositPosition);
+                CheckClosestInteractable();
             }
             if(hasWoodInHand) {
-                stopMovement = false;
-                beaver.transform.position = Vector3.SmoothDamp(transform.position, startPosition, ref velocity, .5f, speed);
-                FaceToDirection(startPosition);
+                if(stopMovement) {
+                    stopMovement = false;
+                }
+                MoveBeaverToDestination(startPosition);
             }
         }
     }
@@ -106,9 +130,17 @@ public class BeaverController : BeaverAnimator
         beaver.transform.LookAt(direction);
     }
 
-    private void OnTriggerEnter(Collider other) {
-        stopMovement = true;
-        WoodInHand();
-        speed = 0;
+    private void CheckClosestInteractable() {
+        if(beaverInteractionManager.closestInteractable != null || interacting == true) {
+            if(beaverInteractionManager.closestInteractable.interactType == Interactable.InteractTypes.Deposit) {
+                StopMovement();
+                Interacting();
+                WoodInHand();
+                speed = 0;
+                StaticVariables.WaitTimeThenCallFunction(3f, Interacting);
+                StaticVariables.WaitTimeThenCallFunction(3f, StopMovement);
+            }
+        }
+        
     }
 }

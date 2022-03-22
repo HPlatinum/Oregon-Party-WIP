@@ -6,6 +6,12 @@ using DG.Tweening;
 
 public class WoodcuttingHandler : ToolHandler
 {
+    #region Beaver Variables
+    public GameObject beaverPrefab;
+    public Item wood;
+    bool beaverNotSpawned;
+    List<Transform> beaverSpawns;
+    #endregion
     public float scaleUP;
     public int totalGameTime;
     public bool showWoodcuttingUI;
@@ -137,7 +143,7 @@ public class WoodcuttingHandler : ToolHandler
                 playerInSharpeningState = false;
             }
         }
-        
+        DetermineIfBeaverShouldBeReleased();
     }
     public void StartWoodcuttingGame() {
         StaticVariables.sceneHandler.LoadScene(1);
@@ -202,7 +208,29 @@ public class WoodcuttingHandler : ToolHandler
         toolStats.wear = 100;
     }
 
-    
+    private void CreateBeaverTransformList() {
+        beaverSpawns = new List<Transform>();
+    }
+
+    private void FillBeaverTransformList() {
+        beaverSpawns.Add(GameObject.Find("Beaver Spawn").transform);
+        beaverSpawns.Add(GameObject.Find("Beaver Spawn (1)").transform);
+        beaverSpawns.Add(GameObject.Find("Beaver Spawn (2)").transform);
+        beaverSpawns.Add(GameObject.Find("Beaver Spawn (3)").transform);
+        beaverSpawns.Add(GameObject.Find("Beaver Spawn (4)").transform);
+    }
+
+    private void RealeaseBeaver(int beaverSpawn) {
+        GameObject newBeaver = Instantiate(beaverPrefab);
+        newBeaver.transform.position = beaverSpawns[beaverSpawn].position;
+    }
+
+    private void DetermineIfBeaverShouldBeReleased() {
+        if(storageArea.GetComponent<Interactable>().inventory.GetTotalItemQuantity(wood) >= 1 && beaverNotSpawned) {
+            RealeaseBeaver(0);
+            beaverNotSpawned = false;
+        }
+    }
     public void ResetLocalVariables() { 
         treeMiningSpot = GameObject.Find("Tree");
         storageArea = GameObject.Find("Storage");
@@ -213,6 +241,9 @@ public class WoodcuttingHandler : ToolHandler
         scaleUP = 1f;
         playerIsInFinalAnimationState = false;
         toolStats = null;
+        beaverNotSpawned = true;
+        CreateBeaverTransformList();
+        FillBeaverTransformList();
     }
 
     public bool GameISOver() {
