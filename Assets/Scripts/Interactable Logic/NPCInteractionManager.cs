@@ -28,10 +28,6 @@ public class NPCInteractionManager : MonoBehaviour {
 
     public GameObject dustPrefab;
 
-    void Start() {
-        StaticVariables.playerInventory = inventory;
-    }
-
     void Update() {
         if (!currentlyInteracting)
             UpdateClosestInteractable();

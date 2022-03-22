@@ -8,8 +8,10 @@ public class WoodcuttingHandler : ToolHandler
 {
     #region Beaver Variables
     public GameObject beaverPrefab;
+    List<bool> possibleSpawnLocations;
+    bool continueSpawningBeavers;
     public Item wood;
-    bool beaverNotSpawned;
+    System.Random rand;
     List<Transform> beaverSpawns;
     #endregion
     public float scaleUP;
@@ -102,48 +104,52 @@ public class WoodcuttingHandler : ToolHandler
     }
 
     public void Update() {
-        if(ShouldWoodcuttingUIBeShown()) {
+        if(InWoodcuttingScene()) {
+            if(ShouldWoodcuttingUIBeShown()) {
             StartCoroutine(BeginWoodcutting());
             ResetLocalVariables();
             showWoodcuttingUI = false;
-        }
-        if(GameISOver()) {
-            gameOver = false;
-            gameTimer.SetTimerEndedBackToFalse();
-            StaticVariables.playerInventory.AddItemToInventory(StaticVariables.depositHandler.depositItem, StaticVariables.depositHandler.GetQuantityOfWoodCollected());
-            print("Game is over. You collected " +StaticVariables.depositHandler.GetQuantityOfWoodCollected() + " total wood.");
-            StaticVariables.depositHandler.gameIsOver = true;
-        }
-        if(ShouldFinishUIBeShown()) {
-            showFinishUI = false;
-            // StartCoroutine(CloseMiningUIAndOpenFinishUI());
-        }
-        if(StaticVariables.timer.TimerIsRunning() && timerUIText.text != StaticVariables.timer.GetTimeForDisplaying()) {
-            timerUIText.text = StaticVariables.timer.GetTimeForDisplaying();
-            SetTimerTextColor();
-            ResizeTimer();
-        }
-        if(PlayerIsCuttingWood()) {
-            if(Mathf.Round(timeForReward.GetTimeForChangingDisplayColor()) == 1 && !playerIsInFinalAnimationState) {
-                playerIsInFinalAnimationState = true;
-                StaticVariables.controller.SwingAxe();
-                toolStats.SubtractFromWear(20);
-                if(toolStats.wear == 0) {
-                    toolStats.SetToolToBroken();
+            }
+            if(GameISOver()) {
+                gameOver = false;
+                gameTimer.SetTimerEndedBackToFalse();
+                StaticVariables.playerInventory.AddItemToInventory(StaticVariables.depositHandler.depositItem, StaticVariables.depositHandler.GetQuantityOfWoodCollected());
+                print("Game is over. You collected " +StaticVariables.depositHandler.GetQuantityOfWoodCollected() + " total wood.");
+                StaticVariables.depositHandler.gameIsOver = true;
+            }
+            if(ShouldFinishUIBeShown()) {
+                showFinishUI = false;
+                // StartCoroutine(CloseMiningUIAndOpenFinishUI());
+            }
+            if(StaticVariables.timer.TimerIsRunning() && timerUIText.text != StaticVariables.timer.GetTimeForDisplaying()) {
+                timerUIText.text = StaticVariables.timer.GetTimeForDisplaying();
+                SetTimerTextColor();
+                ResizeTimer();
+            }
+            if(PlayerIsCuttingWood()) {
+                if(Mathf.Round(timeForReward.GetTimeForChangingDisplayColor()) == 1 && !playerIsInFinalAnimationState) {
+                    playerIsInFinalAnimationState = true;
+                    StaticVariables.controller.SwingAxe();
+                    toolStats.SubtractFromWear(20);
+                    if(toolStats.wear == 0) {
+                        toolStats.SetToolToBroken();
+                    }
+                    StaticVariables.WaitTimeThenCallFunction(1f, InstantiateWoodObject);
                 }
-                StaticVariables.WaitTimeThenCallFunction(1f, InstantiateWoodObject);
+                if(timeForReward.GetTimeForChangingDisplayColor() == 0) {
+                    playerInWoodcuttingState = false;
+                    playerIsInFinalAnimationState = false;
+                }
             }
-            if(timeForReward.GetTimeForChangingDisplayColor() == 0) {
-                playerInWoodcuttingState = false;
-                playerIsInFinalAnimationState = false;
+            if(PlayerIsSharpeningAxe()) {
+                if(timeForReward.GetTimeForChangingDisplayColor() == 0) {
+                    playerInSharpeningState = false;
+                }
+            }
+            if(!GameISOver() && continueSpawningBeavers) {
+                DetermineIfBeaverShouldBeReleased();
             }
         }
-        if(PlayerIsSharpeningAxe()) {
-            if(timeForReward.GetTimeForChangingDisplayColor() == 0) {
-                playerInSharpeningState = false;
-            }
-        }
-        DetermineIfBeaverShouldBeReleased();
     }
     public void StartWoodcuttingGame() {
         StaticVariables.sceneHandler.LoadScene(1);
@@ -188,6 +194,9 @@ public class WoodcuttingHandler : ToolHandler
         return showWoodcuttingUI;
     }
 
+    public bool InWoodcuttingScene() {
+        return (StaticVariables.sceneHandler.GetSceneName() == "Woodcutting Minigame");
+    }
     public bool PlayerIsCuttingWood() {
         return playerInWoodcuttingState;
     }
@@ -226,10 +235,24 @@ public class WoodcuttingHandler : ToolHandler
     }
 
     private void DetermineIfBeaverShouldBeReleased() {
-        if(storageArea.GetComponent<Interactable>().inventory.GetTotalItemQuantity(wood) >= 1 && beaverNotSpawned) {
-            RealeaseBeaver(0);
-            beaverNotSpawned = false;
+        if(storageArea.GetComponent<Interactable>().inventory.GetTotalItemQuantity(wood) >= 1) {
+            possibleSpawnLocations = new List<bool>();
+            for(int i = 0; i < 5; i++) {
+                possibleSpawnLocations.Add(beaverSpawns[i].GetComponent<BeaverSpawned>().BeaverHasBeenSpawned());
+            }
+            int index = rand.Next(0, 4);
+            print("Releasing " + index + " " +possibleSpawnLocations[index]);
+            if(!possibleSpawnLocations[index]) {
+                RealeaseBeaver(index);
+                beaverSpawns[index].GetComponent<BeaverSpawned>().SpawnBeaver();
+            }
+            continueSpawningBeavers = false;
+            StaticVariables.WaitTimeThenCallFunction(5f, ContinueSpawningBeaversSetTrue);
         }
+    }
+
+    public void ContinueSpawningBeaversSetTrue() {
+        continueSpawningBeavers = true;
     }
     public void ResetLocalVariables() { 
         treeMiningSpot = GameObject.Find("Tree");
@@ -241,16 +264,14 @@ public class WoodcuttingHandler : ToolHandler
         scaleUP = 1f;
         playerIsInFinalAnimationState = false;
         toolStats = null;
-        beaverNotSpawned = true;
+        continueSpawningBeavers = true;
+        rand = new System.Random();
         CreateBeaverTransformList();
         FillBeaverTransformList();
     }
 
     public bool GameISOver() {
-        if(StaticVariables.sceneHandler.GetSceneName() == "Woodcutting Minigame")
-            return gameOver = gameTimer.TimerWasStartedAndIsNowStopped();
-        else
-            return false;
+        return gameOver = gameTimer.TimerWasStartedAndIsNowStopped();
     }
 
     public bool ShouldFinishUIBeShown() {

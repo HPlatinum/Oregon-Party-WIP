@@ -42,7 +42,6 @@ public class Inventory : ScriptableObject
                 }
             }
         }
-
         // adds item & quantity to new InventorySlot
         AddItemToNewSlot(item, pickedUpItemQuantity, item.model);
     }
