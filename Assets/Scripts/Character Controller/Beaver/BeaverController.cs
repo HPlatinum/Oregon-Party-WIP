@@ -136,6 +136,10 @@ public class BeaverController : BeaverAnimator
                 StopMovement();
                 Interacting();
                 WoodInHand();
+                if(beaverInteractionManager.closestInteractable.inventory.GetTotalItemQuantity(beaverInteractionManager.closestInteractable.item) > 0) {
+                    beaverInteractionManager.closestInteractable.inventory.RemoveItemFromInventory(beaverInteractionManager.closestInteractable.item, 1);
+                    beaverInteractionManager.PutItemInNPCHand(beaverInteractionManager.closestInteractable.item);
+                }
                 speed = 0;
                 StaticVariables.WaitTimeThenCallFunction(3f, Interacting);
                 StaticVariables.WaitTimeThenCallFunction(3f, StopMovement);

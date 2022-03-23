@@ -27,41 +27,16 @@ public class NPCInteractionManager : MonoBehaviour {
 
 
     public GameObject dustPrefab;
-
     void Update() {
         if (!currentlyInteracting)
             UpdateClosestInteractable();
-
-        bool justStarted = CheckIfInteractAnimationJustStarted();
-        if (justStarted)
-            ProcessInteractAnimationStarting();
-
-        bool justEnded = CheckIfInteractAnimationJustEnded();
-        if (justEnded)
-            ProcessInteractAnimationEnding();
     }
 
     private void UpdateClosestInteractable() {
         Interactable closestObject = GetClosestInteractable();
         if ((closestObject != null) && (closestObject != closestInteractable)) {
-            UnhighlightInteractable(closestInteractable);
             closestInteractable = closestObject;
-            HighlightClosestInteractable();
         }
-    }
-
-    private void HighlightClosestInteractable() {
-        if (closestInteractable != null)
-            closestInteractable.GetComponent<Outline>().enabled = true;
-    }
-
-    private void UnhighlightInteractable(Interactable interactable) {
-        if (interactable != null)
-            interactable.GetComponent<Outline>().enabled = false;
-    }
-
-    private void UnhighlightInteractable(GameObject go) {
-        UnhighlightInteractable(go.GetComponent<Interactable>());
     }
 
     private void OnTriggerEnter(Collider obj) {
@@ -74,7 +49,6 @@ public class NPCInteractionManager : MonoBehaviour {
         GameObject go = obj.gameObject;
         if (!currentlyInteracting) {
             RemoveObjectFromInteractablesList(go);
-            UnhighlightInteractable(go);
             if (closestInteractable == obj.GetComponent<Interactable>()) {
                 closestInteractable = null;
             }
@@ -152,7 +126,6 @@ public class NPCInteractionManager : MonoBehaviour {
         Interactable i = closestInteractable;
         closestInteractable = null;
         interactablesInRange.Remove(i);
-        UnhighlightInteractable(i);
         if (i.destroyParentAlso)
             i.transform.parent.gameObject.AddComponent<AnimatedObjectRemoval>().dustPrefab = dustPrefab;
         else
@@ -163,22 +136,12 @@ public class NPCInteractionManager : MonoBehaviour {
     public void DestroyInteractable(Transform newObj) {
         newObj.gameObject.AddComponent<AnimatedObjectRemoval>().dustPrefab = dustPrefab;
     }
-
-    /*
-    public void OpenChest() {
-        // if(!interactSubject.inventoryState())
-        //     interactSubject.inventoryState();
-        print("Opening chest...");
-    }
-    */
-
-    // clears inventory and inventory weight on application quit
     private void OnApplicationQuit() {
         inventory.inventorySlots.Clear();
         
     }
     
-    private bool CanPlayerInteractWithCurrentInteractable() {
+    private bool CanNPCInteractWithCurrentInteractable() {
         if (closestInteractable == null)
             return false;
         Interactable.InteractTypes type = closestInteractable.interactType;
@@ -213,7 +176,7 @@ public class NPCInteractionManager : MonoBehaviour {
         return GetInteractionHandlerForInteractable(closestInteractable);
     }
 
-    public void PutItemInPlayerHand(Item item) {
+    public void PutItemInNPCHand(Item item) {
         //only allow one object in the hand at a time
         if (objectInHand != null)
             RemoveItemFromHand();
@@ -221,7 +184,6 @@ public class NPCInteractionManager : MonoBehaviour {
         //use the correct hand
         Transform hand = leftHand;
         if (item.useRightHand) hand = rightHand;
-
         GameObject newObj = InstantiatePrefabAsChild(item.model, hand, item);
         if(newObj.GetComponent<Rigidbody>() != null) {
             Destroy(newObj.GetComponent<Rigidbody>());
@@ -247,16 +209,14 @@ public class NPCInteractionManager : MonoBehaviour {
     private GameObject InstantiatePrefabAsChild(GameObject prefab, Transform parent, Item item) {
         GameObject newObj = Instantiate(prefab);
         newObj.transform.SetParent(parent);
-        newObj.transform.localPosition = item.inHandPosition; // positions object in hand
+        newObj.transform.localPosition = item.inBeaverHandPosition; // positions object in hand
+
         return newObj;
     }
 
     private void RotateObjectToFitInHand(GameObject go, Transform hand, Item item) {
         Vector3 newRotation;
-        newRotation = item.inHandRotation;
-
-        print("Game Object " + go);
-        print(go.transform.position);
+        newRotation = item.inBeaverHandRotation;
         
         go.transform.localEulerAngles = newRotation;
     }
@@ -266,91 +226,6 @@ public class NPCInteractionManager : MonoBehaviour {
             print("Removing Item From hand for some reason");
             DestroyImmediate(objectInHand);
             itemInHand = null;
-        }
-    }
-
-    public void StartInteractionWithCurrentInteractable() {
-        if (closestInteractable == null)
-            return;
-        else if (!CanPlayerInteractWithCurrentInteractable()) {
-            print("you cannot perform the " + closestInteractable.interactType.ToString() + " action");
-            StaticVariables.SetupPlayerInteractionWithHighlightedObject();
-            doNotPickupAfterAnimation = true;
-            StaticVariables.PlayAnimation("Shrugging");
-            return;
-        }
-        
-        StaticVariables.currentInteractionHandler = GetInteractionHandlerForClosestInteractable();
-        StaticVariables.currentInteractionHandler.ProcessInteractAction();
-    }
-
-    private void PreparePlayerForInteraction() {
-        currentlyInteracting = true;
-        interactAnimationStarted = false;
-        StaticVariables.controller.lockMovement = true;
-        StaticVariables.controller.lockRotation = true;
-        StaticVariables.controller.HaltPlayerVelocity();
-    }
-
-    public void SetupPlayerInteractionWithClosestInteractable(float transitionDuration = 0.2f) {
-        PreparePlayerForInteraction();
-        StaticVariables.controller.FaceTo(StaticVariables.interactScript.closestInteractable.gameObject, transitionDuration);
-    }
-
-    private bool CheckIfInteractAnimationJustStarted() {
-        if (currentlyInteracting) {
-            if (!interactAnimationStarted) {
-                if (StaticVariables.DoesPlayerAnimatorStateHaveInteractTag()) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private void ProcessInteractAnimationStarting() {
-        interactAnimationStarted = true;
-    }
-
-    private bool CheckIfInteractAnimationJustEnded() {
-        if (currentlyInteracting) {
-            if (interactAnimationStarted) {
-                if (!StaticVariables.DoesPlayerAnimatorStateHaveInteractTag()) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public bool IsToolTypeInPlayerHand(Tool.ToolTypes type) {
-        if (itemInHand != null) {
-            if (itemInHand.type == ItemType.Tool) {
-                if (((Tool)itemInHand).toolType == type)
-                    return true;
-            }
-        }
-        return false;
-    }
-
-    public void SetPreviousItemInHand() {
-        itemInHandBeforeInteraction = itemInHand;
-    }
-
-    public int GetToolTier() {
-        return itemInHand.itemTier;
-    }
-
-    public void PutFirstToolOfTypeInHand(Tool.ToolTypes type) {
-        Item item = StaticVariables.playerInventory.GetFirstToolWithType(type);
-        PutItemInPlayerHand(item);
-    }
-
-    public void PutPreviousItemBackInHand() {
-        RemoveItemFromHand();
-        if (itemInHandBeforeInteraction != null) {
-            PutItemInPlayerHand(itemInHandBeforeInteraction);
-            itemInHandBeforeInteraction = null;
         }
     }
 } 

@@ -26,6 +26,12 @@ public class Item : ScriptableObject {
     public float inHandScale = 1f;
     public bool useRightHand;
 
+    [Header("Custom Transform In Beaver Hand")]
+    public Vector3 inBeaverHandPosition = Vector3.zero;
+    public Vector3 inBeaverHandRotation = Vector3.zero;
+    public float inBeaverHandScale = 1f;
+    public bool useBeaverRightHand;
+
     [Header ("Universal Item Stats")]
     public int itemTier;
 
