@@ -20,6 +20,7 @@ public class NPCInteractionManager : MonoBehaviour {
     //transforms for the player's hands, to add held items to
     public Transform rightHand;
     public Transform leftHand;
+    public Transform testTransform;
 
     //misc
     public Inventory inventory;
@@ -30,6 +31,10 @@ public class NPCInteractionManager : MonoBehaviour {
     void Update() {
         if (!currentlyInteracting)
             UpdateClosestInteractable();
+
+        if(testTransform != null && testTransform.localPosition != itemInHand.inBeaverHandPosition) {
+            testTransform.localPosition = itemInHand.inBeaverHandPosition;
+        }
     }
 
     private void UpdateClosestInteractable() {
@@ -208,16 +213,18 @@ public class NPCInteractionManager : MonoBehaviour {
 
     private GameObject InstantiatePrefabAsChild(GameObject prefab, Transform parent, Item item) {
         GameObject newObj = Instantiate(prefab);
+        Vector3 newPosition = item.inBeaverHandPosition;
         newObj.transform.SetParent(parent);
-        newObj.transform.localPosition = item.inBeaverHandPosition; // positions object in hand
-
+        newObj.transform.localPosition = newPosition; // positions object in hand
+        testTransform = newObj.transform;
+        print(newPosition.x + ", " + newPosition.y + ", " +newPosition.z);
+        print(newObj.transform.localPosition.x + ", " + newObj.transform.localPosition.y + ", " +newObj.transform.localPosition.z);
         return newObj;
     }
 
     private void RotateObjectToFitInHand(GameObject go, Transform hand, Item item) {
         Vector3 newRotation;
         newRotation = item.inBeaverHandRotation;
-        
         go.transform.localEulerAngles = newRotation;
     }
 
