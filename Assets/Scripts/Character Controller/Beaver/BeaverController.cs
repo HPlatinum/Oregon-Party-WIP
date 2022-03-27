@@ -109,7 +109,6 @@ public class BeaverController : BeaverAnimator
                     stopMovement = false;
                 }
                 MoveBeaverToDestination(depositPosition);
-                CheckClosestInteractable();
             }
             if(hasWoodInHand) {
                 if(stopMovement) {
@@ -130,21 +129,20 @@ public class BeaverController : BeaverAnimator
         beaver.transform.LookAt(direction);
     }
 
-    private void CheckClosestInteractable() {
-        if(beaverInteractionManager.closestInteractable != null || interacting == true) {
-            if(beaverInteractionManager.closestInteractable.interactType == Interactable.InteractTypes.Deposit) {
-                StopMovement();
-                Interacting();
-                WoodInHand();
-                if(beaverInteractionManager.closestInteractable.inventory.GetTotalItemQuantity(beaverInteractionManager.closestInteractable.item) > 0) {
-                    beaverInteractionManager.closestInteractable.inventory.RemoveItemFromInventory(beaverInteractionManager.closestInteractable.item, 1);
-                    beaverInteractionManager.PutItemInNPCHand(beaverInteractionManager.closestInteractable.item);
-                }
-                speed = 0;
-                StaticVariables.WaitTimeThenCallFunction(3f, Interacting);
-                StaticVariables.WaitTimeThenCallFunction(3f, StopMovement);
+    private void OnTriggerEnter(Collider collider) {
+        print(collider.gameObject.name);
+        if(collider.gameObject.GetComponent<Interactable>() != null && collider.gameObject.name == "Storage") {
+            Interactable pickupInteractable = collider.gameObject.GetComponent<Interactable>();
+            StopMovement();
+            Interacting();
+            WoodInHand();
+            if(pickupInteractable.inventory.GetTotalItemQuantity(pickupInteractable.item) > 0) {
+                pickupInteractable.inventory.RemoveItemFromInventory(pickupInteractable.item, 1);
+                beaverInteractionManager.PutItemInNPCHand(pickupInteractable.item);
             }
-        }
-        
+            speed = 0;
+            StaticVariables.WaitTimeThenCallFunction(3f, Interacting);
+            StaticVariables.WaitTimeThenCallFunction(3f, StopMovement);
+        }        
     }
 }

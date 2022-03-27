@@ -3119,7 +3119,6 @@ GameObject:
   - component: {fileID: 692404369287119931}
   - component: {fileID: 2293945639448029875}
   - component: {fileID: 669197584}
-  - component: {fileID: 669197580}
   m_Layer: 0
   m_Name: Beaver 2
   m_TagString: Untagged
@@ -3205,18 +3204,6 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &669197580
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2944621389040376948}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c9bb1fa945ae3c49b9be0cb20dbb6b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2964225333672728112
 GameObject:
   m_ObjectHideFlags: 0
@@ -5256,6 +5243,7 @@ MonoBehaviour:
   currentlyInteracting: 0
   rightHand: {fileID: 7511034800124773902}
   leftHand: {fileID: 7511034800124773902}
+  testTransform: {fileID: 0}
   inventory: {fileID: 11400000, guid: 956148192d3a71444886dc034c1ef1e1, type: 2}
   dustPrefab: {fileID: 0}
 --- !u!1 &5494154215332901635

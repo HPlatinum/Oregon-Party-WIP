@@ -31,9 +31,12 @@ public class NPCInteractionManager : MonoBehaviour {
     void Update() {
         if (!currentlyInteracting)
             UpdateClosestInteractable();
+            
 
-        if(testTransform != null && testTransform.localPosition != itemInHand.inBeaverHandPosition) {
-            testTransform.localPosition = itemInHand.inBeaverHandPosition;
+        if(testTransform != null) {
+            print("Update " + testTransform.transform.localPosition.x + ", " + testTransform.transform.localPosition.y + ", " +testTransform.transform.localPosition.z);
+            // // testTransform.localPosition = itemInHand.inBeaverHandPosition;
+            // print("test");
         }
     }
 
@@ -190,9 +193,6 @@ public class NPCInteractionManager : MonoBehaviour {
         Transform hand = leftHand;
         if (item.useRightHand) hand = rightHand;
         GameObject newObj = InstantiatePrefabAsChild(item.model, hand, item);
-        if(newObj.GetComponent<Rigidbody>() != null) {
-            Destroy(newObj.GetComponent<Rigidbody>());
-        }
         RotateObjectToFitInHand(newObj, hand, item);
         TurnOffCollidersOnObject(newObj);
 
@@ -215,6 +215,9 @@ public class NPCInteractionManager : MonoBehaviour {
         GameObject newObj = Instantiate(prefab);
         Vector3 newPosition = item.inBeaverHandPosition;
         newObj.transform.SetParent(parent);
+        if(newObj.GetComponent<Rigidbody>() != null) {
+            Destroy(newObj.GetComponent<Rigidbody>());
+        }
         newObj.transform.localPosition = newPosition; // positions object in hand
         testTransform = newObj.transform;
         print(newPosition.x + ", " + newPosition.y + ", " +newPosition.z);
