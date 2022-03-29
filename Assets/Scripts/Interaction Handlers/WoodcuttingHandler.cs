@@ -241,7 +241,6 @@ public class WoodcuttingHandler : ToolHandler
                 possibleSpawnLocations.Add(beaverSpawns[i].GetComponent<BeaverSpawned>().BeaverHasBeenSpawned());
             }
             int index = rand.Next(0, 4);
-            index = 0;
             print("Releasing " + index + " " +possibleSpawnLocations[index]);
             if(!possibleSpawnLocations[index]) {
                 RealeaseBeaver(index);

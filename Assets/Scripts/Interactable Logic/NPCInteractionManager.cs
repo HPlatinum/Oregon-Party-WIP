@@ -20,7 +20,6 @@ public class NPCInteractionManager : MonoBehaviour {
     //transforms for the player's hands, to add held items to
     public Transform rightHand;
     public Transform leftHand;
-    public Transform testTransform;
 
     //misc
     public Inventory inventory;
@@ -31,13 +30,6 @@ public class NPCInteractionManager : MonoBehaviour {
     void Update() {
         if (!currentlyInteracting)
             UpdateClosestInteractable();
-            
-
-        if(testTransform != null) {
-            print("Update " + testTransform.transform.localPosition.x + ", " + testTransform.transform.localPosition.y + ", " +testTransform.transform.localPosition.z);
-            // // testTransform.localPosition = itemInHand.inBeaverHandPosition;
-            // print("test");
-        }
     }
 
     private void UpdateClosestInteractable() {
@@ -219,9 +211,6 @@ public class NPCInteractionManager : MonoBehaviour {
             Destroy(newObj.GetComponent<Rigidbody>());
         }
         newObj.transform.localPosition = newPosition; // positions object in hand
-        testTransform = newObj.transform;
-        print(newPosition.x + ", " + newPosition.y + ", " +newPosition.z);
-        print(newObj.transform.localPosition.x + ", " + newObj.transform.localPosition.y + ", " +newObj.transform.localPosition.z);
         return newObj;
     }
 

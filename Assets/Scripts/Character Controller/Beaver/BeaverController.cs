@@ -10,7 +10,6 @@ public class BeaverController : BeaverAnimator
     Vector3 startPosition;
     Vector3 velocity;
     GameObject depositBox;
-    BoxCollider beaverCollider;
     NPCInteractionManager beaverInteractionManager;
     private void Start() {
         Init();
@@ -38,7 +37,6 @@ public class BeaverController : BeaverAnimator
         GetBeaverGameObject();
         GetBeaverInteractionManager();
         GetDepositBoxGameObject();
-        GetBeaverCollider();
         isWalking = true;
         isFarting = false;
         isSquirming = false;
@@ -66,9 +64,6 @@ public class BeaverController : BeaverAnimator
         depositBox = GameObject.Find("Storage");
     }
 
-    private void GetBeaverCollider() {
-        // beaverCollider = beaver.transform.Find("Beaver").GetComponent<BoxCollider>();
-    }
 
     private void GetBeaverInteractionManager() {
         beaverInteractionManager = beaver.transform.Find("Interact Collider").GetComponent<NPCInteractionManager>();
@@ -130,7 +125,6 @@ public class BeaverController : BeaverAnimator
     }
 
     private void OnTriggerEnter(Collider collider) {
-        print(collider.gameObject.name);
         if(collider.gameObject.GetComponent<Interactable>() != null && collider.gameObject.name == "Storage") {
             Interactable pickupInteractable = collider.gameObject.GetComponent<Interactable>();
             StopMovement();
