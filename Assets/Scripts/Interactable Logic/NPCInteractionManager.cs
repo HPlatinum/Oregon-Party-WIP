@@ -27,6 +27,9 @@ public class NPCInteractionManager : MonoBehaviour {
 
 
     public GameObject dustPrefab;
+    void Start() {
+        itemInHand = null;
+    }
     void Update() {
         if (!currentlyInteracting)
             UpdateClosestInteractable();

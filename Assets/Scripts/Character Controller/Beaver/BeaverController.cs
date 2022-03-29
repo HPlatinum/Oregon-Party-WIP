@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class BeaverController : BeaverAnimator
 {
@@ -6,6 +7,7 @@ public class BeaverController : BeaverAnimator
     bool hasWoodInHand;
     bool moveBeaver;
     bool interacting;
+    public NavMeshAgent agent;
     Vector3 depositPosition;
     Vector3 startPosition;
     Vector3 velocity;
@@ -74,8 +76,7 @@ public class BeaverController : BeaverAnimator
     }
 
     private void MoveBeaverToDestination(Vector3 destination) {
-        beaver.transform.position = Vector3.SmoothDamp(transform.position, destination, ref velocity, .5f, speed);
-        FaceToDirection(destination);
+        agent.SetDestination(destination);
     }
 
     private void WoodInHand() {
@@ -125,7 +126,7 @@ public class BeaverController : BeaverAnimator
     }
 
     private void OnTriggerEnter(Collider collider) {
-        if(collider.gameObject.GetComponent<Interactable>() != null && collider.gameObject.name == "Storage") {
+        if(collider.gameObject.GetComponent<Interactable>() != null && collider.gameObject.name == "Storage" && beaverInteractionManager.itemInHand == null) {
             Interactable pickupInteractable = collider.gameObject.GetComponent<Interactable>();
             StopMovement();
             Interacting();
