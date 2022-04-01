@@ -9,6 +9,11 @@ public class Essentials : MonoBehaviour{
     void Start() {
         Transform canvas = transform.Find("Canvas");
 
+        //create the player object
+        GetComponent<PlayerModelSetup>().CreatePlayerModelInstanceInScene();
+        //get the camera to follow the player
+        GetComponent<PlayerModelSetup>().SetCameraToFollowPlayer();
+
         //misc stuff
         StaticVariables.essentials = this;
         StaticVariables.playerAnimator = FindObjectOfType<Invector.vCharacterController.vThirdPersonController>().GetComponent<Animator>();
