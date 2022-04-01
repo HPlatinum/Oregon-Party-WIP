@@ -9,6 +9,11 @@ public class Essentials : MonoBehaviour{
     void Start() {
         Transform canvas = transform.Find("Canvas");
 
+        //create the player object
+        GetComponent<PlayerModelSetup>().CreatePlayerModelInstanceInScene();
+        //get the camera to follow the player
+        GetComponent<PlayerModelSetup>().SetCameraToFollowPlayer();
+
         //misc stuff
         StaticVariables.essentials = this;
         StaticVariables.playerAnimator = FindObjectOfType<Invector.vCharacterController.vThirdPersonController>().GetComponent<Animator>();
@@ -28,8 +33,12 @@ public class Essentials : MonoBehaviour{
         StaticVariables.fishingHandler = canvas.Find("Fishing Interface").GetComponent<FishingHandler>();
         StaticVariables.pickupHandler = canvas.Find("Pickup Interface").GetComponent<PickupHandler>();
         StaticVariables.woodcuttingHandler = canvas.Find("Woodcutting Interface").GetComponent<WoodcuttingHandler>();
+        StaticVariables.sharpeningHandler = canvas.Find("Woodcutting Interface").GetComponent<SharpeningHandler>();
+        StaticVariables.logHandler = canvas.Find("Woodcutting Interface").GetComponent<LogHandler>();
+        StaticVariables.depositHandler = canvas.Find("Woodcutting Interface").GetComponent<DepositHandler>();
         StaticVariables.miningHandler = canvas.Find("Mining Interface").GetComponent<MiningHandler>();
         StaticVariables.forgeHandler = canvas.Find("Forge Interface").GetComponent<ForgeHandler>();
+        
 
         //Scene Handler
         StaticVariables.sceneHandler = transform.Find("Scene Handler").GetComponent<SceneHandler>();

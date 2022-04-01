@@ -30,6 +30,9 @@ public class StaticVariables
     static public WoodcuttingHandler woodcuttingHandler;
     static public MiningHandler miningHandler;
     static public ForgeHandler forgeHandler;
+    static public SharpeningHandler sharpeningHandler;
+    static public DepositHandler depositHandler;
+    static public LogHandler logHandler;
     static public Timer timer;
 
     static public void SetInteractButtonText(string newText) {
