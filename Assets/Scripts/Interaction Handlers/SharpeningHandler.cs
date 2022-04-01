@@ -9,7 +9,7 @@ public class SharpeningHandler : InteractionHandler
     #region Inherited Functions
 
     public override void ProcessInteractAction() {
-        if (!StaticVariables.interactScript.currentlyInteracting && !StaticVariables.woodcuttingHandler.WoodInPlayersHand()) {
+        if (!StaticVariables.interactScript.currentlyInteracting && !StaticVariables.woodcuttingHandler.LogInPlayersHand()) {
             StaticVariables.interactScript.SetPreviousItemInHand();
             StaticVariables.interactScript.PutFirstToolOfTypeInHand(Tool.ToolTypes.axe);
             StaticVariables.SetupPlayerInteractionWithHighlightedObject();
@@ -27,6 +27,9 @@ public class SharpeningHandler : InteractionHandler
     }
 
     public override bool CanPlayerInteractWithObject(Interactable interactable) {
+        if(StaticVariables.woodcuttingHandler.LogInPlayersHand()) {
+            return true;
+        }
         if(StaticVariables.woodcuttingHandler.toolStats != null) {
             if(StaticVariables.woodcuttingHandler.toolStats.wear < 100) {
                 return true;
