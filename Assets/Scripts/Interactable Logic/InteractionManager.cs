@@ -190,6 +190,7 @@ public class InteractionManager : MonoBehaviour {
     }
     
     private InteractionHandler GetInteractionHandlerForInteractable(Interactable interactable) {
+        print(interactable.interactType);
         switch (interactable.interactType){
             case (Interactable.InteractTypes.Fishing):
                     return StaticVariables.fishingHandler;
@@ -209,6 +210,10 @@ public class InteractionManager : MonoBehaviour {
                 return StaticVariables.sharpeningHandler;
             case (Interactable.InteractTypes.Deposit):
                 return StaticVariables.depositHandler;
+            case (Interactable.InteractTypes.Log): {
+                return StaticVariables.logHandler;
+            }
+                
         }
         return null;
     }
@@ -227,6 +232,26 @@ public class InteractionManager : MonoBehaviour {
         if (item.useRightHand) hand = rightHand;
 
         GameObject newObj = InstantiatePrefabAsChild(item.model, hand, item);
+        if(newObj.GetComponent<Rigidbody>() != null) {
+            Destroy(newObj.GetComponent<Rigidbody>());
+        }
+        RotateObjectToFitInHand(newObj, hand, item);
+        TurnOffCollidersOnObject(newObj);
+
+        //assumes we only have one object in the hand at a time
+        objectInHand = newObj;
+        itemInHand = item;
+    }
+
+    public void PutItemInPlayerHandButChangeModel(Item item, GameObject newModel) {
+        //only allow one object in the hand at a time
+        if (objectInHand != null)
+            RemoveItemFromHand();
+        //use the correct hand
+        Transform hand = leftHand;
+        if (item.useRightHand) hand = rightHand;
+
+        GameObject newObj = InstantiatePrefabAsChild(newModel, hand, item);
         if(newObj.GetComponent<Rigidbody>() != null) {
             Destroy(newObj.GetComponent<Rigidbody>());
         }

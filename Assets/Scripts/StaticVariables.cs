@@ -32,6 +32,7 @@ public class StaticVariables
     static public ForgeHandler forgeHandler;
     static public SharpeningHandler sharpeningHandler;
     static public DepositHandler depositHandler;
+    static public LogHandler logHandler;
     static public Timer timer;
 
     static public void SetInteractButtonText(string newText) {

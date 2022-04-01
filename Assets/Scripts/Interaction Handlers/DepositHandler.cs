@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class DepositHandler : InteractionHandler
 {
+    int currentObjectCount;
     public bool gameIsStarted;
     public bool gameIsOver;
     public Item depositItem;
     public GameObject depositObject;
     public Inventory depositInventory;
+    List<GameObject> depositWoodPile;
     #region Inherited Functions
 
     public override void ProcessInteractAction() {
@@ -47,6 +49,12 @@ public class DepositHandler : InteractionHandler
             if(gameIsOver) {
                 depositInventory.ClearInventory();
             }
+            if(gameIsStarted) {
+                if(currentObjectCount != GetQuantityOfWoodCollected()) {
+                    currentObjectCount = GetQuantityOfWoodCollected();
+                    SetWoodGameObjectsActive();
+                }
+            }
         }
     }
     
@@ -60,11 +68,46 @@ public class DepositHandler : InteractionHandler
         depositObject = GameObject.FindGameObjectWithTag("Interact (Depositing)");
         depositInventory = depositObject.GetComponent<Interactable>().inventory;
         depositItem = depositObject.GetComponent<Interactable>().item;
+        currentObjectCount = GetQuantityOfWoodCollected();
         gameIsStarted = true;
         gameIsOver = false;
+        CreateListOfWoodGameObjects();
+        FillListOfWoodGameObjects();
+        SetWoodGameObjectsActive();
     }
 
+
+
     public int GetQuantityOfWoodCollected() {
-        return depositInventory.GetTotalItemQuantity(depositObject.GetComponent<Interactable>().item);
+        return depositInventory.GetQuantityOfSpecificItem(depositItem);
+    }
+
+    private void CreateListOfWoodGameObjects() {
+        depositWoodPile = new List<GameObject>();
+    }
+
+    private void FillListOfWoodGameObjects() {
+        GameObject newObj;
+        for(int i = 0; i < 18; i++) {
+            if(i == 0) {
+                newObj = depositObject.transform.Find("Wood Slot").gameObject;
+            }
+            else {
+                newObj = depositObject.transform.Find("Wood Slot (" + i + ")").gameObject;
+            }
+            depositWoodPile.Add(newObj);
+        }
+    }
+
+    private void SetWoodGameObjectsActive() {
+        
+        for(int i = 0; i < 18; i++) {
+            if(currentObjectCount >= i && !depositWoodPile[i].activeSelf) {
+                depositWoodPile[i].SetActive(true);
+            }
+            if(currentObjectCount <= i && depositWoodPile[i].activeSelf) {
+                depositWoodPile[i].SetActive(false);
+            }
+        }
     }
 }
