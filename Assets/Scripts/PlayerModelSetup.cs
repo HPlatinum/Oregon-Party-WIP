@@ -7,7 +7,8 @@ public class PlayerModelSetup: MonoBehaviour
 {
     
     public GameObject[] playerModelOptions;
-    public int chosenOption;
+    public int chosenModelOption;
+    public int chosenMaterialOption;
 
     //option for the chosen player model
     //option for the chosen material?
@@ -15,7 +16,7 @@ public class PlayerModelSetup: MonoBehaviour
     private GameObject playerModel;
 
     public void CreatePlayerModelInstanceInScene() {
-        GameObject chosenModel = playerModelOptions[chosenOption];
+        GameObject chosenModel = playerModelOptions[chosenModelOption];
 
         GameObject[] temp = GameObject.FindGameObjectsWithTag("Player");
         if (temp.Length != 1) {
@@ -34,16 +35,16 @@ public class PlayerModelSetup: MonoBehaviour
             playerModel.transform.SetParent(null);
             playerModel.transform.localPosition = playerSpawnPoint.transform.position;
 
+            //set the model material
+            playerModel.GetComponent<PlayerReskinData>().UpdateMaterial(chosenMaterialOption);
+
             GameObject.Destroy(playerSpawnPoint);
         }
         
     }
 
     public void SetCameraToFollowPlayer() {
-
-        transform.Find("Virtual Follow Camera").GetComponent<Cinemachine.CinemachineVirtualCamera>().Follow = playerModel.transform;
-
-        
+        transform.parent.Find("Virtual Follow Camera").GetComponent<Cinemachine.CinemachineVirtualCamera>().Follow = playerModel.transform;
     }
 
 }

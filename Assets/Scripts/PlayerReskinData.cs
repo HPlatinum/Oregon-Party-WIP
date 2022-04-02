@@ -9,11 +9,14 @@ public class PlayerReskinData : MonoBehaviour
 
     public void UpdateMaterial(Material mat) {
         foreach(GameObject go in objectsThatNeedMaterialsChanged) {
-            Material[] newMaterials = go.GetComponent<MeshRenderer>().materials;
-            newMaterials[1] = mat;
-            go.GetComponent<MeshRenderer>().materials = newMaterials;
+            Material[] newMaterials = go.GetComponent<Renderer>().materials;
+            newMaterials[0] = mat;
+            go.GetComponent<Renderer>().materials = newMaterials;
         }
+    }
 
+    public void UpdateMaterial(int index) {
+        UpdateMaterial(materialOptions[index]);
     }
     
 }

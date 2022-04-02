@@ -1892,7 +1892,19 @@ MonoBehaviour:
   - {fileID: 8073806522773036342}
   - {fileID: 8223859749600121012}
   - {fileID: 8285609111065410123}
-  materialOptions: []
+  materialOptions:
+  - {fileID: 2100000, guid: 827ba70314eb2134485b266b8d4b037d, type: 2}
+  - {fileID: 2100000, guid: 2bc797b1737c73f48aa49e5dcac0776f, type: 2}
+  - {fileID: 2100000, guid: 98010bb2e35c05a4893fbb9a8a40eca0, type: 2}
+  - {fileID: 2100000, guid: 66f6beadcc835d34194412107dbe5206, type: 2}
+  - {fileID: 2100000, guid: e1e05d3eb123939469d6dff417a421e8, type: 2}
+  - {fileID: 2100000, guid: 41842d362ef6ed3488c6c7256f643d82, type: 2}
+  - {fileID: 2100000, guid: c3d4afcd408a2eb4a814ad54d3e0ac95, type: 2}
+  - {fileID: 2100000, guid: 2974e08192ea9594da5c9d74aa421197, type: 2}
+  - {fileID: 2100000, guid: 793c7723488f2174e8aa453cd701aab8, type: 2}
+  - {fileID: 2100000, guid: 209fd1e0d26dd6e42804f0b3b557d7b5, type: 2}
+  - {fileID: 2100000, guid: 8af69bc715e880a42ae91628ea2b0ce3, type: 2}
+  - {fileID: 2100000, guid: 51c36346df9e87541bc45fc21ed4e2b9, type: 2}
 --- !u!1 &8560800492041712588
 GameObject:
   m_ObjectHideFlags: 0
@@ -2104,7 +2116,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: adc4ddb0e4b606e4287203ecaf8bcf30, type: 2}
+  - {fileID: 2100000, guid: 8af69bc715e880a42ae91628ea2b0ce3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2240,6 +2252,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Hair
       objectReference: {fileID: 0}
+    - target: {fileID: 3919875370391298564, guid: 7151b96ceab559e48915e61175470695, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 8af69bc715e880a42ae91628ea2b0ce3, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7151b96ceab559e48915e61175470695, type: 3}
 --- !u!1 &8073806522773036342 stripped
@@ -2259,6 +2275,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8070295595318025659}
     m_Modifications:
+    - target: {fileID: 538958638088676271, guid: 25f2402822f15a947889db85fcb5eac5, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 8af69bc715e880a42ae91628ea2b0ce3, type: 2}
+    - target: {fileID: 551591234584447312, guid: 25f2402822f15a947889db85fcb5eac5, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 8af69bc715e880a42ae91628ea2b0ce3, type: 2}
     - target: {fileID: 1723904019727905343, guid: 25f2402822f15a947889db85fcb5eac5, type: 3}
       propertyPath: m_RootOrder
       value: 3

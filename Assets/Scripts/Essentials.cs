@@ -9,10 +9,11 @@ public class Essentials : MonoBehaviour{
     void Start() {
         Transform canvas = transform.Find("Canvas");
 
-        //create the player object
-        GetComponent<PlayerModelSetup>().CreatePlayerModelInstanceInScene();
-        //get the camera to follow the player
-        GetComponent<PlayerModelSetup>().SetCameraToFollowPlayer();
+        //set up the player model and get the camera to follow it, then delete the player model setup object
+        PlayerModelSetup pms = transform.Find("Player Model Setup").GetComponent<PlayerModelSetup>();
+        pms.CreatePlayerModelInstanceInScene();
+        pms.SetCameraToFollowPlayer();
+        GameObject.Destroy(pms.gameObject);
 
         //misc stuff
         StaticVariables.essentials = this;
