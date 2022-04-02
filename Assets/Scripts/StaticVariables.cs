@@ -28,6 +28,7 @@ public class StaticVariables
     static public CookingHandler cookingHandler;
     static public PickupHandler pickupHandler;
     static public WoodcuttingHandler woodcuttingHandler;
+    static public WoodpileHandler woodpileHandler;
     static public MiningHandler miningHandler;
     static public ForgeHandler forgeHandler;
     static public SharpeningHandler sharpeningHandler;

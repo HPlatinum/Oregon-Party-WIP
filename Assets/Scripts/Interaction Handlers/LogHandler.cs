@@ -13,9 +13,7 @@ public class LogHandler : InteractionHandler {
         }
     }
     public override bool CanPlayerInteractWithObject(Interactable interactable) {
-        print("her11e");
-        if(StaticVariables.interactScript.itemInHand == null && StaticVariables.woodcuttingHandler.log == null) {
-            print("here");
+        if(StaticVariables.interactScript.itemInHand == null && StaticVariables.woodcuttingHandler.log == null && StaticVariables.woodcuttingHandler.gameIsStarted) {
             return true;
         }
         return false;

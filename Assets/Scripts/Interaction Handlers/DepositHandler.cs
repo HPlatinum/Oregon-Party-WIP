@@ -27,7 +27,7 @@ public class DepositHandler : InteractionHandler
     }
 
     public override bool CanPlayerInteractWithObject(Interactable interactable) {
-        if(StaticVariables.interactScript.itemInHand != null) {
+        if(StaticVariables.interactScript.itemInHand != null && StaticVariables.woodcuttingHandler.gameIsStarted) {
             if(StaticVariables.interactScript.itemInHand.name == "Wood") {
                 return true;
             }

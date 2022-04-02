@@ -30,7 +30,7 @@ public class SharpeningHandler : InteractionHandler
         if(StaticVariables.woodcuttingHandler.LogInPlayersHand()) {
             return true;
         }
-        if(StaticVariables.woodcuttingHandler.toolStats != null) {
+        if(StaticVariables.woodcuttingHandler.toolStats != null && StaticVariables.woodcuttingHandler.gameIsStarted) {
             if(StaticVariables.woodcuttingHandler.toolStats.wear < 100) {
                 return true;
             }

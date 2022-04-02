@@ -55,12 +55,12 @@ public class InteractionManager : MonoBehaviour {
     }
 
     private void HighlightClosestInteractable() {
-        if (closestInteractable != null)
+        if (closestInteractable != null && closestInteractable.GetComponent<Outline>() != null)
             closestInteractable.GetComponent<Outline>().enabled = true;
     }
 
     private void UnhighlightInteractable(Interactable interactable) {
-        if (interactable != null)
+        if (interactable != null && interactable.GetComponent<Outline>() != null)
             interactable.GetComponent<Outline>().enabled = false;
     }
 
@@ -190,7 +190,6 @@ public class InteractionManager : MonoBehaviour {
     }
     
     private InteractionHandler GetInteractionHandlerForInteractable(Interactable interactable) {
-        print(interactable.interactType);
         switch (interactable.interactType){
             case (Interactable.InteractTypes.Fishing):
                     return StaticVariables.fishingHandler;

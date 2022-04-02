@@ -7,52 +7,39 @@ public class WoodpileHandler : MonoBehaviour
     int woodPosition;
     bool listIsFilled;
     public Item item;
-    List<GameObject> woodpile;
+    public List<GameObject> woodpile;
     GameObject currentlogObject;
     // Start is called before the first frame update
     void Start()
     {
-        ResetLocalVariables();
+        listIsFilled = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(listIsFilled && CurrentlogObjectHasChanged()) {
-            SetCurrentlogObject();
-            AddInteractableScriptToCurrentObject();
-            SetCurrentObjectInteractableValues();
+        if(StaticVariables.woodcuttingHandler.gameIsStarted) {
+            if(!listIsFilled && StaticVariables.woodcuttingHandler.woodpile != null) {
+                ResetLocalVariables();
+            }
+            if(listIsFilled) {
+                if(CurrentlogObjectHasChanged()) {
+                    SetCurrentlogObject();
+                    AddInteractableScriptToCurrentObject();
+                    SetCurrentObjectInteractableValues();
+                }
+                if(woodpile[woodPosition] == null) {
+                    IncreaseWoodPosition();
+                }
+            }
         }
-
-        if(woodpile[woodPosition] == null) {
-            IncreaseWoodPosition();
-        }
+        
     }
 
     private void ResetLocalVariables() {
-        listIsFilled = false;
-        CreateWoodPileList();
-        FillWoodPileList();
-    }
-
-    private void CreateWoodPileList() {
-        woodpile = new List<GameObject>();
-    }
-
-    private void FillWoodPileList() {
-        GameObject logObject = null;
-        for(int i = 0; i < 14; i++) {
-            if(i == 0) {
-                logObject = (GameObject.Find("Log"));
-
-            }
-            else {
-                logObject = GameObject.Find("Log (" + i + ")");
-            }
-
-            woodpile.Add(logObject);
-        }
+        woodpile = StaticVariables.woodcuttingHandler.woodpile;
         listIsFilled = true;
+        woodPosition = 0;
     }
     private void SetCurrentlogObject() {
         currentlogObject = woodpile[woodPosition];
