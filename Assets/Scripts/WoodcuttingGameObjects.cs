@@ -10,6 +10,7 @@ public class WoodcuttingGameObjects : MonoBehaviour
     public GameObject woodDestination;
     public List<Transform> beaverSpawns;
     public List<GameObject> woodpile;
+    public List<GameObject> depositWoodPile;
 
 
     private void Start() {

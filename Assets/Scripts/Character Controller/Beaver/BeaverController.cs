@@ -63,7 +63,7 @@ public class BeaverController : BeaverAnimator
         beaver = gameObject;
     }
     private void GetDepositBoxGameObject() {
-        depositBox = GameObject.Find("Storage");
+        depositBox = StaticVariables.woodcuttingHandler.storageArea;
     }
 
 

@@ -14,6 +14,7 @@ public class WoodcuttingHandler : ToolHandler
     System.Random rand;
     List<Transform> beaverSpawns;
     public List<GameObject> woodpile;
+    public List<GameObject> depositWoodPile;
     #endregion
     public float scaleUP;
     public int totalGameTime;
@@ -34,6 +35,7 @@ public class WoodcuttingHandler : ToolHandler
     public Transform uiParent;
     public Transform finishScreen;
     public Transform messageUI;
+    public Transform startGameUI;
     public Transform timerUI;
     public GameObject woodCuttingStation;
     public GameObject storageArea;
@@ -43,12 +45,14 @@ public class WoodcuttingHandler : ToolHandler
     public GameObject log;
     public ToolStats toolStats;
 
+
     #region Inherited Functions
 
     public override void ProcessInteractAction() {
         if (!StaticVariables.interactScript.currentlyInteracting) {
             if(!gameIsStarted) {
-                StartWoodcuttingGame();
+                print("here 1");
+                StartCoroutine(PromptUserToStartWoodcuttingGame());
                 return;
             }
             if(LogInPlayersHand()) {
@@ -110,10 +114,12 @@ public class WoodcuttingHandler : ToolHandler
     public void Update() {
         if(GameIsStarted()) {
             if(ShouldWoodcuttingUIBeShown()) {
-                StartCoroutine(BeginWoodcutting());
                 showWoodcuttingUI = false;
+                StartCoroutine(BeginWoodcutting());
+                
             }
             if(GameISOver()) {
+                gameIsStarted = false;
                 gameOver = false;
                 gameTimer.SetTimerEndedBackToFalse();
                 StaticVariables.playerInventory.AddItemToInventory(StaticVariables.depositHandler.depositItem, StaticVariables.depositHandler.GetQuantityOfWoodCollected());
@@ -126,6 +132,9 @@ public class WoodcuttingHandler : ToolHandler
                 // StartCoroutine(CloseMiningUIAndOpenFinishUI());
             }
             if(StaticVariables.timer.TimerIsRunning() && timerUIText.text != StaticVariables.timer.GetTimeForDisplaying()) {
+                if(!timerUI.gameObject.activeSelf) {
+                    timerUI.gameObject.SetActive(true);
+                }
                 timerUIText.text = StaticVariables.timer.GetTimeForDisplaying();
                 SetTimerTextColor();
                 ResizeTimer();
@@ -160,6 +169,33 @@ public class WoodcuttingHandler : ToolHandler
         }
     }
 
+    private IEnumerator PromptUserToStartWoodcuttingGame() {
+        yield return HideMainUI();
+        yield return DisplayStartGameUI();
+    }
+
+    private IEnumerator DisplayStartGameUI() {
+        startGameUI.gameObject.SetActive(true);
+        yield return StaticVariables.AnimateChildObjectsAppearing(startGameUI);
+    }
+
+    private IEnumerator HideMainUI() {
+        print("here UI");
+        yield return StaticVariables.mainUI.HideUI2();
+    }
+    private IEnumerator ShowMainUI() {
+        yield return StaticVariables.mainUI.ShowUI2();
+    }
+    public void CloseStartGameUI() {
+        StartCoroutine(CloseStartGameUIAnimate());
+    }
+
+    public IEnumerator CloseStartGameUIAnimate() {
+        yield return StaticVariables.AnimateChildObjectsDisappearing(startGameUI);
+        startGameUI.gameObject.SetActive(false);
+        yield return ShowMainUI();
+    }
+
     private bool GameIsStarted() {
         return gameIsStarted;
     }
@@ -172,7 +208,8 @@ public class WoodcuttingHandler : ToolHandler
         newObj.transform.rotation = Quaternion.Euler(0,0,0);
         return newObj;
     }
-    private void StartWoodcuttingGame() {
+    public void StartWoodcuttingGame() {
+        showWoodcuttingUI = true;
         gameIsStarted = true;
         AssignLocalVariables();
         ResetLocalVariables();
@@ -207,11 +244,7 @@ public class WoodcuttingHandler : ToolHandler
     }
 
     private bool ShouldWoodcuttingUIBeShown() {
-        if(StaticVariables.sceneHandler.GetSceneName() == "Woodcutting Minigame" && !inWoodcuttingScene){
-            inWoodcuttingScene = true;
-            showWoodcuttingUI = true;
-        }
-        return showWoodcuttingUI;
+        return showWoodcuttingUI; 
     }
 
     public bool InWoodcuttingScene() {
@@ -268,6 +301,7 @@ public class WoodcuttingHandler : ToolHandler
         woodDestination = StaticVariables.interactScript.closestInteractable.GetComponent<WoodcuttingGameObjects>().woodDestination;
         beaverSpawns = StaticVariables.interactScript.closestInteractable.GetComponent<WoodcuttingGameObjects>().beaverSpawns;
         woodpile = StaticVariables.interactScript.closestInteractable.GetComponent<WoodcuttingGameObjects>().woodpile;
+        depositWoodPile = StaticVariables.interactScript.closestInteractable.GetComponent<WoodcuttingGameObjects>().depositWoodPile;
         totalGameTime = 150;
         gameTimer = StaticVariables.timer;
         tweenRunning = false;

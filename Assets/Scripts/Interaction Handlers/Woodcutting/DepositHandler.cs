@@ -42,9 +42,9 @@ public class DepositHandler : InteractionHandler
         gameIsOver = false;
     }
     public void Update() {
-        if(StaticVariables.woodcuttingHandler.inWoodcuttingScene) {
+        if(StaticVariables.woodcuttingHandler.gameIsStarted) {
             if(!gameIsStarted) {
-                ResetWoodcuttingLocalVariables();
+                ResetLocalVariables();
             }
             if(gameIsOver) {
                 depositInventory.ClearInventory();
@@ -64,14 +64,13 @@ public class DepositHandler : InteractionHandler
         StaticVariables.controller.Carry();
     }
 
-    public void ResetWoodcuttingLocalVariables() {
-        depositObject = GameObject.FindGameObjectWithTag("Interact (Depositing)");
+    public void ResetLocalVariables() {
+        depositObject = StaticVariables.woodcuttingHandler.storageArea;
         depositInventory = depositObject.GetComponent<Interactable>().inventory;
         depositItem = depositObject.GetComponent<Interactable>().item;
         currentObjectCount = GetQuantityOfWoodCollected();
         gameIsStarted = true;
         gameIsOver = false;
-        CreateListOfWoodGameObjects();
         FillListOfWoodGameObjects();
         SetWoodGameObjectsActive();
     }
@@ -82,26 +81,13 @@ public class DepositHandler : InteractionHandler
         return depositInventory.GetQuantityOfSpecificItem(depositItem);
     }
 
-    private void CreateListOfWoodGameObjects() {
-        depositWoodPile = new List<GameObject>();
+    public void FillListOfWoodGameObjects() {
+        depositWoodPile = StaticVariables.woodcuttingHandler.depositWoodPile;
     }
 
-    private void FillListOfWoodGameObjects() {
-        GameObject newObj;
-        for(int i = 0; i < 18; i++) {
-            if(i == 0) {
-                newObj = depositObject.transform.Find("Wood Slot").gameObject;
-            }
-            else {
-                newObj = depositObject.transform.Find("Wood Slot (" + i + ")").gameObject;
-            }
-            depositWoodPile.Add(newObj);
-        }
-    }
 
     private void SetWoodGameObjectsActive() {
-        
-        for(int i = 0; i < 18; i++) {
+        for(int i = 0; i < 36; i++) {
             if(currentObjectCount >= i && !depositWoodPile[i].activeSelf) {
                 depositWoodPile[i].SetActive(true);
             }
