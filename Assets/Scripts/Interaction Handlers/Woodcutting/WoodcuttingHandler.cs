@@ -27,15 +27,18 @@ public class WoodcuttingHandler : ToolHandler
     public bool playerInWoodcuttingState;
     public bool playerInSharpeningState;
     public bool playerIsInFinalAnimationState;
+    public bool skipInstructions;
     public Text timerUIText;
     public float counter;
     public GameObject newObj;
+    int instructionPanelIndex;
     Timer timeForReward;
     Timer gameTimer;
     public Transform uiParent;
     public Transform finishScreen;
     public Transform messageUI;
     public Transform startGameUI;
+    public Transform instructionsUI;
     public Transform timerUI;
     public GameObject woodCuttingStation;
     public GameObject storageArea;
@@ -107,8 +110,10 @@ public class WoodcuttingHandler : ToolHandler
 
     public void Start() {
         inWoodcuttingScene = false;
+        skipInstructions = false;
         gameOver = false;
         gameIsStarted = false;
+        instructionPanelIndex = 0;
     }
 
     public void Update() {
@@ -126,6 +131,7 @@ public class WoodcuttingHandler : ToolHandler
                 print("Game is over. You collected " +StaticVariables.depositHandler.GetQuantityOfWoodCollected() + " total wood.");
                 StaticVariables.depositHandler.gameIsOver = true;
                 woodCuttingStation.GetComponent<Interactable>().resourceMined = true;
+                instructionPanelIndex = 0;
             }
             if(ShouldFinishUIBeShown()) {
                 showFinishUI = false;
@@ -140,7 +146,7 @@ public class WoodcuttingHandler : ToolHandler
                 ResizeTimer();
             }
             if(PlayerIsCuttingWood()) {
-                StaticVariables.controller.FaceTo(woodCuttingStation,0.2f);
+                StaticVariables.controller.lockMovement = true;
                 if(Mathf.Round(timeForReward.GetTimeForChangingDisplayColor()) == 1 && !playerIsInFinalAnimationState) {
                     playerIsInFinalAnimationState = true;
                     StaticVariables.controller.SwingAxe();
@@ -151,6 +157,7 @@ public class WoodcuttingHandler : ToolHandler
                     StaticVariables.WaitTimeThenCallFunction(1f, PlayWoodChopAnimation);
                 }
                 if(timeForReward.GetTimeForChangingDisplayColor() == 0) {
+                    StaticVariables.controller.lockMovement = false;
                     playerInWoodcuttingState = false;
                     playerIsInFinalAnimationState = false;
                 }
@@ -180,24 +187,67 @@ public class WoodcuttingHandler : ToolHandler
     }
 
     private IEnumerator HideMainUI() {
-        print("here UI");
         yield return StaticVariables.mainUI.HideUI2();
     }
     private IEnumerator ShowMainUI() {
         yield return StaticVariables.mainUI.ShowUI2();
     }
-    public void CloseStartGameUI() {
+    public void CloseStartGameUINo() {
         StartCoroutine(CloseStartGameUIAnimate());
+        StartCoroutine(ShowMainUI());
+    }
+
+    public void CloseStartGameUIYes() {
+        StartCoroutine(CloseStartGameUIAnimate());
+        OpenInstructions();
     }
 
     public IEnumerator CloseStartGameUIAnimate() {
         yield return StaticVariables.AnimateChildObjectsDisappearing(startGameUI);
         startGameUI.gameObject.SetActive(false);
-        yield return ShowMainUI();
+    }
+
+    public void OpenInstructions() {
+        if(!instructionsUI.gameObject.activeSelf) {
+            instructionsUI.gameObject.SetActive(true);
+        }
+        StartCoroutine(OpenInstructionPanel());
+    }
+
+    private IEnumerator OpenInstructionPanel() {
+        print("Instruction panel index " + instructionPanelIndex + " name " + instructionsUI.GetChild(instructionPanelIndex).name);
+        instructionsUI.GetChild(instructionPanelIndex).gameObject.SetActive(true);
+        yield return StaticVariables.AnimateChildObjectsAppearing(instructionsUI.GetChild(instructionPanelIndex));
+    }
+
+    public void NextInstructionPanel() {
+        if(skipInstructions) {
+            CloseInstructions();
+            StartWoodcuttingGame();
+            return;
+        }
+        StartCoroutine(CloseInstructionPanel());
+        instructionPanelIndex++;
+        StaticVariables.WaitTimeThenCallFunction(1f, OpenInstructions);
+    }
+
+    public void CloseInstructions() {
+        StartCoroutine(CloseInstructionPanel());
+        instructionsUI.gameObject.SetActive(false);
+        StartCoroutine(ShowMainUI());
+    }
+
+    private IEnumerator CloseInstructionPanel() {
+        yield return StaticVariables.AnimateChildObjectsDisappearing(instructionsUI.GetChild(instructionPanelIndex));
+        instructionsUI.GetChild(instructionPanelIndex).gameObject.SetActive(false);
     }
 
     private bool GameIsStarted() {
         return gameIsStarted;
+    }
+
+    public void SkipInstructions() {
+        skipInstructions = !skipInstructions;
     }
 
     private GameObject InstantiatePrefabAsChild(GameObject prefab, Transform parent, Item item) {

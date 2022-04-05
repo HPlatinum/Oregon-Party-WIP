@@ -16,7 +16,7 @@ public class DepositHandler : InteractionHandler
     public override void ProcessInteractAction() {
         if (!StaticVariables.interactScript.currentlyInteracting) {
             StaticVariables.SetupPlayerInteractionWithHighlightedObject();
-            StaticVariables.PlayAnimation("Deposit Wood", 1);
+            StaticVariables.PlayAnimation("Deposit Wood", .2f);
             ActivePlayerIsDeposittingWood();
         }
     }
@@ -46,9 +46,6 @@ public class DepositHandler : InteractionHandler
             if(!gameIsStarted) {
                 ResetLocalVariables();
             }
-            if(gameIsOver) {
-                depositInventory.ClearInventory();
-            }
             if(gameIsStarted) {
                 if(currentObjectCount != GetQuantityOfWoodCollected()) {
                     currentObjectCount = GetQuantityOfWoodCollected();
@@ -56,11 +53,17 @@ public class DepositHandler : InteractionHandler
                 }
             }
         }
+        if(gameIsOver) {
+            depositInventory.ClearInventory();
+            currentObjectCount = 0;
+            SetWoodGameObjectsActive();
+            gameIsOver = false;
+        }
     }
     
     private void ActivePlayerIsDeposittingWood() {
         // ya ya player deposited wood, ding dong
-        StaticVariables.interactScript.closestInteractable.inventory.AddItemToInventory(StaticVariables.interactScript.itemInHand, 1);
+        StaticVariables.interactScript.closestInteractable.inventory.AddItemToInventory(StaticVariables.interactScript.itemInHand, 2);
         StaticVariables.controller.Carry();
     }
 
