@@ -27,6 +27,7 @@ public class WoodcuttingHandler : ToolHandler
     public bool playerInWoodcuttingState;
     public bool playerInSharpeningState;
     public bool playerIsInFinalAnimationState;
+    bool inPregame;
     public Text timerUIText;
     public float counter;
     public GameObject newObj;
@@ -37,6 +38,7 @@ public class WoodcuttingHandler : ToolHandler
     public Transform messageUI;
     public Transform startGameUI;
     public Transform timerUI;
+    public Transform pregameTimerUI;
     public GameObject woodCuttingStation;
     public GameObject storageArea;
     public GameObject sharpeningStation;
@@ -131,12 +133,12 @@ public class WoodcuttingHandler : ToolHandler
                 showFinishUI = false;
                 // StartCoroutine(CloseMiningUIAndOpenFinishUI());
             }
-            if(StaticVariables.timer.TimerIsRunning() && timerUIText.text != StaticVariables.timer.GetTimeForDisplaying()) {
+            if(gameTimer.TimerIsRunning() && timerUIText.text != gameTimer.GetTimeForDisplaying()) {
                 if(!timerUI.gameObject.activeSelf) {
                     timerUI.gameObject.SetActive(true);
                 }
-                timerUIText.text = StaticVariables.timer.GetTimeForDisplaying();
-                SetTimerTextColor();
+                timerUIText.text = gameTimer.GetTimeForDisplaying();
+                SetTimerTextColor(30, 10, timerUIText);
                 ResizeTimer();
             }
             if(PlayerIsCuttingWood()) {
@@ -168,6 +170,19 @@ public class WoodcuttingHandler : ToolHandler
                 StaticVariables.controller.Carry();
             }
         }
+        if(inPregame) {
+            if(gameTimer.TimerIsRunning() && pregameTimerUI.GetChild(0).GetComponent<Text>().text != gameTimer.GetTimeForDisplaying() && pregameTimerUI.gameObject.activeSelf) {
+                if(!pregameTimerUI.gameObject.activeSelf) {
+                    pregameTimerUI.gameObject.SetActive(true);
+                }
+                pregameTimerUI.GetChild(0).GetComponent<Text>().text = gameTimer.GetTimeForDisplayingInSeconds();
+                // SetTimerTextColor(4,2, pregameTimerUI.GetChild(0).GetComponent<Text>());
+                // ResizeTimer();
+                if(gameTimer.GetTimeForDisplayingInSeconds() == "0") {
+                    StartCoroutine(ClosePregameTimerUI());
+                }
+            }
+        }
     }
 
     private IEnumerator PromptUserToStartWoodcuttingGame() {
@@ -193,13 +208,20 @@ public class WoodcuttingHandler : ToolHandler
 
     public void CloseStartGameUIYes() {
         StartCoroutine(CloseStartGameUIAnimate());
-        StartWoodcuttingGame();
-        StartCoroutine(ShowMainUI());
+        StaticVariables.WaitTimeThenCallFunction(.5f, StartPregame);
     }
 
-    public IEnumerator CloseStartGameUIAnimate() {
+    private IEnumerator CloseStartGameUIAnimate() {
         yield return StaticVariables.AnimateChildObjectsDisappearing(startGameUI);
         startGameUI.gameObject.SetActive(false);
+    }
+    private IEnumerator ShowPregameTimerUI() {
+        pregameTimerUI.gameObject.SetActive(true);
+        yield return StaticVariables.AnimateChildObjectsAppearing(pregameTimerUI);
+    }
+    private IEnumerator ClosePregameTimerUI() {
+        yield return StaticVariables.AnimateChildObjectsDisappearing(pregameTimerUI);
+        pregameTimerUI.gameObject.SetActive(false);
     }
     private bool GameIsStarted() {
         return gameIsStarted;
@@ -213,11 +235,25 @@ public class WoodcuttingHandler : ToolHandler
         newObj.transform.rotation = Quaternion.Euler(0,0,0);
         return newObj;
     }
-    public void StartWoodcuttingGame() {
-        showWoodcuttingUI = true;
-        gameIsStarted = true;
+
+    private void StartPregame() {
+        StartCoroutine(ShowPregameTimerUI());
+        inPregame = true;
         AssignLocalVariables();
         ResetLocalVariables();
+        gameTimer.StartGameTimer(6f);
+        StaticVariables.WaitTimeThenCallFunction(6.05f,EndPregame);
+    }
+
+    private void EndPregame() {
+        inPregame = false;
+        gameTimer.SetTimerEndedBackToFalse();
+        StartCoroutine(ShowMainUI());
+        StartWoodcuttingGame();
+    }
+    private void StartWoodcuttingGame() {
+        showWoodcuttingUI = true;
+        gameIsStarted = true;
         SetWoodcuttingObjectsInteractable();
     }
 
@@ -317,35 +353,39 @@ public class WoodcuttingHandler : ToolHandler
         rand = new System.Random();
     }
 
-    public bool GameISOver() {
+    private bool GameISOver() {
         return gameOver = gameTimer.TimerWasStartedAndIsNowStopped();
     }
 
-    public bool ShouldFinishUIBeShown() {
+    private bool ShouldFinishUIBeShown() {
         return showFinishUI;
     }
 
-    public IEnumerator BeginWoodcutting() {
-        StaticVariables.timer.StartGameTimer(totalGameTime);
+    private IEnumerator BeginWoodcutting() {
+        StartWoodcuttingGameTimer();
         yield return ShowWoodcuttingUI();
     }
 
-    public IEnumerator ShowWoodcuttingUI() {
+    private void StartWoodcuttingGameTimer() {
+        gameTimer.StartGameTimer(totalGameTime);
+    }
+
+    private IEnumerator ShowWoodcuttingUI() {
         // yield return StaticVariables.mainUI.HideUI2();
         uiParent.gameObject.SetActive(true);
         yield return StaticVariables.AnimateChildObjectsAppearing(uiParent);
         yield return null;
     }
 
-    public void SetTimerTextColor() {
-        if (GetCurrentTimerTime() >= 30 && timerUIText.color != Color.green) {
-            timerUIText.color = Color.green;
+    public void SetTimerTextColor(int high, int low, Text timerText) {
+        if (GetCurrentTimerTime() >= high && timerText.color != Color.green) {
+            timerText.color = Color.green;
         }
-        else if(GetCurrentTimerTime() < 30 && GetCurrentTimerTime() > 10 && timerUIText.color != Color.yellow) {
-            timerUIText.color = Color.yellow;
+        else if(GetCurrentTimerTime() < high && GetCurrentTimerTime() > low && timerUIText.color != Color.yellow) {
+            timerText.color = Color.yellow;
         }
-        else if(GetCurrentTimerTime() < 10 && timerUIText.color != Color.red) {
-            timerUIText.color = Color.red;
+        else if(GetCurrentTimerTime() < low && timerText.color != Color.red) {
+            timerText.color = Color.red;
         }
     }
 
@@ -404,7 +444,7 @@ public class WoodcuttingHandler : ToolHandler
     }
 
     public float GetCurrentTimerTime() {
-        return StaticVariables.timer.GetTimeForChangingDisplayColor();
+        return gameTimer.GetTimeForChangingDisplayColor();
     }
 
     public void ScaleUpTimer(float scaleUP, float duration) {

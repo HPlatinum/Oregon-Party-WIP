@@ -62,6 +62,14 @@ public class Timer : MonoBehaviour
         return timerText;
     }
 
+    public string GetTimeForDisplayingInSeconds() {
+        minutes = Mathf.FloorToInt(remainingTime / 60);
+        seconds = Mathf.FloorToInt(remainingTime % 60);
+        milliseconds = (remainingTime % 1) * 1000;
+        timerText = seconds.ToString();
+        return timerText;
+    }
+
     public float GetTimeForChangingDisplayColor() {
         return remainingTime;
     }
