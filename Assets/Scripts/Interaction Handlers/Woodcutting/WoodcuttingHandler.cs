@@ -180,6 +180,7 @@ public class WoodcuttingHandler : ToolHandler
                 // ResizeTimer();
                 if(gameTimer.GetTimeForDisplayingInSeconds() == "0") {
                     StartCoroutine(ClosePregameTimerUI());
+                    EndPregame();
                 }
             }
         }
@@ -242,7 +243,6 @@ public class WoodcuttingHandler : ToolHandler
         AssignLocalVariables();
         ResetLocalVariables();
         gameTimer.StartGameTimer(6f);
-        StaticVariables.WaitTimeThenCallFunction(6.05f,EndPregame);
     }
 
     private void EndPregame() {
