@@ -5,8 +5,8 @@ public class BeaverAnimator : BeaverMotor
     public virtual void UpdateAnimator() {
         if (animator == null || !animator.enabled) return;
 
-        animator.SetBool(BeaverAnimatorParameters.IsSquirming, isSquirming);
-        animator.SetBool(BeaverAnimatorParameters.IsFarting, isFarting);
+        animator.SetBool(BeaverAnimatorParameters.IsDead, isDead);
+        animator.SetBool(BeaverAnimatorParameters.IsAttacking, isAttacking);
         animator.SetBool(BeaverAnimatorParameters.IsWalking, isWalking);
         animator.SetFloat(BeaverAnimatorParameters.Speed, speed);
         // animator.SetFloat(BeaverAnimatorParameters.Speed)
@@ -25,9 +25,9 @@ public class BeaverAnimator : BeaverMotor
     // }
     public static partial class BeaverAnimatorParameters
     {
-        public static int IsSquirming = Animator.StringToHash("IsSquirming");
-        public static int IsFarting = Animator.StringToHash("IsFarting");
-        public static int IsWalking = Animator.StringToHash("IsWalking");
+        public static int IsDead = Animator.StringToHash("isDead");
+        public static int IsAttacking = Animator.StringToHash("isAttacking");
+        public static int IsWalking = Animator.StringToHash("isWalking");
         public static int Speed = Animator.StringToHash("Speed");
     }
 }

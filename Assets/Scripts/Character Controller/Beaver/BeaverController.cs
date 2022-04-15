@@ -20,13 +20,13 @@ public class BeaverController : BeaverAnimator
     private void Update() {
         UpdateAnimator();
     }
-    public virtual void Fart()
+    public virtual void Attack()
     {
-        isFarting = !isFarting;
+        isAttacking = !isAttacking;
     }
 
-    public virtual void Squirm() {
-        isSquirming = !isSquirming;
+    public virtual void Dead() {
+        isDead = !isDead;
     }
 
     public virtual void Walk() {
@@ -40,8 +40,8 @@ public class BeaverController : BeaverAnimator
         GetBeaverInteractionManager();
         GetDepositBoxGameObject();
         isWalking = true;
-        isFarting = false;
-        isSquirming = false;
+        isAttacking = false;
+        isDead = false;
         interacting = false;
         stopMovement = true;
         moveBeaver = false;

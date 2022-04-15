@@ -13,24 +13,24 @@ public class BeaverMotor : MonoBehaviour
     #endregion
 
     #region Internal Variables
-    internal bool isSquirming {
+    internal bool isDead {
         get
         {
-            return _isSquirming;
+            return _isDead;
         }
         set
         {
-            _isSquirming = value;
+            _isDead = value;
         }
     }
-    internal bool isFarting {
+    internal bool isAttacking {
         get
         {
-            return _isFarting;
+            return _isAttacking;
         }
         set
         {
-            _isFarting = value;
+            _isAttacking = value;
         }
     }
     internal bool isWalking {
@@ -43,8 +43,8 @@ public class BeaverMotor : MonoBehaviour
             _IsWalking = value;
         }
     }
-    internal bool _isSquirming;
-    internal bool _isFarting;
+    internal bool _isDead;
+    internal bool _isAttacking;
     internal bool _IsWalking;
     internal float speed;
     #endregion
