@@ -1720,6 +1720,7 @@ GameObject:
   - component: {fileID: 8560800491094498245}
   - component: {fileID: 8560800491094498244}
   - component: {fileID: 2643776436421971617}
+  - component: {fileID: -3482871951727235105}
   m_Layer: 0
   m_Name: Office Developer Female 1
   m_TagString: Player
@@ -1900,6 +1901,26 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 6a85fc8b7a1d91747b0062d6894bf4b6, type: 2}
   - {fileID: 2100000, guid: 90f0137b0bd85904fb38aa160c26fe40, type: 2}
   - {fileID: 2100000, guid: 8c79849e2b74f044abe96926b317298b, type: 2}
+--- !u!114 &-3482871951727235105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8560800491094498247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26df65c07b635fc4ea496e2d4314dafb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterName: Stats Not Provided
+  inventorySize: 100
+  maxHealth: 10
+  maxSanity: 10
+  vehiclePrefab: {fileID: 2178905590572329273, guid: a87244bda242f2847baca3b1e5a0c789, type: 3}
+  vehiclePosition: {x: 0, y: 0, z: 0}
+  vehicleRotation: {x: 0, y: 140, z: 0}
+  vehicleScale: 5000
 --- !u!1 &8560800492041712588
 GameObject:
   m_ObjectHideFlags: 0

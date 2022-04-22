@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class CharacterSelection : MonoBehaviour {
 
@@ -28,6 +29,15 @@ public class CharacterSelection : MonoBehaviour {
 
     public float moveDuration = 0.5f;
 
+    [Header("Character Stats Display")]
+    public Text nameText;
+    public Text inventorySizeText;
+    public Text healthText;
+    public Text sanityText;
+    public GameObject vehicleParent;
+    private GameObject currentVehicle;
+
+
     private void Start() {
         centerIndex = startingCenterCharacterIndex;
 
@@ -36,6 +46,8 @@ public class CharacterSelection : MonoBehaviour {
         CreateCharacterAtPosition(playerModelOptions[centerIndex], "center");
         CreateCharacterAtPosition(playerModelOptions[RightIndex()], "right");
         CreateCharacterAtPosition(playerModelOptions[FarRightIndex()], "far right");
+
+        UpdateCharacterStats();
     }
     
 
@@ -150,8 +162,7 @@ public class CharacterSelection : MonoBehaviour {
 
         CreateCharacterAtPosition(playerModelOptions[FarLeftIndex()], "far left");
 
-        //todo update the character stats info
-        
+        UpdateCharacterStats();
     }
 
     public void PushedLeftArrow() {
@@ -171,8 +182,7 @@ public class CharacterSelection : MonoBehaviour {
 
         CreateCharacterAtPosition(playerModelOptions[FarRightIndex()], "far right");
 
-        //todo update the character stats info
-
+        UpdateCharacterStats();
     }
 
     private void MoveCharactersRight() {
@@ -216,6 +226,36 @@ public class CharacterSelection : MonoBehaviour {
         character.transform.DOScale(farSideCharacterScale, moveDuration);
     }
     
+    private void UpdateCharacterStats() {
+        CharacterStats stats = centerCharacter.GetComponent<CharacterStats>();
 
+        nameText.text = stats.characterName;
+        inventorySizeText.text = "Inventory Size: " + stats.inventorySize;
+        healthText.text = "Health: " + stats.maxHealth;
+        sanityText.text = "Sanity: " + stats.maxSanity;
+
+
+        Destroy(currentVehicle);
+
+        CreateVehicle(stats);
+
+    }
+
+    private void CreateVehicle(CharacterStats stats) {
+
+        //create the new object
+        GameObject vehicle = GameObject.Instantiate(stats.vehiclePrefab);
+
+        //set some transform values
+        vehicle.transform.parent = vehicleParent.transform;
+        vehicle.transform.localPosition = stats.vehiclePosition;
+        vehicle.transform.localScale = new Vector3(stats.vehicleScale, stats.vehicleScale, stats.vehicleScale);
+        vehicle.transform.rotation = Quaternion.Euler(stats.vehicleRotation);
+
+        //set the layer
+        SetLayerRecursively(vehicle, 5);
+
+        currentVehicle = vehicle;
+    }
 
 }

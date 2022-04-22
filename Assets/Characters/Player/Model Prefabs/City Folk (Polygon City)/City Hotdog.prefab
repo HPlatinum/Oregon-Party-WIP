@@ -1513,6 +1513,7 @@ GameObject:
   - component: {fileID: 8560800491094498245}
   - component: {fileID: 8560800491094498244}
   - component: {fileID: 2643776436421971617}
+  - component: {fileID: -9222297078805533603}
   m_Layer: 0
   m_Name: City Hotdog
   m_TagString: Player
@@ -1693,6 +1694,26 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 16f3d1ea88b4a394fb1f37e7b4a95281, type: 2}
   - {fileID: 2100000, guid: 31874dcf57cc5ac4a8b929194694f0e6, type: 2}
   - {fileID: 2100000, guid: 172275f7e9a44c64088bad2a097f6894, type: 2}
+--- !u!114 &-9222297078805533603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8560800491094498247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26df65c07b635fc4ea496e2d4314dafb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterName: Hot Dog Guy
+  inventorySize: 24
+  maxHealth: 150
+  maxSanity: 110
+  vehiclePrefab: {fileID: 186458, guid: 88c9792d12fc0574d93568b531a1917c, type: 3}
+  vehiclePosition: {x: -16, y: 0, z: 0}
+  vehicleRotation: {x: 0, y: 140, z: 0}
+  vehicleScale: 3000
 --- !u!1 &8560800492041712588
 GameObject:
   m_ObjectHideFlags: 0

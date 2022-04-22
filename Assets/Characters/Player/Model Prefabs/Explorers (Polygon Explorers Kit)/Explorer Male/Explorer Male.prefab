@@ -1387,6 +1387,7 @@ GameObject:
   - component: {fileID: 8668977983739182689}
   - component: {fileID: 9152491776787426502}
   - component: {fileID: 6758242396803312736}
+  - component: {fileID: -2047855481047164385}
   m_Layer: 0
   m_Name: Explorer Male
   m_TagString: Player
@@ -1571,6 +1572,26 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 209fd1e0d26dd6e42804f0b3b557d7b5, type: 2}
   - {fileID: 2100000, guid: 8af69bc715e880a42ae91628ea2b0ce3, type: 2}
   - {fileID: 2100000, guid: 51c36346df9e87541bc45fc21ed4e2b9, type: 2}
+--- !u!114 &-2047855481047164385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6443048335447745620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26df65c07b635fc4ea496e2d4314dafb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterName: Stats Not Provided
+  inventorySize: 100
+  maxHealth: 10
+  maxSanity: 10
+  vehiclePrefab: {fileID: 2178905590572329273, guid: a87244bda242f2847baca3b1e5a0c789, type: 3}
+  vehiclePosition: {x: 0, y: 0, z: 0}
+  vehicleRotation: {x: 0, y: 140, z: 0}
+  vehicleScale: 5000
 --- !u!1 &6479004442685730902
 GameObject:
   m_ObjectHideFlags: 0
