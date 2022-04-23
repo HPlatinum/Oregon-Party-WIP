@@ -8,21 +8,26 @@ public class CharacterSelection : MonoBehaviour {
 
     public GameObject[] playerModelOptions;
 
+    public GameObject farFarLeftCharacterPosition;
     public GameObject farLeftCharacterPosition;
     public GameObject leftCharacterPosition;
     public GameObject centerCharacterPosition;
     public GameObject rightCharacterPosition;
     public GameObject farRightCharacterPosition;
+    public GameObject farFarRightCharacterPosition;
 
     public int centerCharacterScale = 240;
     public int sideCharacterScale = 180;
     public int farSideCharacterScale = 120;
+    public int farFarSideCharacterScale = 80;
 
+    private GameObject farFarLeftCharacter;
     private GameObject farLeftCharacter;
     private GameObject leftCharacter;
     private GameObject centerCharacter;
     private GameObject rightCharacter;
     private GameObject farRightCharacter;
+    private GameObject farFarRightCharacter;
 
     public int startingCenterCharacterIndex = 0;
     private int centerIndex;
@@ -41,11 +46,13 @@ public class CharacterSelection : MonoBehaviour {
     private void Start() {
         centerIndex = startingCenterCharacterIndex;
 
+        CreateCharacterAtPosition(playerModelOptions[FarFarLeftIndex()], "far far left");
         CreateCharacterAtPosition(playerModelOptions[FarLeftIndex()], "far left");
         CreateCharacterAtPosition(playerModelOptions[LeftIndex()], "left");
         CreateCharacterAtPosition(playerModelOptions[centerIndex], "center");
         CreateCharacterAtPosition(playerModelOptions[RightIndex()], "right");
         CreateCharacterAtPosition(playerModelOptions[FarRightIndex()], "far right");
+        CreateCharacterAtPosition(playerModelOptions[FarFarRightIndex()], "far far right");
 
         UpdateCharacterStats();
     }
@@ -61,6 +68,11 @@ public class CharacterSelection : MonoBehaviour {
         GameObject position = centerCharacterPosition;
         int scale = centerCharacterScale;
         switch (positionIdentifier) {
+            case ("far far left"):
+                position = farFarLeftCharacterPosition;
+                scale = farFarSideCharacterScale;
+                farFarLeftCharacter = newPlayer;
+                break;
             case ("far left"):
                 position = farLeftCharacterPosition;
                 scale = farSideCharacterScale;
@@ -85,6 +97,11 @@ public class CharacterSelection : MonoBehaviour {
                 position = farRightCharacterPosition;
                 scale = farSideCharacterScale;
                 farRightCharacter = newPlayer;
+                break;
+            case ("far far right"):
+                position = farFarRightCharacterPosition;
+                scale = farFarSideCharacterScale;
+                farFarRightCharacter = newPlayer;
                 break;
         }
 
@@ -116,6 +133,13 @@ public class CharacterSelection : MonoBehaviour {
             SetLayerRecursively(t.gameObject, i);
     }
 
+    private int FarFarLeftIndex() {
+        int i = centerIndex - 3;
+        if (i < 0)
+            i += playerModelOptions.Length;
+        return i;
+    }
+
     private int FarLeftIndex() {
         int i = centerIndex - 2;
         if (i < 0)
@@ -145,60 +169,80 @@ public class CharacterSelection : MonoBehaviour {
         return i;
     }
 
-    public void PushedRightArrow() {
+    private int FarFarRightIndex() {
+        int i = centerIndex + 3;
+        if (i >= playerModelOptions.Length)
+            i -= playerModelOptions.Length;
+        return i;
+    }
+
+    public void PushedLeftArrow() {
         MoveCharactersRight();
 
         //delete the old character
-        Destroy(farRightCharacter);
+        Destroy(farFarRightCharacter);
 
         //reassign the existing characters to their new positioned objects
+        farFarRightCharacter = farRightCharacter;
         farRightCharacter = rightCharacter;
         rightCharacter = centerCharacter;
         centerCharacter = leftCharacter;
         leftCharacter = farLeftCharacter;
+        farLeftCharacter = farFarLeftCharacter;
 
         //change the center character index
         centerIndex = LeftIndex();
 
-        CreateCharacterAtPosition(playerModelOptions[FarLeftIndex()], "far left");
+        CreateCharacterAtPosition(playerModelOptions[FarFarLeftIndex()], "far far left");
 
         UpdateCharacterStats();
     }
 
-    public void PushedLeftArrow() {
+    public void PushedRightArrow() {
         MoveCharactersLeft();
 
         //delete the old character
-        Destroy(farLeftCharacter);
+        Destroy(farFarLeftCharacter);
 
         //reassign the existing characters to their new positioned objects
+        farFarLeftCharacter = farLeftCharacter;
         farLeftCharacter = leftCharacter;
         leftCharacter = centerCharacter;
         centerCharacter = rightCharacter;
         rightCharacter = farRightCharacter;
+        farRightCharacter = farFarRightCharacter;
 
         //change the center character index
         centerIndex = RightIndex();
 
-        CreateCharacterAtPosition(playerModelOptions[FarRightIndex()], "far right");
+        CreateCharacterAtPosition(playerModelOptions[FarFarRightIndex()], "far far right");
 
         UpdateCharacterStats();
     }
 
     private void MoveCharactersRight() {
         //change the positions of the characters
+        MoveCharacterToFarLeft(farFarLeftCharacter);
         MoveCharacterToLeft(farLeftCharacter);
         MoveCharacterToCenter(leftCharacter);
         MoveCharacterToRight(centerCharacter);
         MoveCharacterToFarRight(rightCharacter);
+        MoveCharacterToFarFarRight(farRightCharacter);
     }
 
     private void MoveCharactersLeft() {
         //change the positions of the characters
+        MoveCharacterToFarFarLeft(farLeftCharacter);
         MoveCharacterToFarLeft(leftCharacter);
         MoveCharacterToLeft(centerCharacter);
         MoveCharacterToCenter(rightCharacter);
         MoveCharacterToRight(farRightCharacter);
+        MoveCharacterToFarRight(farFarRightCharacter);
+    }
+
+    private void MoveCharacterToFarFarLeft(GameObject character) {
+        character.transform.DOMove(farFarLeftCharacterPosition.transform.position, moveDuration);
+        character.transform.DOScale(farFarSideCharacterScale, moveDuration);
     }
 
     private void MoveCharacterToFarLeft(GameObject character) {
@@ -225,7 +269,12 @@ public class CharacterSelection : MonoBehaviour {
         character.transform.DOMove(farRightCharacterPosition.transform.position, moveDuration);
         character.transform.DOScale(farSideCharacterScale, moveDuration);
     }
-    
+
+    private void MoveCharacterToFarFarRight(GameObject character) {
+        character.transform.DOMove(farFarRightCharacterPosition.transform.position, moveDuration);
+        character.transform.DOScale(farFarSideCharacterScale, moveDuration);
+    }
+
     private void UpdateCharacterStats() {
         CharacterStats stats = centerCharacter.GetComponent<CharacterStats>();
 
