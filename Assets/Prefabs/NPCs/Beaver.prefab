@@ -479,6 +479,8 @@ GameObject:
   - component: {fileID: -6571691268320531632}
   - component: {fileID: 4423600273771642189}
   - component: {fileID: 4423600273771642186}
+  - component: {fileID: 5856404471948286975}
+  - component: {fileID: 4794326911491828491}
   m_Layer: 0
   m_Name: Beaver
   m_TagString: Untagged
@@ -655,6 +657,37 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   CurrentState: 0
+--- !u!114 &5856404471948286975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4423600275298827923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db4957fd4b801fe4bbf2cf4c52ccacf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactType: 11
+  item: {fileID: 0}
+  requiredItem: {fileID: 0}
+  inventory: {fileID: 0}
+  storedItemCount: 0
+  destroyParentAlso: 0
+  resourceMined: 0
+--- !u!114 &4794326911491828491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4423600275298827923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34d89380508d2fc428097e05fdeb3fa3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4423600275298827925
 GameObject:
   m_ObjectHideFlags: 0

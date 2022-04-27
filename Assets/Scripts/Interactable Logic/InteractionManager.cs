@@ -209,10 +209,10 @@ public class InteractionManager : MonoBehaviour {
                 return StaticVariables.sharpeningHandler;
             case (Interactable.InteractTypes.Deposit):
                 return StaticVariables.depositHandler;
-            case (Interactable.InteractTypes.Log): {
+            case (Interactable.InteractTypes.Log):
                 return StaticVariables.logHandler;
-            }
-                
+            case (Interactable.InteractTypes.Beaver):
+                return closestInteractable.GetComponent<BeaverHandler>();
         }
         return null;
     }

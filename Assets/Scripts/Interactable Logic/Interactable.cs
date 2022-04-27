@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Interactable : MonoBehaviour
 {
-    public enum InteractTypes { Pickup, Fishing, Chest, CookingTier1, CookingTier2, Woodcutting, Mining, Forge, SharpeningStation, Deposit, Log };
+    public enum InteractTypes { Pickup, Fishing, Chest, CookingTier1, CookingTier2, Woodcutting, Mining, Forge, SharpeningStation, Deposit, Log, Beaver };
     public InteractTypes interactType;
     public Item item;
     public Item requiredItem; //only allow interaction if the required item is in the inventory
