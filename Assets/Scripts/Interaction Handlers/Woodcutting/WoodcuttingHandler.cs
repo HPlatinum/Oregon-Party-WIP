@@ -9,6 +9,7 @@ public class WoodcuttingHandler : ToolHandler
     #region Beaver Variables
     public GameObject beaverPrefab;
     List<bool> possibleSpawnLocations;
+    float timeToWaitBeforeSpawningNextBeaver;
     bool continueSpawningBeavers;
     public Item wood;
     System.Random rand;
@@ -313,25 +314,110 @@ public class WoodcuttingHandler : ToolHandler
 
     private void RealeaseBeaver(int beaverSpawn) {
         GameObject newBeaver = Instantiate(beaverPrefab);
+        newBeaver.GetComponent<BeaverController>().beaverSpawnInt = beaverSpawn;
         newBeaver.transform.position = beaverSpawns[beaverSpawn].position;
     }
 
     private void DetermineIfBeaverShouldBeReleased() {
-        if(storageArea.GetComponent<Interactable>().inventory.GetTotalItemQuantity(wood) >= 1) {
-            possibleSpawnLocations = new List<bool>();
-            for(int i = 0; i < 5; i++) {
-                possibleSpawnLocations.Add(beaverSpawns[i].GetComponent<BeaverSpawned>().BeaverHasBeenSpawned());
-            }
+        if(WoodWithinRange(1,5) && BeaverCanBeSpawned(1)) {
             int index = rand.Next(0, 4);
-            if(!possibleSpawnLocations[index]) {
+            if(BeaverCanBeSpawnedAtIndex(index)) {
+                Debug.Log("releasing beaver  " + index);
                 RealeaseBeaver(index);
-                beaverSpawns[index].GetComponent<BeaverSpawned>().SpawnBeaver();
+                SetBeaverHasBeenSpawnedToTrueAtSpawnLocation(index);
             }
-            continueSpawningBeavers = false;
-            StaticVariables.WaitTimeThenCallFunction(5f, ContinueSpawningBeaversSetTrue);
+            ContinueSpawningBeaversSetFalse();
+            SetTimeToWaitBeforeNextBeaverSpawns(5,20);
+            Debug.Log(timeToWaitBeforeSpawningNextBeaver);
+            StaticVariables.WaitTimeThenCallFunction(timeToWaitBeforeSpawningNextBeaver, ContinueSpawningBeaversSetTrue);
+            return;
+        }
+        if(WoodWithinRange(5,10) && BeaverCanBeSpawned(2)) {
+            int index = rand.Next(0, 4);
+            if(BeaverCanBeSpawnedAtIndex(index)) {
+                Debug.Log("releasing beaver  " + index);
+                RealeaseBeaver(index);
+                SetBeaverHasBeenSpawnedToTrueAtSpawnLocation(index);
+            }
+            ContinueSpawningBeaversSetFalse();
+            SetTimeToWaitBeforeNextBeaverSpawns(5,15);
+            Debug.Log(timeToWaitBeforeSpawningNextBeaver);
+            StaticVariables.WaitTimeThenCallFunction(timeToWaitBeforeSpawningNextBeaver, ContinueSpawningBeaversSetTrue);
+            return;
         }
     }
 
+    private bool WoodWithinRange(int low, int high) {
+        return storageArea.GetComponent<Interactable>().inventory.GetTotalItemQuantity(wood) >= low && storageArea.GetComponent<Interactable>().inventory.GetTotalItemQuantity(wood) < high;
+    }
+
+    private bool BeaverCanBeSpawnedAtIndex(int index) {
+        return !possibleSpawnLocations[index];
+    }
+
+    private void SetTimeToWaitBeforeNextBeaverSpawns(int low, int high) {
+        timeToWaitBeforeSpawningNextBeaver = rand.Next(low, high);
+    }
+
+    private void SetBeaverSpawnAllowedTagToFalse(int index) {
+        beaverSpawns[index].GetComponent<BeaverSpawn>().SpawnBeaver();
+    }
+
+    private bool BeaverCanBeSpawned(int level) {
+        if(level != 3) {
+            if(level == 1) {
+                if(ReturnNumberOfBeaversCurrentlySpawned() > 0) {
+                    SetTimeToWaitBeforeNextBeaverSpawns(5,20);
+                    StaticVariables.WaitTimeThenCallFunction(timeToWaitBeforeSpawningNextBeaver, ContinueSpawningBeaversSetTrue);
+                    ContinueSpawningBeaversSetFalse();
+                    Debug.Log("Spawning another beaver is currently not allowed");
+                }
+            }
+            else if(level == 2) {
+                if(ReturnNumberOfBeaversCurrentlySpawned() > 2) {
+                    SetTimeToWaitBeforeNextBeaverSpawns(5,15);
+                    Debug.Log(timeToWaitBeforeSpawningNextBeaver);
+                    StaticVariables.WaitTimeThenCallFunction(timeToWaitBeforeSpawningNextBeaver, ContinueSpawningBeaversSetTrue);
+                    ContinueSpawningBeaversSetFalse();
+                }
+            }
+        }
+        return continueSpawningBeavers;
+    }
+
+    public void DestroyBeaver(int index, GameObject beaver) {
+        Destroy(beaver);
+        SetBeaverHasBeenSpawnedBackToFalseAtSpawnLocation(index);
+    }
+
+    private void ContinueSpawningBeaversSetFalse() {
+        continueSpawningBeavers = false;
+    }
+
+    private void CreateListOfAvailableSpawns() {
+        possibleSpawnLocations = new List<bool>();
+        for(int i = 0; i < 5; i++) {
+            possibleSpawnLocations.Add(beaverSpawns[i].GetComponent<BeaverSpawn>().BeaverHasBeenSpawned());
+        }
+    }
+
+    private void SetBeaverHasBeenSpawnedBackToFalseAtSpawnLocation(int index) {
+        possibleSpawnLocations[index] = false;
+    }
+
+    private void SetBeaverHasBeenSpawnedToTrueAtSpawnLocation(int index) {
+        possibleSpawnLocations[index] = true;
+    }
+
+    private int ReturnNumberOfBeaversCurrentlySpawned() {
+        int currentlySpawnedCount = 0;
+        for(int i = 0; i < 5; i++) {
+            if(possibleSpawnLocations[i] == true){
+                currentlySpawnedCount ++;
+            }
+        }
+        return currentlySpawnedCount;
+    }
     public void ContinueSpawningBeaversSetTrue() {
         continueSpawningBeavers = true;
     }
@@ -351,6 +437,7 @@ public class WoodcuttingHandler : ToolHandler
         toolStats = null;
         continueSpawningBeavers = true;
         rand = new System.Random();
+        CreateListOfAvailableSpawns();
     }
 
     private bool GameISOver() {

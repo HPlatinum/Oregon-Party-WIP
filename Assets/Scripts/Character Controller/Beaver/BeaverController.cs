@@ -4,9 +4,10 @@ using UnityEngine.AI;
 public class BeaverController : BeaverAnimator
 {
     bool stopMovement;
-    bool hasWoodInHand;
+    public bool hasWoodInHand;
     bool moveBeaver;
     bool interacting;
+    public int beaverSpawnInt;
     public NavMeshAgent agent;
     Vector3 depositPosition;
     Vector3 startPosition;
