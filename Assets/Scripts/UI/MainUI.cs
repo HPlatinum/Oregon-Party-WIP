@@ -7,9 +7,12 @@ using DG.Tweening;
 public class MainUI : MonoBehaviour {
     
     private PauseMenu pauseMenu;
+    private GameObject interactionSymbol;
 
     private void Start() {
         pauseMenu = FindObjectOfType<PauseMenu>();
+        interactionSymbol = transform.Find("Interact").Find("InteractImage").gameObject;
+        HideInteractionSymbol();
     }
 
     public void Interact() {
@@ -46,5 +49,13 @@ public class MainUI : MonoBehaviour {
     public IEnumerator ShowUI2() {
         yield return StaticVariables.AnimateChildObjectsAppearing(transform);
         yield return null;
+    }
+
+    public void ShowInteractionSymbol() {
+        interactionSymbol.SetActive(true);
+    }
+
+    public void HideInteractionSymbol() {
+        interactionSymbol.SetActive(false);
     }
 }

@@ -52,16 +52,23 @@ public class InteractionManager : MonoBehaviour {
             closestInteractable = closestObject;
             HighlightClosestInteractable();
         }
+
+        if(closestObject != null)
+            StaticVariables.mainUI.ShowInteractionSymbol();
+        else
+            StaticVariables.mainUI.HideInteractionSymbol();
     }
 
     private void HighlightClosestInteractable() {
-        if (closestInteractable != null && closestInteractable.GetComponent<Outline>() != null)
+        if (closestInteractable != null && closestInteractable.GetComponent<Outline>() != null) {
             closestInteractable.GetComponent<Outline>().enabled = true;
+        }
     }
 
     private void UnhighlightInteractable(Interactable interactable) {
-        if (interactable != null && interactable.GetComponent<Outline>() != null)
+        if (interactable != null && interactable.GetComponent<Outline>() != null) {
             interactable.GetComponent<Outline>().enabled = false;
+        }
     }
 
     private void UnhighlightInteractable(GameObject go) {
