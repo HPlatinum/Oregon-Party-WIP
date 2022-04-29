@@ -43,7 +43,7 @@ public class InventorySlotUI : MonoBehaviour {
     public void AddItemToInventorySlot(Item newItem){
         item = newItem;
 
-        displayItem.AddItemAsChild(item, 0.2f);
+        displayItem.AddItemAsChild(item, false, 0.2f);
 
     }
     public void DisplayItemQuantity(int quantity) {

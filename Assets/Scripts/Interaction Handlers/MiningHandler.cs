@@ -228,13 +228,13 @@ public class MiningHandler : ToolHandler
             randomlyChosenObstructionObject = rand.Next(1, 4);
             displayItem = child.Find("Mine Area").Find("Display Obstruction").GetComponent<DisplayItem>();
             if(randomlyChosenObstructionObject == 1)
-                displayItem.AddItemAsChild(obstructionObject1, 3);
+                displayItem.AddItemAsChild(obstructionObject1, false, 3);
             if(randomlyChosenObstructionObject == 2)
-                displayItem.AddItemAsChild(obstructionObject2, 3);
+                displayItem.AddItemAsChild(obstructionObject2, false, 3);
             if(randomlyChosenObstructionObject == 3)
-                displayItem.AddItemAsChild(obstructionObject3, 3);
+                displayItem.AddItemAsChild(obstructionObject3, false, 3);
             if(randomlyChosenObstructionObject == 4)
-                displayItem.AddItemAsChild(obstructionObject4, 3);
+                displayItem.AddItemAsChild(obstructionObject4, false, 3);
         }
     }
 
@@ -281,11 +281,11 @@ public class MiningHandler : ToolHandler
             displayItem = child.Find("Item Holder").GetComponent<DisplayItem>();
             randomlyChosenObstructionObject = rand.Next(1,3);
             if(randomlyChosenObstructionObject == 1)
-                displayItem.AddItemAsChild(collectableObject1, .1f);
+                displayItem.AddItemAsChild(collectableObject1, false, 0.1f);
             if(randomlyChosenObstructionObject == 2)
-                displayItem.AddItemAsChild(collectableObject2, .1f);
+                displayItem.AddItemAsChild(collectableObject2, false, 0.1f);
             if(randomlyChosenObstructionObject == 3)
-                displayItem.AddItemAsChild(collectableObject3, .1f);
+                displayItem.AddItemAsChild(collectableObject3, false, 0.1f);
             displayItem.transform.localPosition = new Vector3(0, 0, -12);
         }
     }
@@ -601,7 +601,7 @@ public class MiningHandler : ToolHandler
             else {
                 str = "Collectable (" + i.ToString() +")";
             }
-            transform.Find("Finish Screen").Find("Grid").Find(str).GetComponentInChildren<DisplayItem>().AddItemAsChild(item, .6f);
+            transform.Find("Finish Screen").Find("Grid").Find(str).GetComponentInChildren<DisplayItem>().AddItemAsChild(item, false, 0.6f);
             transform.Find("Finish Screen").Find("Grid").Find(str).gameObject.SetActive(true);
             i++;
         }

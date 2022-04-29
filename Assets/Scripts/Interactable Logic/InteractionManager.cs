@@ -247,6 +247,9 @@ public class InteractionManager : MonoBehaviour {
         //assumes we only have one object in the hand at a time
         objectInHand = newObj;
         itemInHand = item;
+
+        //update the main UI
+        StaticVariables.mainUI.ShowAttackSymbolSword();
     }
 
     public void PutItemInPlayerHandButChangeModel(Item item, GameObject newModel) {
@@ -301,6 +304,9 @@ public class InteractionManager : MonoBehaviour {
             print("Removing Item From hand for some reason");
             DestroyImmediate(objectInHand);
             itemInHand = null;
+
+            //update the main UI
+            StaticVariables.mainUI.HideAttackSymbols();
         }
     }
 

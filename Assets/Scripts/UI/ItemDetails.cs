@@ -18,6 +18,7 @@ public class ItemDetails : MonoBehaviour {
     private GameObject quantityGO;
     private Text quantityText;
     private DisplayItem displayItem;
+    private GameObject quantityMaskGO;
 
     void Start(){
         //declare the gameobject references
@@ -29,13 +30,10 @@ public class ItemDetails : MonoBehaviour {
         pauseMenu = FindObjectOfType<PauseMenu>();
         quantityGO = transform.Find("Quantity").gameObject;
         quantityText = quantityGO.transform.Find("Text").GetComponent<Text>();
+        quantityMaskGO = transform.Find("Masks").Find("Quantity").gameObject;
 
         //hide the item details popup
         ShowContents(false);
-    }
-
-    private void Update() {
-        //itemModelParent.Rotate(0, (rotationSpeed * Time.unscaledDeltaTime), 0);
     }
 
     private void ShowContents(bool show) {
@@ -52,7 +50,7 @@ public class ItemDetails : MonoBehaviour {
         //set variables
         this.item = item;
 
-        displayItem.AddItemAsChild(item);
+        displayItem.AddItemAsChild(item, true);
         displayItem.shouldRotate = true;
 
         //add the description text
@@ -73,8 +71,12 @@ public class ItemDetails : MonoBehaviour {
 
         //display the item quantity - has to go after showing all UI
         quantityGO.SetActive(true);
+        quantityMaskGO.SetActive(true);
         quantityText.text = "x" + quantity;
-        if (quantity <= 1) quantityGO.SetActive(false);
+        if (quantity <= 1) { 
+            quantityGO.SetActive(false);
+            quantityMaskGO.SetActive(false);
+        }
 
         //hide the pause menu UI
         pauseMenu.ShowMenu(false);

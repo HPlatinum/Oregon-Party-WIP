@@ -138,7 +138,7 @@ public class CookingHandler : InteractionHandler {
         cookItemName.text = item.name;
         cookItemQuantity.text = quantity + " in full Inventory";
 
-        displayItem.AddItemAsChild(item, 1.2f);
+        displayItem.AddItemAsChild(item, false, 1.2f);
         displayItem.shouldRotate = true;
 
     }

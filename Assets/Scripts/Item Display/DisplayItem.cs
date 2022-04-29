@@ -14,13 +14,24 @@ public class DisplayItem : MonoBehaviour {
             transform.Rotate(0, (rotationSpeed * Time.unscaledDeltaTime), 0);
     }
 
-    public void AddItemAsChild(Item item, float scale = -1) {
+    public void AddItemAsChild(Item item, bool makeItemMaskable = false, float scale = -1) {
         if (scale <= 0)
             scale = 1;
         SetTransform(scale);
         GameObject newModel = GameObject.Instantiate(item.model, transform);
         SetLayerRecursively(newModel, 5); //assumes UI layer is #5
         SetModelTransform(newModel.transform, item, scale);
+
+        if (makeItemMaskable) {//add the mask script
+            AddMaskRecursively(newModel);
+        }
+    }
+
+    private void AddMaskRecursively(GameObject go) {
+        if (go.GetComponent<Renderer>() != null)
+            go.AddComponent<MaskObject_AddToObjectsThatGetHidden>();
+        foreach (Transform t in go.transform)
+            AddMaskRecursively(t.gameObject);
     }
 
     private void SetTransform(float scale) {
