@@ -117,6 +117,7 @@ public class CharacterSelection : MonoBehaviour {
         Destroy(newPlayer.GetComponent<Invector.vCharacterController.vThirdPersonInput>());
         Destroy(newPlayer.GetComponent<Rigidbody>());
         Destroy(newPlayer.GetComponent<CapsuleCollider>());
+        Destroy(newPlayer.transform.Find("InteractCollider").gameObject);
 
         //set the layer
         SetLayerRecursively(newPlayer, 5);
