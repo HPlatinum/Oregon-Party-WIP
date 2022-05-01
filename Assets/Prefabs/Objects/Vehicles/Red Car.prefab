@@ -327,11 +327,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db4957fd4b801fe4bbf2cf4c52ccacf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactType: 2
+  interactType: 12
   item: {fileID: 0}
   requiredItem: {fileID: 0}
   inventory: {fileID: 0}
+  storedItemCount: 0
   destroyParentAlso: 0
+  resourceMined: 0
 --- !u!1 &8593442825374767425
 GameObject:
   m_ObjectHideFlags: 0

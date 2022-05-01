@@ -53,8 +53,13 @@ public class InteractionManager : MonoBehaviour {
             HighlightClosestInteractable();
         }
 
-        if(closestObject != null)
-            StaticVariables.mainUI.ShowInteractionSymbol();
+        if(closestInteractable != null) {
+            if (closestInteractable.interactType == Interactable.InteractTypes.Vehicle)
+                StaticVariables.mainUI.ShowInteractionSymbolLeave();
+            else
+                StaticVariables.mainUI.ShowInteractionSymbolGeneral();
+        }
+            
         else
             StaticVariables.mainUI.HideInteractionSymbol();
     }
@@ -192,7 +197,7 @@ public class InteractionManager : MonoBehaviour {
     private bool CanPlayerInteractWithCurrentInteractable() {
         if (closestInteractable == null)
             return false;
-        Interactable.InteractTypes type = closestInteractable.interactType;
+        //Interactable.InteractTypes type = closestInteractable.interactType;
         return GetInteractionHandlerForClosestInteractable().CanPlayerInteractWithObject(closestInteractable);
     }
     
@@ -220,6 +225,8 @@ public class InteractionManager : MonoBehaviour {
                 return StaticVariables.logHandler;
             case (Interactable.InteractTypes.Beaver):
                 return closestInteractable.GetComponent<BeaverHandler>();
+            case (Interactable.InteractTypes.Vehicle):
+                return StaticVariables.vehicleHandler;
         }
         return null;
     }

@@ -7,7 +7,8 @@ using DG.Tweening;
 public class MainUI : MonoBehaviour {
     
     private PauseMenu pauseMenu;
-    private GameObject interactionSymbol;
+    private GameObject interactionSymbolGeneral;
+    private GameObject interactionSymbolLeave;
     private GameObject interactionDarkOverlay;
     private GameObject attackSymbolSword;
     private GameObject attackSymbolGun;
@@ -15,7 +16,8 @@ public class MainUI : MonoBehaviour {
 
     private void Start() {
         pauseMenu = FindObjectOfType<PauseMenu>();
-        interactionSymbol = transform.Find("Interact").Find("InteractImage").gameObject;
+        interactionSymbolGeneral = transform.Find("Interact").Find("InteractImageGeneral").gameObject;
+        interactionSymbolLeave = transform.Find("Interact").Find("InteractImageLeave").gameObject;
         interactionDarkOverlay = transform.Find("Interact").Find("Dark Overlay").gameObject;
         attackSymbolSword = transform.Find("Attack").Find("AttackImageSword").gameObject;
         attackSymbolGun = transform.Find("Attack").Find("AttackImageGun").gameObject;
@@ -60,13 +62,20 @@ public class MainUI : MonoBehaviour {
         yield return null;
     }
 
-    public void ShowInteractionSymbol() {
-        interactionSymbol.SetActive(true);
+    public void ShowInteractionSymbolGeneral() {
+        interactionSymbolGeneral.SetActive(true);
+        interactionSymbolLeave.SetActive(false);
+        interactionDarkOverlay.SetActive(false);
+    }
+    public void ShowInteractionSymbolLeave() {
+        interactionSymbolGeneral.SetActive(false);
+        interactionSymbolLeave.SetActive(true);
         interactionDarkOverlay.SetActive(false);
     }
 
     public void HideInteractionSymbol() {
-        interactionSymbol.SetActive(false);
+        interactionSymbolGeneral.SetActive(false);
+        interactionSymbolLeave.SetActive(false);
         interactionDarkOverlay.SetActive(true);
     }
 
