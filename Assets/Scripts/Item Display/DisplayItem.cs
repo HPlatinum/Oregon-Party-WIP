@@ -36,7 +36,7 @@ public class DisplayItem : MonoBehaviour {
 
     private void SetTransform(float scale) {
         transform.localScale = Vector3.one * scale; //scale based on the container's scaling requirements
-        transform.localPosition = new Vector3(0, 0, -500); //prevent clipping througn UI elements
+        transform.localPosition = new Vector3(0, 0,0); //prevent clipping througn UI elements
     }
 
     private void SetModelTransform(Transform transform, Item item, float scale) {
