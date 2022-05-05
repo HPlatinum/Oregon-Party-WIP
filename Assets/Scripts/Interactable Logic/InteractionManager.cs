@@ -224,7 +224,7 @@ public class InteractionManager : MonoBehaviour {
             case (Interactable.InteractTypes.Log):
                 return StaticVariables.logHandler;
             case (Interactable.InteractTypes.Beaver):
-                return closestInteractable.GetComponent<BeaverHandler>();
+                return StaticVariables.beaverHandler;
             case (Interactable.InteractTypes.Vehicle):
                 return StaticVariables.vehicleHandler;
         }
@@ -364,6 +364,7 @@ public class InteractionManager : MonoBehaviour {
         if (currentlyInteracting) {
             if (interactAnimationStarted) {
                 if (!StaticVariables.DoesPlayerAnimatorStateHaveInteractTag()) {
+                    print("here to test this bullshit");
                     return true;
                 }
             }
