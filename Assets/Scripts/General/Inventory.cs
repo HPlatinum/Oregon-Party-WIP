@@ -25,8 +25,9 @@ public class Inventory : ScriptableObject
     }
 
 
-    public void AddItemToInventory(Item item, int pickedUpItemQuantity) {
-        ShowItemQuantityChangeInUI(item, pickedUpItemQuantity);
+    public void AddItemToInventory(Item item, int pickedUpItemQuantity, bool showChangeAmount = true) {
+        if (showChangeAmount)
+            ShowItemQuantityChangeInUI(item, pickedUpItemQuantity);
 
         // Check if stack has met cap > if it has create new cap.
         for(int i = 0; i < inventorySlots.Count; i++) {
@@ -113,7 +114,7 @@ public class Inventory : ScriptableObject
 
     private void ShowItemQuantityChangeInUI(Item item, int quantity) {
         if(CheckIfInventoryIsPlayerInventory()) {
-            StaticVariables.commonUI.ShowItemQuantityChange(item, quantity);
+            StaticVariables.mainUI.ShowItemQuantityChange(item, quantity);
         }
     }
 
@@ -124,7 +125,7 @@ public class Inventory : ScriptableObject
     private void AddItemToNewSlot(Item item, int quantity, GameObject newGameObject) { 
         inventorySlots.Add(new InventorySlot(item, quantity, newGameObject));
         OnItemChangedCheckIfCallbackNeeded();
-        ShowItemQuantityChangeInUI(item, quantity);
+        //ShowItemQuantityChangeInUI(item, quantity);
     }
 
     private int RemainingItemQuantity(int slotNumber, int quantity) {
@@ -185,7 +186,7 @@ public class Inventory : ScriptableObject
 
         //add in the new amount you want
         if (diff > 0)
-            AddItemToInventory(item, diff);
+            AddItemToInventory(item, diff, false);
     }
     
     public void RemoveAllOfItem(Item item) {

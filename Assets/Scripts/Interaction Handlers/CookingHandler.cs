@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
-
 public class CookingHandler : InteractionHandler {
 
     public int cookingTier = 0;
@@ -58,7 +57,6 @@ public class CookingHandler : InteractionHandler {
     public override void ProcessInteractAnimationEnding() {
         if (currentlyLightingFire) {
             currentlyLightingFire = false;
-            StaticVariables.playerInventory.RemoveItemFromInventory(requiredWoodItem, 1);
         }
         StaticVariables.currentInteractionHandler = null;
     }
@@ -222,6 +220,7 @@ public class CookingHandler : InteractionHandler {
     private void ShowWood() {
         woodObject.SetActive(true);
         woodObject.AddComponent<AnimatedObjectAppearing>();
+        StaticVariables.playerInventory.RemoveItemFromInventory(requiredWoodItem, 1);
     }
 
     private void ShowFlame() {

@@ -26,7 +26,6 @@ public class Essentials : MonoBehaviour{
         //UI elements        
         StaticVariables.itemDetails = canvas.Find("Item Details").GetComponent<ItemDetails>();
         StaticVariables.mainUI = canvas.Find("Main UI").GetComponent<MainUI>();
-        StaticVariables.commonUI = canvas.Find("Common Interface Elements").GetComponent<CommonUI>();
 
         //interaction handlers
         StaticVariables.cookingHandler = canvas.Find("Cooking Interface").GetComponent<CookingHandler>();
