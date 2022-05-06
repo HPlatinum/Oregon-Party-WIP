@@ -16,6 +16,7 @@ public class BeaverHandler : InteractionHandler
             beaver.GetComponentInChildren<NPCInteractionManager>().enabled = false;
             beaver.GetComponentInChildren<BeaverController>().MoveBeaver();
             beaver.GetComponentInChildren<BeaverController>().FreezeBeaver();
+            beaver.GetComponent<Collider>().enabled = false;
             beaver.GetComponent<Outline>().enabled = false;
             StaticVariables.interactScript.PutFirstToolOfTypeInHand(Tool.ToolTypes.axe);
             StaticVariables.interactScript.SetupPlayerInteractionWithClosestInteractable(.1f);

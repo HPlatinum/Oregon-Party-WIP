@@ -82,6 +82,7 @@ public class BeaverController : BeaverAnimator
     
     public void FreezeBeaver() {
         Walk();
+        StaticVariables.WaitTimeThenCallFunction(1.5f, Dead);
         agent.isStopped = true;
     }
 
