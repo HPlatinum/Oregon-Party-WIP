@@ -13,8 +13,14 @@ public class BeaverHandler : InteractionHandler
         if(!StaticVariables.interactScript.currentlyInteracting) {
             StaticVariables.interactScript.currentlyInteracting = true;
             beaver = StaticVariables.interactScript.GetClosestInteractable().gameObject;
+            beaver.GetComponentInChildren<NPCInteractionManager>().enabled = false;
+            beaver.GetComponentInChildren<BeaverController>().MoveBeaver();
+            beaver.GetComponentInChildren<BeaverController>().FreezeBeaver();
+            beaver.GetComponent<Outline>().enabled = false;
             StaticVariables.interactScript.PutFirstToolOfTypeInHand(Tool.ToolTypes.axe);
+            StaticVariables.interactScript.SetupPlayerInteractionWithClosestInteractable(.1f);
             StaticVariables.PlayAnimation("Swing Pickaxe");
+            StaticVariables.WaitTimeThenCallFunction(1.55f, beaver.GetComponentInChildren<ParticleSystem>().Play);
         }
         
     }
@@ -28,7 +34,6 @@ public class BeaverHandler : InteractionHandler
         StaticVariables.interactScript.DestroyCurrentInteractable();
         StaticVariables.interactScript.RemoveItemFromHand();
         StaticVariables.currentInteractionHandler = null;
-        StaticVariables.interactScript.closestInteractable = null;
     }
 
     public override bool CanPlayerInteractWithObject(Interactable interactable) {

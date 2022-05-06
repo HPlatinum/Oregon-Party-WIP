@@ -364,7 +364,6 @@ public class InteractionManager : MonoBehaviour {
         if (currentlyInteracting) {
             if (interactAnimationStarted) {
                 if (!StaticVariables.DoesPlayerAnimatorStateHaveInteractTag()) {
-                    print("here to test this bullshit");
                     return true;
                 }
             }

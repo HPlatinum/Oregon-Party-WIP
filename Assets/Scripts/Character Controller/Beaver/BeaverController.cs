@@ -79,11 +79,16 @@ public class BeaverController : BeaverAnimator
     private void MoveBeaverToDestination(Vector3 destination) {
         agent.SetDestination(destination);
     }
+    
+    public void FreezeBeaver() {
+        Walk();
+        agent.isStopped = true;
+    }
 
     private void WoodInHand() {
         hasWoodInHand = !hasWoodInHand;
     }
-    private void MoveBeaver() { 
+    public void MoveBeaver() { 
         moveBeaver = !moveBeaver;
     }
     private void StopMovement() {
