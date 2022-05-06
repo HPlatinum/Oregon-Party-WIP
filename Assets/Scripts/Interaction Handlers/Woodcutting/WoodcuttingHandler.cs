@@ -19,6 +19,7 @@ public class WoodcuttingHandler : ToolHandler
     #endregion
     public float scaleUP;
     public int totalGameTime;
+    public int woodInHand;
     public bool gameIsStarted;
     public bool showWoodcuttingUI;
     public bool inWoodcuttingScene;
@@ -401,7 +402,7 @@ public class WoodcuttingHandler : ToolHandler
         }
     }
 
-    private void SetBeaverHasBeenSpawnedBackToFalseAtSpawnLocation(int index) {
+    public void SetBeaverHasBeenSpawnedBackToFalseAtSpawnLocation(int index) {
         possibleSpawnLocations[index] = false;
     }
 

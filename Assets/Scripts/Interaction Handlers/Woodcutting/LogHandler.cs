@@ -10,6 +10,7 @@ public class LogHandler : InteractionHandler {
         if (!StaticVariables.interactScript.currentlyInteracting) {
             StaticVariables.interactScript.PutItemInPlayerHand(StaticVariables.interactScript.GetClosestInteractable().GetItem()); 
             StaticVariables.interactScript.DestroyCurrentInteractable();
+            StaticVariables.woodcuttingHandler.woodInHand = 2;
         }
     }
     public override bool CanPlayerInteractWithObject(Interactable interactable) {

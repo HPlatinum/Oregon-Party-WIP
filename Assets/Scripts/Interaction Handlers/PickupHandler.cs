@@ -17,7 +17,15 @@ public class PickupHandler : InteractionHandler {
     }
 
     public override void ProcessInteractAnimationEnding() {
-        StaticVariables.interactScript.AddCurrentInteractableItemToInventory();
+        if(StaticVariables.woodcuttingHandler.gameIsStarted && StaticVariables.interactScript.closestInteractable.item.name == "Wood") {
+            StaticVariables.interactScript.PutItemInPlayerHand(StaticVariables.interactScript.GetClosestInteractable().GetItem());
+            StaticVariables.controller.Carry();
+            StaticVariables.woodcuttingHandler.woodInHand = 1;
+        }
+        else {
+            StaticVariables.interactScript.AddCurrentInteractableItemToInventory();
+        }
+            
         StaticVariables.currentInteractionHandler = null;
         StaticVariables.interactScript.DestroyCurrentInteractable();
     }

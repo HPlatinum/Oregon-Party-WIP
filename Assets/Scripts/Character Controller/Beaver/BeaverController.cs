@@ -137,8 +137,8 @@ public class BeaverController : BeaverAnimator
                 beaverInteractionManager.PutItemInNPCHand(pickupInteractable.item);
             }
             speed = 0;
-            StaticVariables.WaitTimeThenCallFunction(3f, Interacting);
-            StaticVariables.WaitTimeThenCallFunction(3f, StopMovement);
+            StaticVariables.WaitTimeThenCallFunction(1f, Interacting);
+            StaticVariables.WaitTimeThenCallFunction(1f, StopMovement);
         }        
     }
 }
