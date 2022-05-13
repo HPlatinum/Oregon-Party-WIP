@@ -70,8 +70,9 @@ public class DepositHandler : InteractionHandler
     public void ResetLocalVariables() {
         depositObject = StaticVariables.woodcuttingHandler.storageArea;
         depositInventory = depositObject.GetComponent<Interactable>().inventory;
+        depositInventory.ClearInventory();
         depositItem = depositObject.GetComponent<Interactable>().item;
-        currentObjectCount = GetQuantityOfWoodCollected();
+        currentObjectCount = 0;
         gameIsStarted = true;
         gameIsOver = false;
         FillListOfWoodGameObjects();

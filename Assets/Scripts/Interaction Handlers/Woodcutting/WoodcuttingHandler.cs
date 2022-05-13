@@ -126,10 +126,13 @@ public class WoodcuttingHandler : ToolHandler
                 gameIsStarted = false;
                 gameOver = false;
                 gameTimer.SetTimerEndedBackToFalse();
+                DisableBeaverSpawns();
                 StaticVariables.playerInventory.AddItemToInventory(StaticVariables.depositHandler.depositItem, StaticVariables.depositHandler.GetQuantityOfWoodCollected());
                 print("Game is over. You collected " +StaticVariables.depositHandler.GetQuantityOfWoodCollected() + " total wood.");
                 StaticVariables.depositHandler.gameIsOver = true;
                 woodCuttingStation.GetComponent<Interactable>().resourceMined = true;
+                StaticVariables.woodpileHandler.listIsFilled = false;
+                StaticVariables.depositHandler.gameIsStarted = false;
             }
             if(ShouldFinishUIBeShown()) {
                 showFinishUI = false;
@@ -395,6 +398,17 @@ public class WoodcuttingHandler : ToolHandler
         continueSpawningBeavers = false;
     }
 
+    private void EnableBeaverSpawns() {
+        foreach(Transform spawn in beaverSpawns) {
+            spawn.gameObject.SetActive(true);
+        }
+    }
+
+    private void DisableBeaverSpawns() {
+        foreach(Transform spawn in beaverSpawns) {
+            spawn.gameObject.SetActive(false);
+        }
+    }
     private void CreateListOfAvailableSpawns() {
         possibleSpawnLocations = new List<bool>();
         for(int i = 0; i < 5; i++) {
@@ -438,6 +452,7 @@ public class WoodcuttingHandler : ToolHandler
         toolStats = null;
         continueSpawningBeavers = true;
         rand = new System.Random();
+        EnableBeaverSpawns();
         CreateListOfAvailableSpawns();
     }
 

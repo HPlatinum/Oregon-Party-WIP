@@ -19,8 +19,10 @@ public class BeaverSpawn : MonoBehaviour
     }
 
     private void OnTriggerEnter(Collider other) {
-        if(other.transform.parent.gameObject.GetComponent<BeaverController>().hasWoodInHand) {
+        if(other.transform.parent.gameObject.GetComponent<BeaverController>() != null && other.transform.parent.gameObject.GetComponent<BeaverController>().hasWoodInHand) {
             StaticVariables.woodcuttingHandler.DestroyBeaver(other.transform.parent.gameObject.GetComponent<BeaverController>().beaverSpawnInt, other.transform.parent.gameObject);
         }
+        else
+            return;
     }
 }

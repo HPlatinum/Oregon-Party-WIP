@@ -5,7 +5,7 @@ using UnityEngine;
 public class WoodpileHandler : MonoBehaviour
 {
     int woodPosition;
-    bool listIsFilled;
+    public bool listIsFilled;
     public Item item;
     public List<GameObject> woodpile;
     GameObject currentlogObject;
@@ -19,7 +19,8 @@ public class WoodpileHandler : MonoBehaviour
     void Update()
     {
         if(StaticVariables.woodcuttingHandler.gameIsStarted) {
-            if(!listIsFilled && StaticVariables.woodcuttingHandler.woodpile != null) {
+            if(!listIsFilled) {
+                print("resetting woodpile variables");
                 ResetLocalVariables();
             }
             if(listIsFilled) {
