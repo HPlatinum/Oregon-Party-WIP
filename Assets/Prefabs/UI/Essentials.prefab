@@ -37635,7 +37635,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 89.375, y: 0}
+  m_AnchoredPosition: {x: 92, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1157417207421216995
@@ -42043,6 +42043,7 @@ MonoBehaviour:
   depositWoodPile: []
   scaleUP: 0
   totalGameTime: 0
+  woodInHand: 0
   gameIsStarted: 0
   showWoodcuttingUI: 0
   inWoodcuttingScene: 0
@@ -42123,6 +42124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d671e809bdbfc454a9780cc4e3f328f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  listIsFilled: 0
   item: {fileID: 11400000, guid: 770c409ddd099244e987f2b38242f7e1, type: 2}
   woodpile: []
 --- !u!114 &6372860146389814920
@@ -42137,6 +42139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34d89380508d2fc428097e05fdeb3fa3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  woodLeft: {fileID: 5326894964394282555, guid: 4fe0f1029842ff7419bc8fb462308dff, type: 3}
 --- !u!1 &4952639611767253167
 GameObject:
   m_ObjectHideFlags: 0
@@ -62059,11 +62062,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7824039514906623692}
   m_LocalRotation: {x: 0.3826832, y: -0, z: -0, w: 0.9238797}
-  m_LocalPosition: {x: -0.03610587, y: 8.000922, z: -11.163695}
+  m_LocalPosition: {x: -0.036105633, y: 8.000922, z: -11.163694}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3324970135051171734}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &7824039514906623694
 Camera:
@@ -62205,7 +62208,7 @@ Transform:
   m_Children:
   - {fileID: 7824039515105884525}
   m_Father: {fileID: 3324970135051171734}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
 --- !u!81 &7824039514912322630
 AudioListener:
@@ -62244,7 +62247,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.3333334, y: 1}
+    m_SensorSize: {x: 1.7777778, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -62277,12 +62280,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7824039515011406119}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 100, y: 100, z: 100}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -16.44, y: 8.000922, z: 11.65}
+  m_LocalScale: {x: 100, y: 99.999985, z: 99.999985}
   m_Children: []
   m_Father: {fileID: 3324970135051171734}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &7824039515011406118
 Camera:
@@ -68015,9 +68018,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 7824039515011406112}
   - {fileID: 7824039514906623689}
   - {fileID: 7824039514912322625}
-  - {fileID: 7824039515011406112}
   - {fileID: 1838859353086567637}
   - {fileID: 7824039514274742751}
   - {fileID: 3127703383481754164}
