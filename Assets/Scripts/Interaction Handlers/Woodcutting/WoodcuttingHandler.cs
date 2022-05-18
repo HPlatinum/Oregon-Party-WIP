@@ -133,6 +133,7 @@ public class WoodcuttingHandler : ToolHandler
                 woodCuttingStation.GetComponent<Interactable>().resourceMined = true;
                 StaticVariables.woodpileHandler.listIsFilled = false;
                 StaticVariables.depositHandler.gameIsStarted = false;
+                DestroyAllRemainingBeavers();
             }
             if(ShouldFinishUIBeShown()) {
                 showFinishUI = false;
@@ -392,6 +393,12 @@ public class WoodcuttingHandler : ToolHandler
     public void DestroyBeaver(int index, GameObject beaver) {
         Destroy(beaver);
         SetBeaverHasBeenSpawnedBackToFalseAtSpawnLocation(index);
+    }
+
+    private void DestroyAllRemainingBeavers() {
+        for(int i = 0; i < GameObject.FindGameObjectsWithTag("NPC").Length; i++) {
+            Destroy(GameObject.FindGameObjectsWithTag("NPC")[i]);
+        }
     }
 
     private void ContinueSpawningBeaversSetFalse() {

@@ -16,7 +16,6 @@ public class Inventory : ScriptableObject
 {
     public InventorySize size;
     public List<InventorySlot> inventorySlots = new List<InventorySlot>();
-    private List<InventorySlot> emptySlots = new List<InventorySlot>();
 
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallback;
@@ -207,7 +206,7 @@ public class Inventory : ScriptableObject
     }
 
     public void ClearInventory() {
-        inventorySlots = emptySlots;
+        inventorySlots = new List<InventorySlot>();
     }
 
     // This may be useful later, but it likely isn't

@@ -138,6 +138,7 @@ public class BeaverController : BeaverAnimator
             StopMovement();
             Interacting();
             WoodInHand();
+            StaticVariables.arrowHandler.CreateWaypointer(0,3.5f,this.gameObject.transform);
             if(pickupInteractable.inventory.GetTotalItemQuantity(pickupInteractable.item) > 0) {
                 pickupInteractable.inventory.RemoveItemFromInventory(pickupInteractable.item, 1);
                 beaverInteractionManager.PutItemInNPCHand(pickupInteractable.item);

@@ -33,6 +33,7 @@ public class StaticVariables
     static public SharpeningHandler sharpeningHandler;
     static public DepositHandler depositHandler;
     static public LogHandler logHandler;
+    static public AlertArrowHandler arrowHandler;
     static public BeaverHandler beaverHandler;
     static public VehicleHandler vehicleHandler;
     static public Timer timer;

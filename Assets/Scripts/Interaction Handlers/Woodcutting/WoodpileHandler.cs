@@ -8,7 +8,7 @@ public class WoodpileHandler : MonoBehaviour
     public bool listIsFilled;
     public Item item;
     public List<GameObject> woodpile;
-    GameObject currentlogObject;
+    GameObject currentLogObject;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,7 +34,6 @@ public class WoodpileHandler : MonoBehaviour
                 }
             }
         }
-        
     }
 
     private void ResetLocalVariables() {
@@ -43,7 +42,7 @@ public class WoodpileHandler : MonoBehaviour
         woodPosition = 0;
     }
     private void SetCurrentlogObject() {
-        currentlogObject = woodpile[woodPosition];
+        currentLogObject = woodpile[woodPosition];
     }
 
     private void IncreaseWoodPosition() {
@@ -54,7 +53,7 @@ public class WoodpileHandler : MonoBehaviour
     }
 
     private bool CurrentlogObjectHasChanged() {
-        return currentlogObject != woodpile[woodPosition];
+        return currentLogObject != woodpile[woodPosition];
     }
 
     private void SetlogObjectInteractableAndOutlineInactive(GameObject logObject) {
