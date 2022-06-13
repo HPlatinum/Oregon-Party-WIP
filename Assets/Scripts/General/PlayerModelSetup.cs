@@ -47,4 +47,11 @@ public class PlayerModelSetup: MonoBehaviour
         transform.parent.Find("Virtual Follow Camera").GetComponent<Cinemachine.CinemachineVirtualCamera>().Follow = playerModel.transform;
     }
 
+    public int GetMaxHealth() {
+        return playerModelOptions[chosenModelOption].GetComponent<CharacterStats>().maxHealth;
+    }
+
+    public int GetMaxSanity() {
+        return playerModelOptions[chosenModelOption].GetComponent<CharacterStats>().maxSanity;
+    }
 }

@@ -20,6 +20,7 @@ public class StaticVariables
     static public Inventory playerInventory;
     static public ItemDetails itemDetails;
     static public ToolHandler ToolHandler;
+    static public HealthAndSanityTracker healthAndSanityTracker;
 
     //interaction handlers
     static public InteractionHandler currentInteractionHandler;

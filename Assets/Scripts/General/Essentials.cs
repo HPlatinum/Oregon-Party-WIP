@@ -11,6 +11,8 @@ public class Essentials : MonoBehaviour{
 
         //set up the player model and get the camera to follow it, then delete the player model setup object
         PlayerModelSetup pms = transform.Find("Player Model Setup").GetComponent<PlayerModelSetup>();
+        int maxHealth = pms.GetMaxHealth();
+        int maxSanity = pms.GetMaxSanity();
         pms.CreatePlayerModelInstanceInScene();
         pms.SetCameraToFollowPlayer();
         GameObject.Destroy(pms.gameObject);
@@ -26,6 +28,7 @@ public class Essentials : MonoBehaviour{
         //UI elements        
         StaticVariables.itemDetails = canvas.Find("Item Details").GetComponent<ItemDetails>();
         StaticVariables.mainUI = canvas.Find("Main UI").GetComponent<MainUI>();
+        StaticVariables.healthAndSanityTracker = StaticVariables.mainUI.GetComponent<HealthAndSanityTracker>();
 
         //interaction handlers
         StaticVariables.cookingHandler = canvas.Find("Cooking Interface").GetComponent<CookingHandler>();
@@ -40,13 +43,16 @@ public class Essentials : MonoBehaviour{
         StaticVariables.miningHandler = canvas.Find("Mining Interface").GetComponent<MiningHandler>();
         StaticVariables.forgeHandler = canvas.Find("Forge Interface").GetComponent<ForgeHandler>();
         StaticVariables.vehicleHandler = canvas.Find("Vehicle Interface").GetComponent<VehicleHandler>();
-        StaticVariables.arrowHandler = canvas.Find("Arrows").GetComponent<AlertArrowHandler>();
+        //StaticVariables.arrowHandler = canvas.Find("Arrows").GetComponent<AlertArrowHandler>();
 
         //Scene Handler
         StaticVariables.sceneHandler = transform.Find("Scene Handler").GetComponent<SceneHandler>();
 
         //Timer
         StaticVariables.timer = transform.Find("Timer").GetComponent<Timer>();
+
+        //set the player's health and sanity
+        StaticVariables.healthAndSanityTracker.SetStartingValues(maxHealth, maxSanity);
 
         //turn on all UI elements
         //they usually hide themselves on startup, after setting local variables
