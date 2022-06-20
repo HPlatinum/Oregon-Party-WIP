@@ -9,16 +9,17 @@ public class SharpeningHandler : InteractionHandler
     #region Inherited Functions
 
     public override void ProcessInteractAction() {
-        if (!StaticVariables.interactScript.currentlyInteracting && !StaticVariables.woodcuttingHandler.LogInPlayersHand()) {
-            StaticVariables.interactScript.SetPreviousItemInHand();
-            StaticVariables.interactScript.PutFirstToolOfTypeInHand(Tool.ToolTypes.axe);
-            StaticVariables.SetupPlayerInteractionWithHighlightedObject();
-            if(StaticVariables.controller._doneSharpeningAxe) {
-                StaticVariables.controller.SharpenAxe();
-            }
-            StaticVariables.PlayAnimation("Sharpening Axe Idle Loop", 1);
-            ActivePlayerSharpeningAxe();
+        if (StaticVariables.woodcuttingHandler.LogInPlayersHand()) //does this need to be here? this case is covered in canplayerinteractwithobject
+            return;
+
+        StaticVariables.interactScript.SetPreviousItemInHand();
+        StaticVariables.interactScript.PutFirstToolOfTypeInHand(Tool.ToolTypes.axe);
+        StaticVariables.SetupPlayerInteractionWithHighlightedObject();
+        if(StaticVariables.controller._doneSharpeningAxe) {
+            StaticVariables.controller.SharpenAxe();
         }
+        StaticVariables.PlayAnimation("Sharpening Axe Idle Loop", 1);
+        ActivePlayerSharpeningAxe();
     }
 
     public override void ProcessInteractAnimationEnding() {

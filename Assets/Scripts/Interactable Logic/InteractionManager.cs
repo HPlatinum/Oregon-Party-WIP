@@ -33,7 +33,7 @@ public class InteractionManager : MonoBehaviour {
     }
 
     void Update() {
-        if (!currentlyInteracting)
+        if (!currentlyInteracting && !StaticVariables.playerAttackScript.currentlyAttacking)
             UpdateClosestInteractable();
 
         bool justStarted = CheckIfInteractAnimationJustStarted();
@@ -313,13 +313,19 @@ public class InteractionManager : MonoBehaviour {
             itemInHand = null;
 
             //update the main UI
-            StaticVariables.mainUI.HideAttackSymbols();
+            //StaticVariables.mainUI.HideAttackSymbols();
+            StaticVariables.mainUI.ShowAttackSymbolSword();
         }
     }
 
     public void StartInteractionWithCurrentInteractable() {
         if (closestInteractable == null)
             return;
+        if (currentlyInteracting)
+            return;
+        if (StaticVariables.playerAttackScript.currentlyAttacking)
+            return;
+
         else if (!CanPlayerInteractWithCurrentInteractable()) {
             print("you cannot perform the " + closestInteractable.interactType.ToString() + " action");
             StaticVariables.SetupPlayerInteractionWithHighlightedObject();

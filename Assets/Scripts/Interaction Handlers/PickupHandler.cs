@@ -9,11 +9,9 @@ public class PickupHandler : InteractionHandler {
     #region Inherited Functions
 
     public override void ProcessInteractAction() {
-        if (!StaticVariables.interactScript.currentlyInteracting) {
-            StaticVariables.SetupPlayerInteractionWithHighlightedObject();
-            StaticVariables.interactScript.currentlyInteracting = true;
-            StaticVariables.PlayAnimation("Lifting");
-        }
+        StaticVariables.SetupPlayerInteractionWithHighlightedObject();
+        StaticVariables.interactScript.currentlyInteracting = true;
+        StaticVariables.PlayAnimation("Lifting");
     }
 
     public override void ProcessInteractAnimationEnding() {

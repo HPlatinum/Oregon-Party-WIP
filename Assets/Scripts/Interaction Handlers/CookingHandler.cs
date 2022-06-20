@@ -38,19 +38,17 @@ public class CookingHandler : InteractionHandler {
     #region Inherited Functions
 
     public override void ProcessInteractAction() {
-        if (!StaticVariables.interactScript.currentlyInteracting) {
+        StaticVariables.SetupPlayerInteractionWithHighlightedObject();
+        StaticVariables.interactScript.currentlyInteracting = true;
+        SetCookingInteractable();
+        if (!IsCookingObjectLit()) {
+            LightFire();
+        }
+        else {
+            SetCookingTier();
             StaticVariables.SetupPlayerInteractionWithHighlightedObject();
-            StaticVariables.interactScript.currentlyInteracting = true;
-            SetCookingInteractable();
-            if (!IsCookingObjectLit()) {
-                LightFire();
-            }
-            else {
-                SetCookingTier();
-                StaticVariables.SetupPlayerInteractionWithHighlightedObject();
-                StaticVariables.PlayAnimation("Cooking - Down");
-                showCookingUIWhenAnimatorIsIdle = true;
-            }
+            StaticVariables.PlayAnimation("Cooking - Down");
+            showCookingUIWhenAnimatorIsIdle = true;
         }
     }
 

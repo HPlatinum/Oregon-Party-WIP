@@ -10,6 +10,7 @@ public class StaticVariables
     //contains all the variables that need to be retained in between scenes
 
     static public InteractionManager interactScript;
+    static public PlayerAttackManager playerAttackScript;
     static public SceneHandler sceneHandler;
     static public Invector.vCharacterController.vThirdPersonController controller;
     static public Animator playerAnimator;
@@ -49,6 +50,10 @@ public class StaticVariables
     
     static public bool DoesPlayerAnimatorStateHaveInteractTag() {
         return playerAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Interact");
+    }
+
+    static public bool DoesPlayerAnimatorStateHaveAttackTag() {
+        return playerAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Attack");
     }
 
     static public void WaitTimeThenCallFunction(float delay, TweenCallback function) {

@@ -1873,6 +1873,7 @@ GameObject:
   - component: {fileID: 8560800492041712589}
   - component: {fileID: 8560800492041712178}
   - component: {fileID: 8560800492041712179}
+  - component: {fileID: 2124530089376986713}
   m_Layer: 0
   m_Name: InteractCollider
   m_TagString: Untagged
@@ -1930,6 +1931,19 @@ MonoBehaviour:
   leftHand: {fileID: 1363846978570572357}
   inventory: {fileID: 11400000, guid: 2bc05075b34179940bb487cba622012c, type: 2}
   dustPrefab: {fileID: 8879458784740900748, guid: da0e17722e633ef40820e9fa6ef97a52, type: 3}
+--- !u!114 &2124530089376986713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8560800492041712588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbc87451fa6f57d43ab6ea5151747b55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentlyAttacking: 0
 --- !u!1 &8605330768351734891
 GameObject:
   m_ObjectHideFlags: 0

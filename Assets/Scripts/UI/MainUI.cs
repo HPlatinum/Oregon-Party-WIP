@@ -41,7 +41,7 @@ public class MainUI : MonoBehaviour {
         addItemBox.localPosition = newPos;
 
         HideInteractionSymbol();
-        HideAttackSymbols();
+        ShowAttackSymbolSword();
     }
 
     public void Interact() {
@@ -49,7 +49,8 @@ public class MainUI : MonoBehaviour {
     }
 
     public void Attack() {
-        print("you want to attack, huh?");
+        StaticVariables.playerAttackScript.StartAttack();
+        //print("you want to attack, huh?");
     }
 
     public void Pause() {
@@ -114,11 +115,14 @@ public class MainUI : MonoBehaviour {
         attackDarkOverlay.SetActive(false);
     }
 
+    /*
     public void HideAttackSymbols() {
+        //remove this if we always want to be able to attack, even if we have no weapon equipped
         attackSymbolGun.SetActive(false);
         attackSymbolSword.SetActive(false);
         attackDarkOverlay.SetActive(true);
     }
+    */
 
     public void ShowItemQuantityChange(Item item, int quantity) {
         if (currentlyShowingItemQuantity || !IsPauseButtonShowing()) { //if there is an item currently showing, or the main ui is hidden, add the new item to the queue instead

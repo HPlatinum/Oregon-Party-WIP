@@ -46,18 +46,16 @@ public class ForgeHandler : InteractionHandler {
     #region Inherited Functions
 
     public override void ProcessInteractAction() {
-        if (!StaticVariables.interactScript.currentlyInteracting) {
+        StaticVariables.SetupPlayerInteractionWithHighlightedObject();
+        StaticVariables.interactScript.currentlyInteracting = true;
+        SetForgeInteractable();
+        if (!IsForgeLit()) {
+            LightForge();
+        }
+        else {
             StaticVariables.SetupPlayerInteractionWithHighlightedObject();
-            StaticVariables.interactScript.currentlyInteracting = true;
-            SetForgeInteractable();
-            if (!IsForgeLit()) {
-                LightForge();
-            }
-            else {
-                StaticVariables.SetupPlayerInteractionWithHighlightedObject();
-                StaticVariables.PlayAnimation("Cooking - Down");
-                showForgeUIWhenAnimatorIsIdle = true;
-            }
+            StaticVariables.PlayAnimation("Cooking - Down");
+            showForgeUIWhenAnimatorIsIdle = true;
         }
     }
 

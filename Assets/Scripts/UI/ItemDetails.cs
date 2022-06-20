@@ -115,9 +115,12 @@ public class ItemDetails : MonoBehaviour {
         //use the item's main action
         if (mainActionText.text == "Equip") {
             interactScript.PutItemInPlayerHand(item);
+            StaticVariables.mainUI.ShowAttackSymbolSword();
         }
         else if (mainActionText.text == "Unequip") {
             interactScript.RemoveItemFromHand();
+            //StaticVariables.mainUI.HideAttackSymbols();
+            StaticVariables.mainUI.ShowAttackSymbolSword();
         }
         else if (mainActionText.text == "") {
             //do nothing

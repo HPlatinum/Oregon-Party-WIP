@@ -22,6 +22,7 @@ public class Essentials : MonoBehaviour{
         StaticVariables.playerAnimator = FindObjectOfType<Invector.vCharacterController.vThirdPersonController>().GetComponent<Animator>();
         StaticVariables.controller = FindObjectOfType<Invector.vCharacterController.vThirdPersonController>();
         StaticVariables.interactScript = FindObjectOfType<InteractionManager>();
+        StaticVariables.playerAttackScript = FindObjectOfType<PlayerAttackManager>();
         StaticVariables.currentInteractionHandler = null;
         StaticVariables.tweenDummy = transform.Find("Empty Tween Dummy - For Delaying Function Calls");
 

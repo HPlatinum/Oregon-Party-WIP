@@ -53,18 +53,16 @@ public class FishingHandler : InteractionHandler {
     #region Inherited Functions
 
     public override void ProcessInteractAction() {
-        if (!StaticVariables.interactScript.currentlyInteracting) {
-            StaticVariables.SetupPlayerInteractionWithHighlightedObject();
-            StaticVariables.PlayAnimation("Fishing - Cast");
-            showFishingUIWhenAnimatorIsIdle = true;
+        StaticVariables.SetupPlayerInteractionWithHighlightedObject();
+        StaticVariables.PlayAnimation("Fishing - Cast");
+        showFishingUIWhenAnimatorIsIdle = true;
 
-            //set interactscript values
-            StaticVariables.interactScript.currentlyInteracting = true;
+        //set interactscript values
+        StaticVariables.interactScript.currentlyInteracting = true;
 
-            StaticVariables.interactScript.SetPreviousItemInHand();
-            StaticVariables.interactScript.PutFirstToolOfTypeInHand(Tool.ToolTypes.rod);
+        StaticVariables.interactScript.SetPreviousItemInHand();
+        StaticVariables.interactScript.PutFirstToolOfTypeInHand(Tool.ToolTypes.rod);
 
-        }
     }
 
     public override void ProcessInteractAnimationEnding() {
