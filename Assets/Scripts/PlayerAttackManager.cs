@@ -96,6 +96,7 @@ public class PlayerAttackManager : MonoBehaviour {
         if (StaticVariables.interactScript.objectInHand == null)
             StaticVariables.PlayAnimation("Right Hook");
         else
-            StaticVariables.PlayAnimation("Swing Weapon 2h");
+            StaticVariables.PlayAnimation("Swing Weapon 1h - Right Hand");
+        //StaticVariables.PlayAnimation("Swing Weapon 2h");
     }
 } 
