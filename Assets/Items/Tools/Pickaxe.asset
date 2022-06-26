@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Pickaxe
   type: 5
+  weaponType: 1
   defaultItem: 0
   description: 
   stackLimit: 1
@@ -25,6 +26,10 @@ MonoBehaviour:
   inHandRotation: {x: 0, y: 0, z: 90}
   inHandScale: 1
   useRightHand: 1
+  inBeaverHandPosition: {x: 0, y: 0, z: 0}
+  inBeaverHandRotation: {x: 0, y: 0, z: 0}
+  inBeaverHandScale: 1
+  useBeaverRightHand: 0
   itemTier: 2
-  wear: 0
+  initialWear: 0
   toolType: 2

@@ -1,6 +1,7 @@
 using UnityEngine;
 
 public enum ItemType { Ammunition, Clothing, Food, Instrument, Medicine, Tool, Weapon, Resource, RawFood }
+public enum WeaponType { Punch, OneHandRight, TwoHand }//OneHandLeft, Gun, TwoHandGun 
 
 [CreateAssetMenu(fileName = "New Item", menuName = "Inventory System/Item")]
 public class Item : ScriptableObject {
@@ -9,6 +10,7 @@ public class Item : ScriptableObject {
     new public string name = "New Item"; 
     [HideInInspector]
     public ItemType type;
+    public WeaponType weaponType = WeaponType.Punch;
     public bool defaultItem = false;
     [TextArea(15,20)]
     public string description;

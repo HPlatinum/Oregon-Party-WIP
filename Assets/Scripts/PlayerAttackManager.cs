@@ -93,10 +93,22 @@ public class PlayerAttackManager : MonoBehaviour {
     }
 
     private void PlayWeaponAttackAnimation() {
-        if (StaticVariables.interactScript.objectInHand == null)
+        if (StaticVariables.interactScript.objectInHand == null) {
             StaticVariables.PlayAnimation("Right Hook");
-        else
-            StaticVariables.PlayAnimation("Swing Weapon 1h - Right Hand");
-        //StaticVariables.PlayAnimation("Swing Weapon 2h");
+            return;
+        }
+        
+        switch (StaticVariables.interactScript.itemInHand.weaponType) {
+            case (WeaponType.Punch):
+                StaticVariables.PlayAnimation("Right Hook");
+                return;
+            case (WeaponType.OneHandRight):
+                StaticVariables.PlayAnimation("Swing Weapon 1h - Right Hand");
+                return;
+            case (WeaponType.TwoHand):
+                StaticVariables.PlayAnimation("Swing Weapon 2h");
+                return;
+
+        }
     }
 } 

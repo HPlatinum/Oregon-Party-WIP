@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Axe
   type: 5
+  weaponType: 1
   defaultItem: 0
   description: You can do the choppy chop with this
   stackLimit: 1
@@ -25,7 +26,10 @@ MonoBehaviour:
   inHandRotation: {x: 0, y: -2.673, z: -178.301}
   inHandScale: 1
   useRightHand: 1
+  inBeaverHandPosition: {x: 0, y: 0, z: 0}
+  inBeaverHandRotation: {x: 0, y: 0, z: 0}
+  inBeaverHandScale: 1
+  useBeaverRightHand: 0
   itemTier: 0
   initialWear: 100
-  currentWear: 0
   toolType: 1
