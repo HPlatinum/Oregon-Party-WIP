@@ -97,8 +97,8 @@ public class ScrappingHandler : InteractionHandler
         Inventory inventory = scrapInventory;
         InventorySlotUI.OnClickEffect onClick = InventorySlotUI.OnClickEffect.ScrappingInterface;
         string inventoryTitle = "Selected Items";
-        selectionCompactInventory.SetupValues(onClick, inventoryTitle);
-        selectionCompactInventory.ClearAllItemDisplay();
+        selectedCompactInventory.SetupValues(onClick, inventoryTitle);
+        selectedCompactInventory.ClearAllItemDisplay();
         allScrappableItems = selectionCompactInventory.DisplayAllItemsFromInventory(inventory);
     }
 
