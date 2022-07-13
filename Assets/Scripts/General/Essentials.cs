@@ -44,6 +44,7 @@ public class Essentials : MonoBehaviour{
         StaticVariables.miningHandler = canvas.Find("Mining Interface").GetComponent<MiningHandler>();
         StaticVariables.forgeHandler = canvas.Find("Forge Interface").GetComponent<ForgeHandler>();
         StaticVariables.vehicleHandler = canvas.Find("Vehicle Interface").GetComponent<VehicleHandler>();
+        StaticVariables.scrappingHandler = canvas.Find("Scrapping Interface").GetComponent<ScrappingHandler>();
         //StaticVariables.arrowHandler = canvas.Find("Arrows").GetComponent<AlertArrowHandler>();
 
         //Scene Handler

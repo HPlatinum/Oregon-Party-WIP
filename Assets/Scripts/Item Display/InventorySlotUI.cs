@@ -19,7 +19,7 @@ public class InventorySlotUI : MonoBehaviour {
     //private Transform itemModelParent;
     private DisplayItem displayItem;
     private Vector2 originalModelParentPos;
-    public enum OnClickEffect { ItemDetails, CookingInterface }
+    public enum OnClickEffect { ItemDetails, CookingInterface, ScrappingInterface }
     public OnClickEffect clickEffect = OnClickEffect.ItemDetails;
     
     //set the method to call when clicked         private 
@@ -76,6 +76,10 @@ public class InventorySlotUI : MonoBehaviour {
         }
         if (clickEffect == OnClickEffect.CookingInterface) {
             StaticVariables.cookingHandler.ClickedRawFood(item, quantity);
+            return;
+        }
+        if (clickEffect == OnClickEffect.ScrappingInterface) {
+            StaticVariables.scrappingHandler.ClickedScrappableItem(item, quantity);
             return;
         }
     }

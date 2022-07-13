@@ -170,6 +170,28 @@ public class Inventory : ScriptableObject
         return result;
     }
 
+    public List<(Item, int)> GetListOfAllItemsAndTheirQuantity() {
+        List<(Item, int)> result = new List<(Item, int)>();
+        for (int i = 0; i < inventorySlots.Count; i++) {
+            Item itemInSlot = inventorySlots[i].item;
+            int quantityInSlot = inventorySlots[i].quantity;
+            //if the item is already in the list, increase the item quantity
+            bool foundInListAlready = false;
+            for (int j =0; j<result.Count; j++) {
+                if (result[j].Item1 == itemInSlot) {
+                    int newQuantity = result[j].Item2 + quantityInSlot;
+                    result[j] = (result[j].Item1, newQuantity);
+                    foundInListAlready = true;
+                }
+            }
+            //otherwise, add the item to the end of the list
+            if (!foundInListAlready) {
+                result.Add((itemInSlot, quantityInSlot));
+            }
+        }
+        return result;
+    }
+
     public void RemoveItemFromInventory(Item item, int quantity) {
         ShowItemQuantityChangeInUI(item, -quantity);
 

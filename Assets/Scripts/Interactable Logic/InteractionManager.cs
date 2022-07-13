@@ -227,6 +227,8 @@ public class InteractionManager : MonoBehaviour {
                 return StaticVariables.beaverHandler;
             case (Interactable.InteractTypes.Vehicle):
                 return StaticVariables.vehicleHandler;
+            case (Interactable.InteractTypes.Scrapping):
+                return StaticVariables.scrappingHandler;
         }
         return null;
     }

@@ -49,6 +49,28 @@ public class CompactInventory : MonoBehaviour {
         return itemData;
     }
 
+    public List<(Item, int)> DisplayAllItemsFromInventory(Inventory inventory) {
+        List<(Item, int)> itemData = inventory.GetListOfAllItemsAndTheirQuantity();
+        foreach ((Item, int) tuple in itemData) {
+            Item item = tuple.Item1;
+            int quantity = tuple.Item2;
+            
+            GameObject newSlot = Instantiate(inventorySpacePrefab);
+            SetupInstanceTransform(newSlot);
+
+            InventorySlotUI s = newSlot.GetComponent<InventorySlotUI>();
+            s.Setup();
+            s.AddItemToInventorySlot(item);
+            s.DisplayItemQuantity(quantity);
+            s.clickEffect = onClick;
+        }
+
+        if (itemData.Count > 0)
+            StartCoroutine(StaticVariables.AnimateChildObjectsAppearing(inventoryParent));
+
+        return itemData;
+    }
+
     private void SetupInstanceTransform(GameObject obj) {
         obj.transform.SetParent(inventoryParent);
         obj.transform.localScale = new Vector3(1, 1, 1);

@@ -27,6 +27,7 @@ public class StaticVariables
     static public InteractionHandler currentInteractionHandler;
     static public FishingHandler fishingHandler;
     static public CookingHandler cookingHandler;
+    static public ScrappingHandler scrappingHandler;
     static public PickupHandler pickupHandler;
     static public WoodcuttingHandler woodcuttingHandler;
     static public WoodpileHandler woodpileHandler;
