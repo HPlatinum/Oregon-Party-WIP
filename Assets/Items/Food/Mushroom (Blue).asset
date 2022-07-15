@@ -14,9 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Blue Mushroom
   type: 2
+  weaponType: 0
   defaultItem: 0
   description: A blue mushroom. Is it edible?
   stackLimit: 10
+  woodScrapReturn: 0
+  metalScrapReturn: 0
   model: {fileID: 7659223428969053586, guid: 29f732a68bd4c484287590d61586dd4f, type: 3}
   modelScale: 460
   modelRotation: {x: 0, y: 0, z: 0}
@@ -25,3 +28,9 @@ MonoBehaviour:
   inHandRotation: {x: 0, y: 0, z: 0}
   inHandScale: 1
   useRightHand: 0
+  inBeaverHandPosition: {x: 0, y: 0, z: 0}
+  inBeaverHandRotation: {x: 0, y: 0, z: 0}
+  inBeaverHandScale: 1
+  useBeaverRightHand: 0
+  itemTier: 0
+  foodScrapReturn: 1

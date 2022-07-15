@@ -15,6 +15,9 @@ public class Item : ScriptableObject {
     [TextArea(15,20)]
     public string description;
     public int stackLimit = 1;
+    public int woodScrapReturn = 0;
+    public int metalScrapReturn  = 0;
+    public int foodScrapReturn = 0;
 
     [Header("Item Details Model")]
     public GameObject model = null;

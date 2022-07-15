@@ -9,15 +9,22 @@ public class ScrappingHandler : InteractionHandler
     private Transform selectedInterface;
     private Transform quantitySliderTransform;
     private Item currentlySelectedItem;
+    private Text quantitySliderText;
+    private int currentlySelectedItemQuantity;
     private Slider quantitySlider;
     private GameObject background;
+    private GameObject commitButton;
     private CompactInventory selectionCompactInventory;
     private CompactInventory selectedCompactInventory;
     private List<(Item, int)> allScrappableItems;
+    private List<(Item, int)> allSelectedItems;
     private bool showUI;
     private bool updateSelectedInventory;
     // private List<(Item, int)> selectedItems;
     public Inventory scrapInventory;
+    public Item foodScraps;
+    public Item metalScraps;
+    public Item woodScraps;
 
     #region Overrides
     public override void ProcessInteractAction() {
@@ -44,20 +51,15 @@ public class ScrappingHandler : InteractionHandler
         yield return HideAllUI();
         background.SetActive(true);
         selectionInterface.gameObject.SetActive(true);
-        selectedInterface.gameObject.SetActive(true);
         yield return StaticVariables.AnimateChildObjectsAppearing(selectionInterface);
+        selectedInterface.gameObject.SetActive(true);
+        yield return StaticVariables.AnimateChildObjectsAppearing(selectedInterface);
         
         DisplayScrappableItemsFromInventory();
 
         yield return null;
     }
 
-
-    public void QuitSelectionUI() {
-        StaticVariables.currentInteractionHandler = null;
-        StaticVariables.PlayAnimation("Cooking - Stand");
-        StartCoroutine(ReturnToMainUI());
-    }
 
     private IEnumerator ReturnToMainUI() {
         yield return HideAllUI();
@@ -67,21 +69,25 @@ public class ScrappingHandler : InteractionHandler
 
     private IEnumerator HideAllUI() {
 
-        if (selectionInterface.gameObject.activeSelf)
-            yield return StaticVariables.AnimateChildObjectsDisappearing(selectionInterface, true);
-
-        else if (selectedInterface.gameObject.activeSelf)
+        if (selectionInterface.gameObject.activeSelf) {
+            yield return StaticVariables.AnimateChildObjectsDisappearing(selectionInterface, false);
+        }
+        if (selectedInterface.gameObject.activeSelf) {
             yield return StaticVariables.AnimateChildObjectsDisappearing(selectedInterface, true);
-        
+        }        
         yield return null;
     }
 
+    // public void QuitSelectionUI() {
+    //     StaticVariables.currentInteractionHandler = null;
+    //     StaticVariables.PlayAnimation("Cooking - Stand");
+    //     StartCoroutine(ReturnToMainUI());
+    // }
+
     public void QuitScrappingUI() {
-        StartCoroutine(ShowSelectionUI());
+        TransferAnyRemainingItemsBackToPlayerInventory();
+        StartCoroutine(ReturnToMainUI());
         ResetLocalVariables();
-        // cookableItem = null;
-        // cookableItemTotalQuantity = -1;
-        // allowedCookableQuantities = null;
     }
 
     private void DisplayScrappableItemsFromInventory() {
@@ -89,17 +95,15 @@ public class ScrappingHandler : InteractionHandler
         InventorySlotUI.OnClickEffect onClick = InventorySlotUI.OnClickEffect.ScrappingInterface;
         string inventoryTitle = "Scrappable Items";
         selectionCompactInventory.SetupValues(onClick, inventoryTitle);
-        selectionCompactInventory.ClearAllItemDisplay();
         allScrappableItems = selectionCompactInventory.DisplayAllItemsFromInventory(inventory);
     }
 
     private void DisplaySelectedItemsFromInventory() {
         Inventory inventory = scrapInventory;
-        InventorySlotUI.OnClickEffect onClick = InventorySlotUI.OnClickEffect.ScrappingInterface;
+        InventorySlotUI.OnClickEffect onClick = InventorySlotUI.OnClickEffect.ScrappingInterfaceReturnItem;
         string inventoryTitle = "Selected Items";
         selectedCompactInventory.SetupValues(onClick, inventoryTitle);
-        selectedCompactInventory.ClearAllItemDisplay();
-        allScrappableItems = selectionCompactInventory.DisplayAllItemsFromInventory(inventory);
+        allSelectedItems = selectedCompactInventory.DisplayAllItemsFromInventory(inventory);
     }
 
     #endregion
@@ -125,8 +129,10 @@ public class ScrappingHandler : InteractionHandler
             DisplaySelectedItemsFromInventory();
             updateSelectedInventory = false;
         }
+        if(quantitySlider.gameObject.activeSelf && quantitySliderText.text != quantitySlider.value.ToString()) {
+            quantitySliderText.text = quantitySlider.value.ToString();
+        }
     }
-
     private bool ShouldScrappingUIBeShown() {
         return showUI;
     }
@@ -140,37 +146,98 @@ public class ScrappingHandler : InteractionHandler
         updateSelectedInventory = false;
         background = transform.Find("Background").gameObject;
 
+        commitButton = transform.Find("MoveMultiple").Find("Commit Selected").gameObject;
         selectionInterface = transform.Find("Selection");
         selectionCompactInventory = selectionInterface.Find("Compact Inventory").GetComponent<CompactInventory>();
         selectedInterface = transform.Find("Selected");
         selectedCompactInventory = selectedInterface.Find("Compact Inventory").GetComponent<CompactInventory>();
-        quantitySliderTransform = selectionInterface.Find("Quantity Slider");
+        quantitySliderTransform = transform.Find("MoveMultiple").Find("Quantity Slider");
         quantitySlider = quantitySliderTransform.GetComponent<Slider>();
+        quantitySliderText = quantitySlider.transform.Find("Handle Slide Area").Find("Handle").Find("Quantity").GetComponent<Text>();
         allScrappableItems = null;
         // selectedItems = new List();
     }
 
     private void ResetLocalVariables() {
-        scrapInventory = new Inventory();
+        
+        scrapInventory.ClearInventory();
         allScrappableItems = null;
-        // selectedItems = new List();
+        allSelectedItems = null;
     }
 
     public void ClickedScrappableItem(Item item, int quantity) {
         currentlySelectedItem = item;
+        currentlySelectedItemQuantity = quantity;
         if(quantity > 1) {
             //pop up quantity UI;
             quantitySliderTransform.gameObject.SetActive(true);
+            commitButton.SetActive(true);
             quantitySlider.maxValue = quantity;
         }
-        //
-        print("Item " + item + " Quantity " + quantity);
+        else {
+            CommitSelectionToSelected();
+        }
     }
 
-    public void CommitSelection () {
-        int quantity = (int)quantitySlider.value;
+    public void CommitSelectionToSelected () {
+        int quantity;
+        commitButton.SetActive(false);
+        quantitySliderTransform.gameObject.SetActive(false);
+        if(currentlySelectedItemQuantity > 1) {
+            quantity = (int)quantitySlider.value;
+        }
+        else{
+            quantity = currentlySelectedItemQuantity;
+        }
         scrapInventory.AddItemToInventory(currentlySelectedItem, quantity);
         StaticVariables.playerInventory.RemoveItemFromInventory(currentlySelectedItem, quantity);
+        ClearBothItemDisplays();
+        StaticVariables.WaitTimeThenCallFunction(.25f, CallSelecttedInventoryUpdate);
+    }
+    
+    public void CommitSelectedBackToSelection (Item item, int quantity) {
+        currentlySelectedItem = item;
+        currentlySelectedItemQuantity = quantity;
+        StaticVariables.playerInventory.AddItemToInventory(currentlySelectedItem, quantity);
+        scrapInventory.RemoveItemFromInventory(currentlySelectedItem, quantity);
+        ClearBothItemDisplays();
+        StaticVariables.WaitTimeThenCallFunction(.25f, CallSelecttedInventoryUpdate);
+    }
+
+    private void ClearBothItemDisplays() {
+        selectionCompactInventory.ClearAllItemDisplay();
+        selectedCompactInventory.ClearAllItemDisplay();
+    }
+    public void CallSelecttedInventoryUpdate() {
         updateSelectedInventory = true;
+    }
+
+    public void TransferAnyRemainingItemsBackToPlayerInventory() {
+        List <(Item, int)> remainingItems = scrapInventory.GetListOfAllItemsAndTheirQuantity();
+        if(remainingItems.Count > 0) {
+            foreach((Item, int) items in remainingItems) {
+                StaticVariables.playerInventory.AddItemToInventory(items.Item1, items.Item2);
+            }
+        }
+    }
+
+    public void ScrapAllItems() {
+        List <(Item, int)> remainingItems = scrapInventory.GetListOfAllItemsAndTheirQuantity();
+        if(remainingItems.Count > 0) {
+            foreach((Item, int) items in remainingItems) {
+                if(items.Item1.type == ItemType.Food || items.Item1.type == ItemType.RawFood) {
+                    StaticVariables.playerInventory.AddItemToInventory(foodScraps, items.Item2);
+                }
+                else {
+                    if(items.Item1.metalScrapReturn > 0) {
+                        StaticVariables.playerInventory.AddItemToInventory(metalScraps, items.Item2);
+                    }
+                    if(items.Item1.woodScrapReturn > 0) {
+                        StaticVariables.playerInventory.AddItemToInventory(woodScraps, items.Item2);
+                    }
+                }
+            }
+        }
+        QuitScrappingUI();
     }
 }

@@ -86,6 +86,7 @@ public class CompactInventory : MonoBehaviour {
 
     public void ClearAllItemDisplay() {
         foreach (Transform t in inventoryParent) {
+            print(t.name);
             GameObject.Destroy(t.gameObject);
         }
     }

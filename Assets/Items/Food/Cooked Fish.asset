@@ -14,9 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Fish
   type: 2
+  weaponType: 0
   defaultItem: 0
   description: It's a cooked fish.
   stackLimit: 10
+  woodScrapReturn: 0
+  metalScrapReturn: 0
   model: {fileID: 6277289769389393030, guid: 481d5d31baa40534598d3f707402a4f3, type: 3}
   modelScale: 397.4
   modelRotation: {x: -90, y: 0, z: 150}
@@ -25,3 +28,9 @@ MonoBehaviour:
   inHandRotation: {x: 0, y: 0, z: 0}
   inHandScale: 1
   useRightHand: 0
+  inBeaverHandPosition: {x: 0, y: 0, z: 0}
+  inBeaverHandRotation: {x: 0, y: 0, z: 0}
+  inBeaverHandScale: 1
+  useBeaverRightHand: 0
+  itemTier: 0
+  foodScrapReturn: 1

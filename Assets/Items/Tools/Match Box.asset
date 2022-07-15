@@ -14,9 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Match Box
   type: 5
+  weaponType: 0
   defaultItem: 0
   description: You can light a campfire with these.
   stackLimit: 1
+  woodScrapReturn: 1
+  metalScrapReturn: 0
   model: {fileID: 1686587314687638, guid: 2f39ccad70fd9064ba784d02f14f2604, type: 3}
   modelScale: 800
   modelRotation: {x: 80, y: 180, z: 30}
@@ -25,5 +28,10 @@ MonoBehaviour:
   inHandRotation: {x: -21.538, y: 85.549, z: -146.085}
   inHandScale: 1
   useRightHand: 0
-  wear: 0
+  inBeaverHandPosition: {x: 0, y: 0, z: 0}
+  inBeaverHandRotation: {x: 0, y: 0, z: 0}
+  inBeaverHandScale: 1
+  useBeaverRightHand: 0
+  itemTier: 0
+  initialWear: 0
   toolType: 3

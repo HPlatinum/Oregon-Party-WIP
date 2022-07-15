@@ -14,11 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Raw Fish
   type: 8
+  weaponType: 0
   defaultItem: 0
   description: 'It''s a dead fish.
 
     Probably not safe to eat, but you can try.'
   stackLimit: 10
+  woodScrapReturn: 0
+  metalScrapReturn: 0
   model: {fileID: 6277289769389393030, guid: 2925f2ed5b723a144a2a4e54ea841733, type: 3}
   modelScale: 397.4
   modelRotation: {x: -90, y: 0, z: 150}
@@ -27,4 +30,10 @@ MonoBehaviour:
   inHandRotation: {x: 0, y: 0, z: 0}
   inHandScale: 1
   useRightHand: 0
+  inBeaverHandPosition: {x: 0, y: 0, z: 0}
+  inBeaverHandRotation: {x: 0, y: 0, z: 0}
+  inBeaverHandScale: 1
+  useBeaverRightHand: 0
+  itemTier: 0
   cookedVariant: {fileID: 11400000, guid: 27f3ac5b590540f458389f9cbb3cff57, type: 2}
+  foodScrapReturn: 1

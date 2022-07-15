@@ -13,4 +13,10 @@ MonoBehaviour:
   m_Name: ScrapInventory
   m_EditorClassIdentifier: 
   size: 50
-  inventorySlots: []
+  inventorySlots:
+  - item: {fileID: 11400000, guid: a3890dec7bcfea34cb2fbdf6ff415ed0, type: 2}
+    quantity: 1
+    itemGameObject: {fileID: 6277289769389393030, guid: 2925f2ed5b723a144a2a4e54ea841733, type: 3}
+  - item: {fileID: 11400000, guid: 986140a3ffd18ba43903db0400934127, type: 2}
+    quantity: 1
+    itemGameObject: {fileID: 1686587314687638, guid: 2f39ccad70fd9064ba784d02f14f2604, type: 3}

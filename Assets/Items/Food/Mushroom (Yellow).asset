@@ -14,9 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Yellow Mushroom
   type: 2
+  weaponType: 0
   defaultItem: 0
   description: A yellow mushroom. Is it edible?
   stackLimit: 10
+  woodScrapReturn: 0
+  metalScrapReturn: 0
   model: {fileID: 1709398548091387718, guid: d3fd504b3274708408687c6716196451, type: 3}
   modelScale: 460
   modelRotation: {x: 0, y: 0, z: 0}
@@ -25,3 +28,9 @@ MonoBehaviour:
   inHandRotation: {x: 0, y: 0, z: 0}
   inHandScale: 1
   useRightHand: 0
+  inBeaverHandPosition: {x: 0, y: 0, z: 0}
+  inBeaverHandRotation: {x: 0, y: 0, z: 0}
+  inBeaverHandScale: 1
+  useBeaverRightHand: 0
+  itemTier: 0
+  foodScrapReturn: 1
