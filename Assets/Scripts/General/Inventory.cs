@@ -24,7 +24,7 @@ public class Inventory : ScriptableObject
     }
 
 
-    public void AddItemToInventory(Item item, int pickedUpItemQuantity, bool showChangeAmount = true) {
+    public virtual void AddItemToInventory(Item item, int pickedUpItemQuantity, bool showChangeAmount = true) {
         if (showChangeAmount)
             ShowItemQuantityChangeInUI(item, pickedUpItemQuantity);
 
@@ -45,6 +45,22 @@ public class Inventory : ScriptableObject
         // adds item & quantity to new InventorySlot
         AddItemToNewSlot(item, pickedUpItemQuantity, item.model);
     }
+
+    public virtual void AddItemToInventorySilently(Item item, int quantity) {
+        int totalQuantity = GetTotalItemQuantity(item);
+        int diff = totalQuantity - quantity;
+        if (diff < 0) {
+            Debug.Log("trying to remove too many items.");
+            return;
+        }
+
+        //remove all of item
+        RemoveAllOfItem(item);
+
+        //add in the new amount you want
+        if (diff > 0)
+            AddItemToInventory(item, diff, false);
+    }
     
     public bool CanAddItemToInventory(Item item, int quantity) {
         //do you have open inventory space?
@@ -62,7 +78,7 @@ public class Inventory : ScriptableObject
         return false;
     }
 
-    private int GetQuantityInSlot(int inventorySlotPosition) {
+    public int GetQuantityInSlot(int inventorySlotPosition) {
         return inventorySlots[inventorySlotPosition].quantity;
     }
 
@@ -76,15 +92,15 @@ public class Inventory : ScriptableObject
         return totalQuantity;
     }
 
-    private bool WouldAddingQuantityOverfillSlot(int slotNumber, int quantity) {
+    public bool WouldAddingQuantityOverfillSlot(int slotNumber, int quantity) {
         return inventorySlots[slotNumber].quantity + quantity > inventorySlots[slotNumber].item.stackLimit;
     }
 
-    private bool PickedUpQuantityIsLessThanOrEqualToStackLimit(int slotNumber, int quantity) {
+    public bool PickedUpQuantityIsLessThanOrEqualToStackLimit(int slotNumber, int quantity) {
         return inventorySlots[slotNumber].quantity + quantity <= inventorySlots[slotNumber].item.stackLimit;
     }
 
-    private bool IsSlotFull(int slotNumber) {
+    public bool IsSlotFull(int slotNumber) {
         return inventorySlots[slotNumber].quantity < inventorySlots[slotNumber].item.stackLimit;
     }
 
@@ -92,42 +108,42 @@ public class Inventory : ScriptableObject
         return (!(inventorySlots.Count < (int) size));
     }
 
-    private bool IsItemAlreadyInSlot(int slotNumber, Item item) {
+    public bool IsItemAlreadyInSlot(int slotNumber, Item item) {
         return inventorySlots[slotNumber].item == item;
     }
 
-    private void SetSlotQuantityToStackLimit(int slotNumber) {
+    public void SetSlotQuantityToStackLimit(int slotNumber) {
         inventorySlots[slotNumber].quantity = inventorySlots[slotNumber].item.stackLimit;
     }
 
-    private void AddQuantityToSlot(int slotNumber, int quantity) {
+    public void AddQuantityToSlot(int slotNumber, int quantity) {
         inventorySlots[slotNumber].AddQuantity(quantity);
         OnItemChangedCheckIfCallbackNeeded();
     }
 
-    private void OnItemChangedCheckIfCallbackNeeded() {
+    public void OnItemChangedCheckIfCallbackNeeded() {
         if(CheckIfInventoryIsPlayerInventory()) {
             onItemChangedCallback.Invoke();
         }
     }
 
-    private void ShowItemQuantityChangeInUI(Item item, int quantity) {
+    public void ShowItemQuantityChangeInUI(Item item, int quantity) {
         if(CheckIfInventoryIsPlayerInventory()) {
             StaticVariables.mainUI.ShowItemQuantityChange(item, quantity);
         }
     }
 
-    private bool CheckIfInventoryIsPlayerInventory() {
+    public bool CheckIfInventoryIsPlayerInventory() {
         return inventorySlots == StaticVariables.playerInventory.inventorySlots;
     }
 
-    private void AddItemToNewSlot(Item item, int quantity, GameObject newGameObject) { 
+    public void AddItemToNewSlot(Item item, int quantity, GameObject newGameObject) { 
         inventorySlots.Add(new InventorySlot(item, quantity, newGameObject));
         OnItemChangedCheckIfCallbackNeeded();
         //ShowItemQuantityChangeInUI(item, quantity);
     }
 
-    private int RemainingItemQuantity(int slotNumber, int quantity) {
+    public int RemainingItemQuantity(int slotNumber, int quantity) {
         return inventorySlots[slotNumber].quantity + quantity - inventorySlots[slotNumber].item.stackLimit;
     }
 
@@ -192,9 +208,25 @@ public class Inventory : ScriptableObject
         return result;
     }
 
-    public void RemoveItemFromInventory(Item item, int quantity) {
+    public virtual void RemoveItemFromInventory(Item item, int quantity) {
         ShowItemQuantityChangeInUI(item, -quantity);
 
+        int totalQuantity = GetTotalItemQuantity(item);
+        int diff = totalQuantity - quantity;
+        if (diff < 0) {
+            Debug.Log("trying to remove too many items.");
+            return;
+        }
+
+        //remove all of item
+        RemoveAllOfItem(item);
+
+        //add in the new amount you want
+        if (diff > 0)
+            AddItemToInventory(item, diff, false);
+    }
+
+    public virtual void RemoveItemFromInventorySilently(Item item, int quantity) {
         int totalQuantity = GetTotalItemQuantity(item);
         int diff = totalQuantity - quantity;
         if (diff < 0) {

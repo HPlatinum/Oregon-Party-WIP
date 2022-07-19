@@ -9,14 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db44ff85c2ce5624daffcb327f9a1c9f, type: 3}
+  m_Script: {fileID: 11500000, guid: 8d045c41804c55645abb2320fde719d7, type: 3}
   m_Name: ScrapInventory
   m_EditorClassIdentifier: 
-  size: 50
-  inventorySlots:
-  - item: {fileID: 11400000, guid: a3890dec7bcfea34cb2fbdf6ff415ed0, type: 2}
-    quantity: 1
-    itemGameObject: {fileID: 6277289769389393030, guid: 2925f2ed5b723a144a2a4e54ea841733, type: 3}
-  - item: {fileID: 11400000, guid: 986140a3ffd18ba43903db0400934127, type: 2}
-    quantity: 1
-    itemGameObject: {fileID: 1686587314687638, guid: 2f39ccad70fd9064ba784d02f14f2604, type: 3}
+  size: 0
+  inventorySlots: []

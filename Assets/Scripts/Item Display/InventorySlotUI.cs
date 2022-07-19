@@ -79,7 +79,7 @@ public class InventorySlotUI : MonoBehaviour {
             return;
         }
         if (clickEffect == OnClickEffect.ScrappingInterface) {
-            StaticVariables.scrappingHandler.ClickedScrappableItem(item, quantity);
+            StaticVariables.scrappingHandler.ClickedScrappableItem(item, quantity, this.gameObject);
             return;
         }
         if(clickEffect == OnClickEffect.ScrappingInterfaceReturnItem) {

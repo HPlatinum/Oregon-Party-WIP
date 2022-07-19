@@ -100,8 +100,7 @@ public class CookingHandler : InteractionHandler {
     }
 
     public void QuitSelectionUI() {
-        StaticVariables.currentInteractionHandler = null;
-        StaticVariables.PlayAnimation("Cooking - Stand");
+        StaticVariables.PlayAnimation("Scrapping - Exit");
         StartCoroutine(ReturnToMainUI());
     }
 
