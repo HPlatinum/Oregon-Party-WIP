@@ -9,13 +9,14 @@ public class ScrappingHandler : InteractionHandler
     private Transform selectedInterface;
     private Transform quantitySliderTransform;
     private Transform scrapReturnQuantityTransform;
+    private Transform quantitySelectionHolder;
     private Item currentlySelectedItem;
     private Text quantitySliderText;
     private int currentlySelectedItemQuantity;
     private Slider quantitySlider;
     private GameObject background;
     private GameObject scrapButton;
-    private GameObject commitButton;
+    private Transform commitButton;
     private CompactInventory selectionCompactInventory;
     private CompactInventory selectedCompactInventory;
     private List<(Item, int)> allScrappableItems;
@@ -25,6 +26,8 @@ public class ScrappingHandler : InteractionHandler
     private bool showUI;
     private bool updateSelectedInventory;
     private bool animateQuantityPanelIsRunning;
+    private bool animateCommitDisappearIsRunning;
+    private bool animateCommitAppearIsRunning;
     // private List<(Item, int)> selectedItems;
     public Inventory scrapInventory;
     public Item foodScraps;
@@ -153,6 +156,7 @@ public class ScrappingHandler : InteractionHandler
             DisplayScrappableItemsFromInventory();
             DisplaySelectedItemsFromInventory();
             DisplayScrapReturnQuantities();
+            StartCoroutine(AnimateCommitButtonDisappearing());
             
         }
         if(quantitySlider.gameObject.activeSelf && quantitySliderText.text != quantitySlider.value.ToString()) {
@@ -171,14 +175,17 @@ public class ScrappingHandler : InteractionHandler
         showUI = false;
         updateSelectedInventory = false;
         animateQuantityPanelIsRunning = false;
+        animateCommitDisappearIsRunning = false;
+        animateCommitAppearIsRunning = false;
         background = transform.Find("Background").gameObject;
         scrapButton = transform.Find("Scrap Contents").gameObject;
-        commitButton = transform.Find("MoveMultiple").Find("Commit Selected").gameObject;
+        commitButton = transform.Find("MoveMultiple").Find("Commit Selected");
         selectionInterface = transform.Find("Selection");
         selectionCompactInventory = selectionInterface.Find("Compact Inventory").GetComponent<CompactInventory>();
         selectedInterface = transform.Find("Selected");
         selectedCompactInventory = selectedInterface.Find("Compact Inventory").GetComponent<CompactInventory>();
-        quantitySliderTransform = transform.Find("MoveMultiple").Find("Quantity Slider");
+        quantitySelectionHolder = transform.Find("MoveMultiple");
+        quantitySliderTransform = quantitySelectionHolder.Find("Quantity Slider");
         scrapReturnQuantityTransform = transform.Find("Scrap Return Quantity");
         quantitySlider = quantitySliderTransform.GetComponent<Slider>();
         quantitySliderText = quantitySlider.transform.Find("Handle Slide Area").Find("Handle").Find("Quantity").GetComponent<Text>();
@@ -197,8 +204,7 @@ public class ScrappingHandler : InteractionHandler
         allSelectedItems = null;
     }
 
-    public void ClickedScrappableItem(Item item, int quantity, GameObject slot) {
-        print(slot.name);
+    public void ClickedScrappableItem(Item item, int quantity) {
         if(currentlySelectedItem == item) {
             CommitAllSelectionToSelected(quantity);
             return;
@@ -207,8 +213,7 @@ public class ScrappingHandler : InteractionHandler
         currentlySelectedItemQuantity = quantity;
         if(quantity > 1) {
             //pop up quantity UI;
-            quantitySliderTransform.gameObject.SetActive(true);
-            commitButton.SetActive(true);
+            StartCoroutine(AnimateCommitButtonAppearing());
             quantitySlider.value = 1;
             quantitySlider.maxValue = quantity;
         }
@@ -219,8 +224,6 @@ public class ScrappingHandler : InteractionHandler
 
     public void CommitSelectionToSelected() {
         int quantity;
-        commitButton.SetActive(false);
-        quantitySliderTransform.gameObject.SetActive(false);
         if(currentlySelectedItemQuantity > 1) {
             quantity = (int)quantitySlider.value;
         }
@@ -240,8 +243,6 @@ public class ScrappingHandler : InteractionHandler
     }
 
     public void CommitAllSelectionToSelected(int quantity) {
-        commitButton.SetActive(false);
-        quantitySliderTransform.gameObject.SetActive(false);
         scrapInventory.AddItemToInventory(currentlySelectedItem, quantity);
         StaticVariables.playerInventory.RemoveItemFromInventorySilently(currentlySelectedItem, quantity);
         ClearBothItemDisplays();
@@ -373,6 +374,55 @@ public class ScrappingHandler : InteractionHandler
             if (scrapReturnQuantityTransform.transform.localPosition == startPositionOfQuantityUI)
             {
                 scrapReturnQuantityTransform.gameObject.SetActive(false);
+                yield break;
+            }
+            yield return null;
+        }
+    }
+
+    private IEnumerator AnimateCommitButtonAppearing() {
+        animateCommitAppearIsRunning = true;
+        animateCommitDisappearIsRunning = false;
+        StaticVariables.WaitTimeThenCallFunction(.2f, AppearCommitButton);
+        float timeSinceStarted = 0f;
+        Vector3 selectionEndPosition = new Vector3(-500, 100, 0);
+        Vector3 selectedEndPosition = new Vector3(500, 100, 0);
+        while(true && !animateCommitDisappearIsRunning) {
+            timeSinceStarted += .15f * Time.deltaTime;
+            selectionInterface.transform.localPosition = Vector3.Lerp(selectionInterface.transform.localPosition, selectionEndPosition, timeSinceStarted);
+            selectedInterface.transform.localPosition = Vector3.Lerp(selectedInterface.transform.localPosition, selectedEndPosition, timeSinceStarted);
+            if (selectionInterface.transform.localPosition == selectionEndPosition)
+            {
+                animateCommitAppearIsRunning = false;
+                yield break;
+            }
+            yield return null;
+        }
+    }
+
+    private void AppearCommitButton() {
+        StartCoroutine(CallStaticVariableToAnimateCommit());
+    }
+
+    private IEnumerator CallStaticVariableToAnimateCommit() {
+        yield return StaticVariables.AnimateChildObjectsAppearing(quantitySelectionHolder);
+    }
+
+    private IEnumerator AnimateCommitButtonDisappearing() {
+        animateCommitDisappearIsRunning = true;
+        animateCommitAppearIsRunning = false;
+        commitButton.gameObject.SetActive(false);
+        quantitySliderTransform.gameObject.SetActive(false);
+        float timeSinceStarted = 0f;
+        Vector3 selectionEndPosition = new Vector3(-350, 100, 0);
+        Vector3 selectedEndPosition = new Vector3(350, 100, 0);
+        while(true && !animateCommitAppearIsRunning) {
+            timeSinceStarted += 1.2f *  Time.deltaTime;
+            selectionInterface.transform.localPosition = Vector3.Lerp(selectionInterface.transform.localPosition, selectionEndPosition, timeSinceStarted);
+            selectedInterface.transform.localPosition = Vector3.Lerp(selectedInterface.transform.localPosition, selectedEndPosition, timeSinceStarted);
+            if (selectionInterface.transform.localPosition == selectionEndPosition)
+            {
+                animateCommitDisappearIsRunning = false;
                 yield break;
             }
             yield return null;
