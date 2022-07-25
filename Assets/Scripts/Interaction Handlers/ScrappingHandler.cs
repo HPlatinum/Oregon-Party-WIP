@@ -10,12 +10,14 @@ public class ScrappingHandler : InteractionHandler
     private Transform quantitySliderTransform;
     private Transform scrapReturnQuantityTransform;
     private Transform quantitySelectionHolder;
+    private Transform closeButton;
     private Item currentlySelectedItem;
     private Text quantitySliderText;
     private int currentlySelectedItemQuantity;
     private Slider quantitySlider;
     private GameObject background;
     private GameObject scrapButton;
+    private RectTransform scrapButtonRectTransform;
     private Transform commitButton;
     private CompactInventory selectionCompactInventory;
     private CompactInventory selectedCompactInventory;
@@ -65,6 +67,7 @@ public class ScrappingHandler : InteractionHandler
         yield return StaticVariables.AnimateChildObjectsAppearing(selectionInterface);
         selectedInterface.gameObject.SetActive(true);
         yield return StaticVariables.AnimateChildObjectsAppearing(selectedInterface);
+        closeButton.gameObject.SetActive(true);
         
         DisplayScrappableItemsFromInventory();
 
@@ -105,6 +108,9 @@ public class ScrappingHandler : InteractionHandler
         if(commitButton.gameObject.activeSelf) {
             commitButton.gameObject.SetActive(false);
         }
+        closeButton.gameObject.SetActive(false);
+        // yield return AnimateScrapAllButtonDisappearing();
+        scrapButton.SetActive(false);
         yield return null;
     }
 
@@ -178,7 +184,9 @@ public class ScrappingHandler : InteractionHandler
         animateCommitDisappearIsRunning = false;
         animateCommitAppearIsRunning = false;
         background = transform.Find("Background").gameObject;
+        closeButton = transform.Find("Close");
         scrapButton = transform.Find("Scrap Contents").gameObject;
+        scrapButtonRectTransform = scrapButton.GetComponent<RectTransform>();
         commitButton = transform.Find("MoveMultiple").Find("Commit Selected");
         selectionInterface = transform.Find("Selection");
         selectionCompactInventory = selectionInterface.Find("Compact Inventory").GetComponent<CompactInventory>();
@@ -234,7 +242,7 @@ public class ScrappingHandler : InteractionHandler
         StaticVariables.playerInventory.RemoveItemFromInventorySilently(currentlySelectedItem, quantity);
         ClearBothItemDisplays();
         StaticVariables.WaitTimeThenCallFunction(.25f, CallSelecttedInventoryUpdate);
-        int endingXValue = 743;
+        int endingXValue = 800;
         Vector3 endPosition = new Vector3(endingXValue, 48, 0);
         if(scrapReturnQuantityTransform.localPosition != endPosition && !animateQuantityPanelIsRunning) {
             StartCoroutine(ShowQuantityUI());
@@ -247,7 +255,7 @@ public class ScrappingHandler : InteractionHandler
         StaticVariables.playerInventory.RemoveItemFromInventorySilently(currentlySelectedItem, quantity);
         ClearBothItemDisplays();
         StaticVariables.WaitTimeThenCallFunction(.25f, CallSelecttedInventoryUpdate);
-        int endingXValue = 743;
+        int endingXValue = 800;
         Vector3 endPosition = new Vector3(endingXValue, 48, 0);
         if(scrapReturnQuantityTransform.localPosition != endPosition && !animateQuantityPanelIsRunning) {
             StartCoroutine(ShowQuantityUI());
@@ -309,14 +317,14 @@ public class ScrappingHandler : InteractionHandler
         int woodScrapQuantity = 1;
         int foodScrapQuantity = 2;
         foreach(Transform child in scrapReturnQuantityTransform) {
-            if(child.name == "Scrap Quantity") {
-                child.GetComponent<Text>().text = ("M: " + scrapReturns[metalScrapQuantity]); 
+            if(child.name == "Metal Scrap Container") {
+                child.GetComponentInChildren<Text>().text = (scrapReturns[metalScrapQuantity].ToString()); 
             }
-            if(child.name == "Scrap Quantity (1)") {
-                child.GetComponent<Text>().text = ("W: " + scrapReturns[woodScrapQuantity]); 
+            if(child.name == "Wood Scrap Container") {
+                child.GetComponentInChildren<Text>().text = (scrapReturns[woodScrapQuantity].ToString()); 
             }
-            if(child.name == "Scrap Quantity (2)") {
-                child.GetComponent<Text>().text = ("F: " + scrapReturns[foodScrapQuantity]); 
+            if(child.name == "Food Scrap Container") {
+                child.GetComponentInChildren<Text>().text = (scrapReturns[foodScrapQuantity].ToString()); 
             }
         }
     }
@@ -348,10 +356,11 @@ public class ScrappingHandler : InteractionHandler
 
     private IEnumerator AnimateQuantityPanelAppearing() {
         animateQuantityPanelIsRunning = true;
+        // yield return AnimateScrapAllButtonAppearing();
         scrapButton.SetActive(true);
         scrapReturnQuantityTransform.gameObject.SetActive(true);
         float timeSinceStarted = 0f;
-        int endingXValue = 743;
+        int endingXValue = 800;
         Vector3 endPosition = new Vector3(endingXValue, 48, 0);
         while(true) {
             timeSinceStarted += Time.deltaTime;
@@ -366,7 +375,6 @@ public class ScrappingHandler : InteractionHandler
     }
     
     private IEnumerator AnimateQuantityPanelDisappearing() {
-        scrapButton.SetActive(false);
         float timeSinceStarted = 0f;
         while(true && !animateQuantityPanelIsRunning) {
             timeSinceStarted += Time.deltaTime;
@@ -428,4 +436,50 @@ public class ScrappingHandler : InteractionHandler
             yield return null;
         }
     }
+
+    // private IEnumerator AnimateScrapAllButtonAppearing() {
+    //     scrapButton.SetActive(true);
+    //     float timeSinceStarted = 0f;
+    //     while(true) {
+    //         timeSinceStarted += 1.2f *  Time.deltaTime;
+    //         scrapButton.transform.Rotate(0,0,90,Space.Self);
+    //         if (0 + timeSinceStarted > 3)
+    //         {
+    //             yield break;
+    //         }
+    //         yield return null;
+    //     }
+    // }
+
+    // private IEnumerator AnimateScrapAllButtonDisappearing() {
+    //     scrapButton.SetActive(false);
+    //     bool hasFinishedRun = true;
+    //     float timeSinceStarted = 0f;
+    //     Vector3 startSize = new Vector3 ( 1, 1, 1);
+    //     Vector3 midSize = new Vector3 (2,2,2);
+    //     Vector3 endSize = new Vector3(3, 3, 3);
+    //     Vector3 currentSize = new Vector3(1, 1, 1);
+    //     while(true) {
+    //         if(hasFinishedRun) {
+    //             timeSinceStarted += 1.2f *  Time.deltaTime;
+    //             int currentTime = 0;
+    //             currentSize.z = timeSinceStarted
+    //         scrapButtonRectTransform.localScale = currentSize.z = 
+    //         if (0 + timeSinceStarted > 3)
+    //         {
+    //             yield break;
+    //         }
+    //         yield return null;
+    //         }
+    //         timeSinceStarted += 1.2f *  Time.deltaTime;
+    //         int currentTime = 0;
+            
+    //         scrapButtonRectTransform.localScale = 
+    //         if (0 + timeSinceStarted > 3)
+    //         {
+    //             yield break;
+    //         }
+            
+    //     }
+    // }
 }

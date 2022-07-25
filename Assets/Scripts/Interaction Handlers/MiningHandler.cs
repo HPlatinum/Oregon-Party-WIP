@@ -266,12 +266,12 @@ public class MiningHandler : ToolHandler
     }
 
     private void DisableMeshes() {
-        collectableGameObject1.GetComponentInChildren<MeshCollider>().enabled = false;
-        collectableGameObject2.GetComponentInChildren<MeshCollider>().enabled = false;
-        collectableGameObject3.GetComponentInChildren<MeshCollider>().enabled = false;
-        collectableGameObject4.GetComponentInChildren<MeshCollider>().enabled = false;
-        collectableGameObject5.GetComponentInChildren<MeshCollider>().enabled = false;
-        collectableGameObject6.GetComponentInChildren<MeshCollider>().enabled = false;
+        collectableGameObject1.GetComponentInChildren<BoxCollider>().enabled = false;
+        collectableGameObject2.GetComponentInChildren<BoxCollider>().enabled = false;
+        collectableGameObject3.GetComponentInChildren<BoxCollider>().enabled = false;
+        collectableGameObject4.GetComponentInChildren<BoxCollider>().enabled = false;
+        collectableGameObject5.GetComponentInChildren<BoxCollider>().enabled = false;
+        collectableGameObject6.GetComponentInChildren<BoxCollider>().enabled = false;
     }
     private void CreateMiningCollectables() {
         System.Random rand = new System.Random();
