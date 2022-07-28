@@ -15,7 +15,7 @@ public class NPCInteractionManager : MonoBehaviour {
 
     //interaction state trackers
     public bool currentlyInteracting = false;
-    private bool interactAnimationStarted = false;
+    // private bool interactAnimationStarted = false;
 
     //transforms for the player's hands, to add held items to
     public Transform rightHand;
@@ -113,7 +113,7 @@ public class NPCInteractionManager : MonoBehaviour {
     }
 
     public void SetVariablesOnInteractAnimationEnd() {
-        interactAnimationStarted = false;
+        // interactAnimationStarted = false;
         currentlyInteracting = false;
         StaticVariables.controller.lockMovement = false;
         StaticVariables.controller.lockRotation = false;

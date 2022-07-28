@@ -25,6 +25,7 @@ public class AnimatedUIRemoval : MonoBehaviour {
     }
 
     private void FinishShrinking() {
+        print(gameObject.name + "here");
         transform.localScale = originalScale;
         gameObject.SetActive(false);
         HandleCompactInventoryRemoval();
