@@ -111,40 +111,70 @@ public class PlayerAttackManager : MonoBehaviour {
     }
 
     private void TurnOnWeaponTrail(){
-        if (StaticVariables.interactScript.objectInHand == null)
+        if (StaticVariables.interactScript.objectInHand == null){
             TurnOnWeaponTrailForFist();
-        else if (StaticVariables.interactScript.itemInHand.weaponType == WeaponType.Punch)
-            TurnOnWeaponTrailForFist();
-        else
-            TurnOnWeaponTrailForWeapon();
+            return;
+        }
+        switch (StaticVariables.interactScript.itemInHand.weaponType) {
+            case (WeaponType.Punch):
+                TurnOnWeaponTrailForFist();
+                return;
+            case (WeaponType.OneHandRight):
+                TurnOnWeaponTrailForOneHandedRight();
+                return;
+            case (WeaponType.TwoHand):
+                TurnOnWeaponTrailForTwoHanded();
+                return;
+        }
     }    
     
     private void TurnOffWeaponTrail(){
-        if (StaticVariables.interactScript.objectInHand == null)
+        if (StaticVariables.interactScript.objectInHand == null){
             TurnOffWeaponTrailForFist();
-        else if (StaticVariables.interactScript.itemInHand.weaponType == WeaponType.Punch)
-            TurnOffWeaponTrailForFist();
-        else
-            TurnOffWeaponTrailForWeapon();
+            return;
+        }
+        switch (StaticVariables.interactScript.itemInHand.weaponType) {
+            case (WeaponType.Punch):
+                TurnOffWeaponTrailForFist();
+                return;
+            case (WeaponType.OneHandRight):
+                TurnOffWeaponTrailForOneHandedRight();
+                return;
+            case (WeaponType.TwoHand):
+                TurnOffWeaponTrailForTwoHanded();
+                return;
+        }
     }
 
     private void TurnOnWeaponTrailForFist(){
         Transform weaponTrailTrans = StaticVariables.interactScript.rightHand.transform.Find("Weapon Trail - Hand(Clone)");
         if (weaponTrailTrans == null){
-            print("can't turn on the fist weapon trail, the 'Weapon Trail' object doesn't exist!");
+            print("can't turn on the fist weapon trail, the 'Weapon Trail - Hand(Clone)' object doesn't exist!");
             return;
         }
         weaponTrailTrans.gameObject.SetActive(true);
     }
 
-    private void TurnOnWeaponTrailForWeapon(){
+    private void TurnOnWeaponTrailForOneHandedRight(){
         if (StaticVariables.interactScript.objectInHand == null){
-            print("can't turn on a weapon trail... you don't have a weapon!");
+            print("can't turn on a one hand right weapon trail... you don't have a weapon!");
             return;
         }
-        Transform weaponTrailTrans = StaticVariables.interactScript.objectInHand.transform.Find("Weapon Trail");
+        Transform weaponTrailTrans = StaticVariables.interactScript.objectInHand.transform.Find("Weapon Trail - One-Handed Right");
         if (weaponTrailTrans == null){
-            print("can't turn on weapon trail, the 'Weapon Trail' object doesn't exist! Weapon is " + StaticVariables.interactScript.objectInHand.name);
+            print("can't turn on weapon trail, the 'Weapon Trail - One-Handed Right' object doesn't exist! Weapon is " + StaticVariables.interactScript.objectInHand.name);
+            return;
+        }
+        weaponTrailTrans.gameObject.SetActive(true);
+    }    
+    private void TurnOnWeaponTrailForTwoHanded(){
+        if (StaticVariables.interactScript.objectInHand == null){
+            print("can't turn on a one hand right weapon trail... you don't have a weapon!");
+            return;
+        }
+        Transform weaponTrailTrans = StaticVariables.interactScript.objectInHand.transform.Find("Weapon Trail - Two-Handed");
+        if (weaponTrailTrans == null){
+            print("can't turn on weapon trail, the 'Weapon Trail - Two-Handed' object doesn't exist! Weapon is " + StaticVariables.interactScript.objectInHand.name);
             return;
         }
         weaponTrailTrans.gameObject.SetActive(true);
@@ -153,24 +183,35 @@ public class PlayerAttackManager : MonoBehaviour {
     private void TurnOffWeaponTrailForFist(){
         Transform weaponTrailTrans = StaticVariables.interactScript.rightHand.transform.Find("Weapon Trail - Hand(Clone)");
         if (weaponTrailTrans == null){
-            print("can't turn off the fist weapon trail, the 'Weapon Trail' object doesn't exist!");
+            print("can't turn off the fist weapon trail, the 'Weapon Trail - Hand(Clone)' object doesn't exist!");
             return;
         }
         weaponTrailTrans.gameObject.SetActive(false);
     }
 
-    private void TurnOffWeaponTrailForWeapon(){
+    private void TurnOffWeaponTrailForOneHandedRight(){
         if (StaticVariables.interactScript.objectInHand == null){
-            print("can't turn off a weapon trail... you don't have a weapon!");
+            print("can't turn on a one hand right weapon trail... you don't have a weapon!");
             return;
         }
-        Transform weaponTrailTrans = StaticVariables.interactScript.objectInHand.transform.Find("Weapon Trail");
+        Transform weaponTrailTrans = StaticVariables.interactScript.objectInHand.transform.Find("Weapon Trail - One-Handed Right");
         if (weaponTrailTrans == null){
-            print("can't turn off weapon trail, the 'Weapon Trail' object doesn't exist! Weapon is " + StaticVariables.interactScript.objectInHand.name);
+            print("can't turn on weapon trail, the 'Weapon Trail - One-Handed Right' object doesn't exist! Weapon is " + StaticVariables.interactScript.objectInHand.name);
             return;
         }
         weaponTrailTrans.gameObject.SetActive(false);
-
+    }    
+    private void TurnOffWeaponTrailForTwoHanded(){
+        if (StaticVariables.interactScript.objectInHand == null){
+            print("can't turn on a one hand right weapon trail... you don't have a weapon!");
+            return;
+        }
+        Transform weaponTrailTrans = StaticVariables.interactScript.objectInHand.transform.Find("Weapon Trail - Two-Handed");
+        if (weaponTrailTrans == null){
+            print("can't turn on weapon trail, the 'Weapon Trail - Two-Handed' object doesn't exist! Weapon is " + StaticVariables.interactScript.objectInHand.name);
+            return;
+        }
+        weaponTrailTrans.gameObject.SetActive(false);
     }
     
 } 
