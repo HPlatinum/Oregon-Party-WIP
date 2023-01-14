@@ -24,6 +24,7 @@ public class PlayerAttackManager : MonoBehaviour {
 
     private void ProcessAttackAnimationEnding() {
         SetVariablesOnAttackAnimationEnd();
+        TurnOffWeaponTrail();
     }
 
     public void SetVariablesOnAttackAnimationEnd() {
@@ -42,10 +43,6 @@ public class PlayerAttackManager : MonoBehaviour {
             print("you can't attack, you are already attacking");
             return false;
         }
-        //if (StaticVariables.interactScript.objectInHand == null) {
-        //    print("you can't attack, you're not holding anything!");
-        //    return false;
-        //}
         return true;
     }
 
@@ -89,6 +86,7 @@ public class PlayerAttackManager : MonoBehaviour {
             return;
 
         currentlyAttacking = true;
+        TurnOnWeaponTrail();
         PlayWeaponAttackAnimation();
     }
 
@@ -111,4 +109,68 @@ public class PlayerAttackManager : MonoBehaviour {
 
         }
     }
+
+    private void TurnOnWeaponTrail(){
+        if (StaticVariables.interactScript.objectInHand == null)
+            TurnOnWeaponTrailForFist();
+        else if (StaticVariables.interactScript.itemInHand.weaponType == WeaponType.Punch)
+            TurnOnWeaponTrailForFist();
+        else
+            TurnOnWeaponTrailForWeapon();
+    }    
+    
+    private void TurnOffWeaponTrail(){
+        if (StaticVariables.interactScript.objectInHand == null)
+            TurnOffWeaponTrailForFist();
+        else if (StaticVariables.interactScript.itemInHand.weaponType == WeaponType.Punch)
+            TurnOffWeaponTrailForFist();
+        else
+            TurnOffWeaponTrailForWeapon();
+    }
+
+    private void TurnOnWeaponTrailForFist(){
+        Transform weaponTrailTrans = StaticVariables.interactScript.rightHand.transform.Find("Weapon Trail - Hand(Clone)");
+        if (weaponTrailTrans == null){
+            print("can't turn on the fist weapon trail, the 'Weapon Trail' object doesn't exist!");
+            return;
+        }
+        weaponTrailTrans.gameObject.SetActive(true);
+    }
+
+    private void TurnOnWeaponTrailForWeapon(){
+        if (StaticVariables.interactScript.objectInHand == null){
+            print("can't turn on a weapon trail... you don't have a weapon!");
+            return;
+        }
+        Transform weaponTrailTrans = StaticVariables.interactScript.objectInHand.transform.Find("Weapon Trail");
+        if (weaponTrailTrans == null){
+            print("can't turn on weapon trail, the 'Weapon Trail' object doesn't exist! Weapon is " + StaticVariables.interactScript.objectInHand.name);
+            return;
+        }
+        weaponTrailTrans.gameObject.SetActive(true);
+    }
+
+    private void TurnOffWeaponTrailForFist(){
+        Transform weaponTrailTrans = StaticVariables.interactScript.rightHand.transform.Find("Weapon Trail - Hand(Clone)");
+        if (weaponTrailTrans == null){
+            print("can't turn off the fist weapon trail, the 'Weapon Trail' object doesn't exist!");
+            return;
+        }
+        weaponTrailTrans.gameObject.SetActive(false);
+    }
+
+    private void TurnOffWeaponTrailForWeapon(){
+        if (StaticVariables.interactScript.objectInHand == null){
+            print("can't turn off a weapon trail... you don't have a weapon!");
+            return;
+        }
+        Transform weaponTrailTrans = StaticVariables.interactScript.objectInHand.transform.Find("Weapon Trail");
+        if (weaponTrailTrans == null){
+            print("can't turn off weapon trail, the 'Weapon Trail' object doesn't exist! Weapon is " + StaticVariables.interactScript.objectInHand.name);
+            return;
+        }
+        weaponTrailTrans.gameObject.SetActive(false);
+
+    }
+    
 } 
