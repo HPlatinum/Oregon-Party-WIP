@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class HealthAndSanityTracker : MonoBehaviour{
 
-    private int maxHealth;
-    private int maxSanity;
-    private int currentHealth;
-    private int currentSanity;
+    public int maxHealth;
+    public int maxSanity;
+    public int currentHealth;
+    public int currentSanity;
 
     private List<DangerObject> dangerObjects = new List<DangerObject>();
     private bool justDealtDamage = false;

@@ -73,7 +73,7 @@ public class CookingHandler : InteractionHandler {
 
     private IEnumerator ShowSelectionUI() {
 
-        yield return StaticVariables.mainUI.HideUI2();
+        yield return StaticVariables.mainUI.HideUIWithAnimation();
         yield return HideAllUI();
         background.SetActive(true);
         selectionInterface.gameObject.SetActive(true);
@@ -86,7 +86,7 @@ public class CookingHandler : InteractionHandler {
     }
 
     private IEnumerator ShowCookingUI(Item item, int quantity) {
-        yield return StaticVariables.mainUI.HideUI2();
+        yield return StaticVariables.mainUI.HideUIWithAnimation();
         yield return HideAllUI();
         background.SetActive(true);
         cookInterface.gameObject.SetActive(true);
@@ -107,7 +107,7 @@ public class CookingHandler : InteractionHandler {
     private IEnumerator ReturnToMainUI() {
         yield return HideAllUI();
         background.SetActive(false);
-        yield return StaticVariables.mainUI.ShowUI2();
+        yield return StaticVariables.mainUI.ShowUIWithAnimation();
     }
 
     private IEnumerator HideAllUI() {

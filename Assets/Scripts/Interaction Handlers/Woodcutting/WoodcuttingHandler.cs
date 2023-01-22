@@ -203,10 +203,10 @@ public class WoodcuttingHandler : ToolHandler
     }
 
     private IEnumerator HideMainUI() {
-        yield return StaticVariables.mainUI.HideUI2();
+        yield return StaticVariables.mainUI.HideUIWithAnimation();
     }
     private IEnumerator ShowMainUI() {
-        yield return StaticVariables.mainUI.ShowUI2();
+        yield return StaticVariables.mainUI.ShowUIWithAnimation();
     }
     public void CloseStartGameUINo() {
         StartCoroutine(CloseStartGameUIAnimate());

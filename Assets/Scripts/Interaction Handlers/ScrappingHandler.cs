@@ -61,7 +61,7 @@ public class ScrappingHandler : InteractionHandler
 
     private IEnumerator ShowSelectionUI() {
 
-        yield return StaticVariables.mainUI.HideUI2();
+        yield return StaticVariables.mainUI.HideUIWithAnimation();
         yield return HideAllUI();
         background.SetActive(true);
         selectionInterface.gameObject.SetActive(true);
@@ -90,7 +90,7 @@ public class ScrappingHandler : InteractionHandler
     private IEnumerator ReturnToMainUI() {
         yield return HideAllUI();
         background.SetActive(false);
-        yield return StaticVariables.mainUI.ShowUI2();
+        yield return StaticVariables.mainUI.ShowUIWithAnimation();
     }
 
     private IEnumerator HideAllUI() {

@@ -69,7 +69,7 @@ public class MiningHandler : ToolHandler
         FindBlade();
         StaticVariables.WaitTimeThenCallFunction(.6f, blade.EnableBlade);
         StaticVariables.WaitTimeThenCallFunction(2.5f, SetShowMiningUIToTrue);
-        StaticVariables.mainUI.HideUI2();
+        StaticVariables.mainUI.HideUIWithAnimation();
     }
 
     public override void ProcessInteractAnimationEnding() {
@@ -162,7 +162,7 @@ public class MiningHandler : ToolHandler
 
 
     public IEnumerator ShowMiningUI() {
-        yield return StaticVariables.mainUI.HideUI2();
+        yield return StaticVariables.mainUI.HideUIWithAnimation();
         ShowHitUI();
         uiParent.gameObject.SetActive(true);
         background.SetActive(true);
@@ -187,7 +187,7 @@ public class MiningHandler : ToolHandler
     private IEnumerator ReturnToMainUI() {
         yield return CloseFinishUI();
         background.SetActive(false);
-        yield return StaticVariables.mainUI.ShowUI2();
+        yield return StaticVariables.mainUI.ShowUIWithAnimation();
     }
 
     private IEnumerator ShowHitUI() {

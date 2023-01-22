@@ -135,7 +135,7 @@ public class FishingHandler : InteractionHandler {
     }
 
     private IEnumerator ShowFishingUI() {
-        yield return StaticVariables.mainUI.HideUI2();
+        yield return StaticVariables.mainUI.HideUIWithAnimation();
         uiParent.gameObject.SetActive(true);
         background.SetActive(true);
         yield return StaticVariables.AnimateChildObjectsAppearing(uiParent);
@@ -146,7 +146,7 @@ public class FishingHandler : InteractionHandler {
     private IEnumerator ReturnToMainUI() {
         yield return StaticVariables.AnimateChildObjectsDisappearing(uiParent);
         background.SetActive(false);
-        yield return StaticVariables.mainUI.ShowUI2();
+        yield return StaticVariables.mainUI.ShowUIWithAnimation();
     }
 
     private void RandomlyChooseStartingBobAmount() {

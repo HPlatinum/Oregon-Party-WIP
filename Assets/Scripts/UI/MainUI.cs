@@ -55,28 +55,26 @@ public class MainUI : MonoBehaviour {
 
     public void Pause() {
         pauseMenu.PauseGame();
-        HideUI();
+        HideUIWithoutAnimation();
     }
     
-    public void ShowUI() {
+    public void ShowUIWithoutAnimation() {
         foreach (Transform t in transform)
             t.gameObject.SetActive(true);
     }
 
-    public void HideUI() {
+    public void HideUIWithoutAnimation() {
         foreach (Transform t in transform)
             t.gameObject.SetActive(false);
     }
 
-    //new function, used for animated UI Pop-In and Pop-Out
-    public IEnumerator HideUI2() {
+    public IEnumerator HideUIWithAnimation() {
         if (transform.GetChild(0).gameObject.activeSelf)
             yield return StaticVariables.AnimateChildObjectsDisappearing(transform);
         yield return null;
     }
 
-    //new function, used for animated UI Pop-In and Pop-Out
-    public IEnumerator ShowUI2() {
+    public IEnumerator ShowUIWithAnimation() {
         yield return StaticVariables.AnimateChildObjectsAppearing(transform);
 
         //if there is not an item currently shown and there are some waiting to be shown, show them
@@ -114,15 +112,6 @@ public class MainUI : MonoBehaviour {
         attackSymbolSword.SetActive(false);
         attackDarkOverlay.SetActive(false);
     }
-
-    /*
-    public void HideAttackSymbols() {
-        //remove this if we always want to be able to attack, even if we have no weapon equipped
-        attackSymbolGun.SetActive(false);
-        attackSymbolSword.SetActive(false);
-        attackDarkOverlay.SetActive(true);
-    }
-    */
 
     public void ShowItemQuantityChange(Item item, int quantity) {
         if (currentlyShowingItemQuantity || !IsPauseButtonShowing()) { //if there is an item currently showing, or the main ui is hidden, add the new item to the queue instead

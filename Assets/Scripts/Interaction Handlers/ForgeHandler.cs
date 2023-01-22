@@ -84,7 +84,7 @@ public class ForgeHandler : InteractionHandler {
 
     private IEnumerator ShowForgeUI() {
 
-        yield return StaticVariables.mainUI.HideUI2();
+        yield return StaticVariables.mainUI.HideUIWithAnimation();
         background.SetActive(true);
         forgeUI.gameObject.SetActive(true);
 
@@ -110,7 +110,7 @@ public class ForgeHandler : InteractionHandler {
     private IEnumerator ReturnToMainUI() {
         yield return HideAllUI();
         background.SetActive(false);
-        yield return StaticVariables.mainUI.ShowUI2();
+        yield return StaticVariables.mainUI.ShowUIWithAnimation();
         if (metalForged > 0) {
             StaticVariables.playerInventory.AddItemToInventory(refinedMetalItem, metalForged);
             StaticVariables.playerInventory.RemoveAllOfItem(metalScrapItem);
