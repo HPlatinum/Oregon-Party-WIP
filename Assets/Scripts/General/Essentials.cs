@@ -11,9 +11,9 @@ public class Essentials : MonoBehaviour{
 
         //set up the player model and get the camera to follow it, then delete the player model setup object
         PlayerModelSetup pms = transform.Find("Player Model Setup").GetComponent<PlayerModelSetup>();
+        pms.CreatePlayerModelInstanceInScene();
         int maxHealth = pms.GetMaxHealth();
         int maxSanity = pms.GetMaxSanity();
-        pms.CreatePlayerModelInstanceInScene();
         pms.SetCameraToFollowPlayer();
         GameObject.Destroy(pms.gameObject);
 

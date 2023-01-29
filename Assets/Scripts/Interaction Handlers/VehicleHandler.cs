@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class VehicleHandler : InteractionHandler {
 
@@ -11,6 +12,7 @@ public class VehicleHandler : InteractionHandler {
         //fade the screen out
         //then jump to another scene
         print("you enter the car and leave");
+        SceneManager.LoadScene("Mushroom-Picking Minigame");
     }
 
     public override void ProcessInteractAnimationEnding() {

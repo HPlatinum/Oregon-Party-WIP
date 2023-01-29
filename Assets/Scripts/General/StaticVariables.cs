@@ -22,6 +22,7 @@ public class StaticVariables
     static public ItemDetails itemDetails;
     static public ToolHandler ToolHandler;
     static public HealthAndSanityTracker healthAndSanityTracker;
+    static public CharacterAppearanceData chosenCharactedAppearanceData;
 
     //interaction handlers
     static public InteractionHandler currentInteractionHandler;

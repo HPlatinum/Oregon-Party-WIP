@@ -6,14 +6,20 @@ using UnityEditor;
 public class PlayerModelSetup: MonoBehaviour
 {
     public GameObject fistWeaponTrailPrefab;
-    public GameObject[] playerModelOptions;
-    public int chosenModelOption;
-    public int chosenMaterialOption;
+    private GameObject[] playerModelOptions;
+    [Header("Character Override")]
+    public bool overrideSelectedCharacterWithThisOption = false;
+    public CharacterAppearanceData characterSelectionOverride;
 
     private GameObject playerModel;
 
+    private CharacterAppearanceData characterAppearanceData;
+    //private GameObject modelToUse;
+    //private int materialIndex;
+
     public void CreatePlayerModelInstanceInScene() {
-        GameObject chosenModel = playerModelOptions[chosenModelOption];
+        //SetOverrideCharacterModelReference();
+        SetCharacterAppearanceData();
 
         GameObject[] temp = GameObject.FindGameObjectsWithTag("Player");
         if (temp.Length != 1) {
@@ -26,14 +32,14 @@ public class PlayerModelSetup: MonoBehaviour
             GameObject playerSpawnPoint = temp[0];
 
             //create the new object
-            playerModel = GameObject.Instantiate(chosenModel);
+            playerModel = GameObject.Instantiate(characterAppearanceData.modelPrefab);
 
             //set the transforms
             playerModel.transform.SetParent(null);
             playerModel.transform.localPosition = playerSpawnPoint.transform.position;
 
             //set the model material
-            playerModel.GetComponent<PlayerReskinData>().UpdateMaterial(chosenMaterialOption);
+            playerModel.GetComponent<PlayerReskinData>().UpdateMaterial(characterAppearanceData.materialIndex);
 
             //add the punching weapon trail
             AddWeaponTrailToRightFist();
@@ -43,16 +49,45 @@ public class PlayerModelSetup: MonoBehaviour
         
     }
 
+    //private void SetOverrideCharacterModelReference(){
+    //    characterSelectionOverride.SetModelFromList(transform.Find("Player Models List").GetComponent<PlayerModelsList>().models);
+    //}
+
+    private void SetCharacterAppearanceData(){
+        //if we are overriding the player option with this predefined one, then use the predefined option
+        if (overrideSelectedCharacterWithThisOption){
+            characterAppearanceData = characterSelectionOverride;
+            characterAppearanceData.SetModelFromList(transform.Find("Player Models List").GetComponent<PlayerModelsList>().models);
+            //modelToUse = characterSelectionOverride.modelPrefab;
+            //materialIndex = characterSelectionOverride.materialIndex;
+        }
+
+        //if staticvariables does not have a chosen character option, then use the predefined one
+        else if (StaticVariables.chosenCharactedAppearanceData == null){
+            characterAppearanceData = characterSelectionOverride;
+            characterAppearanceData.SetModelFromList(transform.Find("Player Models List").GetComponent<PlayerModelsList>().models);
+        }
+
+        //otherwise, use the selected options from staticvariables
+        else{
+            characterAppearanceData = StaticVariables.chosenCharactedAppearanceData;
+            //modelToUse = StaticVariables.chosenCharactedAppearanceData.modelPrefab;
+            //materialIndex = StaticVariables.chosenCharactedAppearanceData.materialIndex;
+        }
+    }
+
+
+
     public void SetCameraToFollowPlayer() {
         transform.parent.Find("Virtual Follow Camera").GetComponent<Cinemachine.CinemachineVirtualCamera>().Follow = playerModel.transform;
     }
 
     public int GetMaxHealth() {
-        return playerModelOptions[chosenModelOption].GetComponent<CharacterStats>().maxHealth;
+        return characterAppearanceData.modelPrefab.GetComponent<CharacterStats>().maxHealth;
     }
 
     public int GetMaxSanity() {
-        return playerModelOptions[chosenModelOption].GetComponent<CharacterStats>().maxSanity;
+        return characterAppearanceData.modelPrefab.GetComponent<CharacterStats>().maxSanity;
     }
 
     private void AddWeaponTrailToRightFist(){

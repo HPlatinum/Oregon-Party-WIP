@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class CharacterSelection : MonoBehaviour {
 
-    public GameObject[] playerModelOptions;
+    //private GameObject[] playerModelOptions;
+    public CharacterAppearanceData[] characterOptions;
 
     public GameObject farFarLeftCharacterPosition;
     public GameObject farLeftCharacterPosition;
@@ -46,23 +48,32 @@ public class CharacterSelection : MonoBehaviour {
     private void Start() {
         centerIndex = startingCenterCharacterIndex;
 
-        CreateCharacterAtPosition(playerModelOptions[FarFarLeftIndex()], "far far left");
-        CreateCharacterAtPosition(playerModelOptions[FarLeftIndex()], "far left");
-        CreateCharacterAtPosition(playerModelOptions[LeftIndex()], "left");
-        CreateCharacterAtPosition(playerModelOptions[centerIndex], "center");
-        CreateCharacterAtPosition(playerModelOptions[RightIndex()], "right");
-        CreateCharacterAtPosition(playerModelOptions[FarRightIndex()], "far right");
-        CreateCharacterAtPosition(playerModelOptions[FarFarRightIndex()], "far far right");
+        CreatePlayerModelOptionsList();
+
+        CreateCharacterAtPosition(characterOptions[FarFarLeftIndex()], "far far left");
+        CreateCharacterAtPosition(characterOptions[FarLeftIndex()], "far left");
+        CreateCharacterAtPosition(characterOptions[LeftIndex()], "left");
+        CreateCharacterAtPosition(characterOptions[centerIndex], "center");
+        CreateCharacterAtPosition(characterOptions[RightIndex()], "right");
+        CreateCharacterAtPosition(characterOptions[FarRightIndex()], "far right");
+        CreateCharacterAtPosition(characterOptions[FarFarRightIndex()], "far far right");
 
         UpdateCharacterStats();
     }
+
+    private void CreatePlayerModelOptionsList(){
+        GameObject[] playerModelsList = transform.Find("Player Models List").GetComponent<PlayerModelsList>().models;
+        foreach(CharacterAppearanceData cad in characterOptions){
+            cad.SetModelFromList(playerModelsList);
+        }
+    }
     
 
-    private void CreateCharacterAtPosition(GameObject character, string positionIdentifier) {
+    private void CreateCharacterAtPosition(CharacterAppearanceData characterData, string positionIdentifier) {
 
 
         //create the new object
-        GameObject newPlayer = GameObject.Instantiate(character);
+        GameObject newPlayer = GameObject.Instantiate(characterData.modelPrefab);
 
         //set some position-related values
         GameObject position = centerCharacterPosition;
@@ -105,6 +116,8 @@ public class CharacterSelection : MonoBehaviour {
                 break;
         }
 
+        //set the model material
+        newPlayer.GetComponent<PlayerReskinData>().UpdateMaterial(characterData.materialIndex);
 
         //set the transforms
         newPlayer.transform.SetParent(position.transform.parent);
@@ -137,43 +150,43 @@ public class CharacterSelection : MonoBehaviour {
     private int FarFarLeftIndex() {
         int i = centerIndex - 3;
         if (i < 0)
-            i += playerModelOptions.Length;
+            i += characterOptions.Length;
         return i;
     }
 
     private int FarLeftIndex() {
         int i = centerIndex - 2;
         if (i < 0)
-            i += playerModelOptions.Length;
+            i += characterOptions.Length;
         return i;
     }
 
     private int LeftIndex() {
         int i = centerIndex - 1;
         if (i < 0)
-            i += playerModelOptions.Length;
+            i += characterOptions.Length;
         return i;
 
     }
 
     private int RightIndex() {
         int i = centerIndex + 1;
-        if (i >= playerModelOptions.Length)
-            i -= playerModelOptions.Length;
+        if (i >= characterOptions.Length)
+            i -= characterOptions.Length;
         return i;
     }
 
     private int FarRightIndex() {
         int i = centerIndex + 2;
-        if (i >= playerModelOptions.Length)
-            i -= playerModelOptions.Length;
+        if (i >= characterOptions.Length)
+            i -= characterOptions.Length;
         return i;
     }
 
     private int FarFarRightIndex() {
         int i = centerIndex + 3;
-        if (i >= playerModelOptions.Length)
-            i -= playerModelOptions.Length;
+        if (i >= characterOptions.Length)
+            i -= characterOptions.Length;
         return i;
     }
 
@@ -194,7 +207,7 @@ public class CharacterSelection : MonoBehaviour {
         //change the center character index
         centerIndex = LeftIndex();
 
-        CreateCharacterAtPosition(playerModelOptions[FarFarLeftIndex()], "far far left");
+        CreateCharacterAtPosition(characterOptions[FarFarLeftIndex()], "far far left");
 
         UpdateCharacterStats();
     }
@@ -216,7 +229,7 @@ public class CharacterSelection : MonoBehaviour {
         //change the center character index
         centerIndex = RightIndex();
 
-        CreateCharacterAtPosition(playerModelOptions[FarFarRightIndex()], "far far right");
+        CreateCharacterAtPosition(characterOptions[FarFarRightIndex()], "far far right");
 
         UpdateCharacterStats();
     }
@@ -306,6 +319,12 @@ public class CharacterSelection : MonoBehaviour {
         SetLayerRecursively(vehicle, 5);
 
         currentVehicle = vehicle;
+    }
+
+    public void AcceptCharacter(){
+        //set the selected character and start the game
+        StaticVariables.chosenCharactedAppearanceData = characterOptions[centerIndex];
+        SceneManager.LoadScene("Test Minigame");
     }
 
 }
