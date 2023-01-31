@@ -299,17 +299,17 @@ public class ScrappingHandler : InteractionHandler
 
     public void ScrapAllItems() {
         List<int> scrapReturns = GetQuantityOfScrapReturn();
-        int metalScrapQuantity = 0;
-        int woodScrapQuantity = 1;
-        int foodScrapQuantity = 2;
-        if(scrapReturns[foodScrapQuantity] > 0) {
-            StaticVariables.playerInventory.AddItemToInventory(foodScraps, scrapReturns[foodScrapQuantity]);
+        int metalScrapQuantityIndex = 0;
+        int woodScrapQuantityIndex = 1;
+        int foodScrapQuantityIndex = 2;
+        if(scrapReturns[foodScrapQuantityIndex] > 0) {
+            StaticVariables.playerInventory.AddItemToInventory(foodScraps, scrapReturns[foodScrapQuantityIndex]);
         }
-        if(scrapReturns[woodScrapQuantity] > 0) {
-            StaticVariables.playerInventory.AddItemToInventory(woodScraps, scrapReturns[woodScrapQuantity]);
+        if(scrapReturns[woodScrapQuantityIndex] > 0) {
+            StaticVariables.playerInventory.AddItemToInventory(woodScraps, scrapReturns[woodScrapQuantityIndex]);
         }
-        if(scrapReturns[metalScrapQuantity] > 0) {
-            StaticVariables.playerInventory.AddItemToInventory(metalScraps, scrapReturns[metalScrapQuantity]);
+        if(scrapReturns[metalScrapQuantityIndex] > 0) {
+            StaticVariables.playerInventory.AddItemToInventory(metalScraps, scrapReturns[metalScrapQuantityIndex]);
         }
         scrapInventory.ClearInventory();
         QuitScrappingUI();
@@ -317,18 +317,18 @@ public class ScrappingHandler : InteractionHandler
 
     private void DisplayScrapReturnQuantities() {
         List<int> scrapReturns = GetQuantityOfScrapReturn();
-        int metalScrapQuantity = 0;
-        int woodScrapQuantity = 1;
-        int foodScrapQuantity = 2;
+        int metalScrapQuantityIndex = 0;
+        int woodScrapQuantityIndex = 1;
+        int foodScrapQuantityIndex = 2;
         foreach(Transform child in scrapReturnQuantityTransform) {
             if(child.name == "Metal Scrap Container") {
-                child.GetComponentInChildren<Text>().text = (scrapReturns[metalScrapQuantity].ToString()); 
+                child.GetComponentInChildren<Text>().text = (scrapReturns[metalScrapQuantityIndex].ToString()); 
             }
             if(child.name == "Wood Scrap Container") {
-                child.GetComponentInChildren<Text>().text = (scrapReturns[woodScrapQuantity].ToString()); 
+                child.GetComponentInChildren<Text>().text = (scrapReturns[woodScrapQuantityIndex].ToString()); 
             }
             if(child.name == "Food Scrap Container") {
-                child.GetComponentInChildren<Text>().text = (scrapReturns[foodScrapQuantity].ToString()); 
+                child.GetComponentInChildren<Text>().text = (scrapReturns[foodScrapQuantityIndex].ToString()); 
             }
         }
     }
