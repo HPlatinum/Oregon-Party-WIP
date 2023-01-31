@@ -19,6 +19,7 @@ public class ItemDetails : MonoBehaviour {
     private Text quantityText;
     private DisplayItem displayItem;
     private GameObject quantityMaskGO;
+    private List<int> quantityOfScrapReturns;
 
     void Start(){
         //declare the gameobject references
@@ -107,6 +108,12 @@ public class ItemDetails : MonoBehaviour {
     }
 
     public void BreakDown() {
+        // item.fabricScraps;
+        // item.electronicScraps;
+        // item.foodScrapReturn;
+        // item.glassShardScraps;
+        // item.metalScrapReturn;
+        // item.woodScrapReturn;
         //prompt the user if they want to break down the item for components
         print("break down item");
     }

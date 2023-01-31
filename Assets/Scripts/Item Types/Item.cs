@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum ItemType { Ammunition, Clothing, Food, Instrument, Medicine, Tool, Weapon, Resource, RawFood }
+public enum ItemType { Ammunition, Clothing, Food, Instrument, Medicine, Tool, Weapon, Resource, RawFood, Scrap }
 public enum WeaponType { Punch, OneHandRight, TwoHand }//OneHandLeft, Gun, TwoHandGun 
 
 [CreateAssetMenu(fileName = "New Item", menuName = "Inventory System/Item")]
@@ -14,10 +14,15 @@ public class Item : ScriptableObject {
     public bool defaultItem = false;
     [TextArea(15,20)]
     public string description;
+
+    [Header("Scrap Returns")]
     public int stackLimit = 1;
-    public int woodScrapReturn = 0;
-    public int metalScrapReturn  = 0;
+    public int fabricScraps = 0;
+    public int electronicScraps = 0;
     public int foodScrapReturn = 0;
+    public int glassShardScraps = 0;
+    public int metalScrapReturn  = 0;
+    public int woodScrapReturn = 0;
 
     [Header("Item Details Model")]
     public GameObject model = null;
@@ -39,8 +44,4 @@ public class Item : ScriptableObject {
 
     [Header ("Universal Item Stats")]
     public int itemTier;
-
-    public virtual double ReturnWear() {
-        return 1110;
-    }
 }
