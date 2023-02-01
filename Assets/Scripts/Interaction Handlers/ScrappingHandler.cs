@@ -37,6 +37,13 @@ public class ScrappingHandler : InteractionHandler
     public Item metalScraps;
     public Item woodScraps;
 
+    private int electronicScrapQuantityIndex = 0;
+    private int fabricScrapQuantityIndex = 1;
+    private int foodScrapQuantityIndex = 2;
+    private int glassScrapQuantityIndex = 3;
+    private int metalScrapQuantityIndex = 4;
+    private int woodScrapQuantityIndex = 5;
+
     #region Overrides
     public override void ProcessInteractAction() {
         StaticVariables.SetupPlayerInteractionWithHighlightedObject();
@@ -299,27 +306,44 @@ public class ScrappingHandler : InteractionHandler
 
     public void ScrapAllItems() {
         List<int> scrapReturns = GetQuantityOfScrapReturn();
-        int metalScrapQuantityIndex = 0;
-        int woodScrapQuantityIndex = 1;
-        int foodScrapQuantityIndex = 2;
-        if(scrapReturns[foodScrapQuantityIndex] > 0) {
-            StaticVariables.playerInventory.AddItemToInventory(foodScraps, scrapReturns[foodScrapQuantityIndex]);
+        if(scrapReturns[electronicScrapQuantityIndex] > 0) {
+            Debug.Log("Increasing E Scrap: " + scrapReturns[electronicScrapQuantityIndex]);
+            StaticVariables.playerInventory.IncreaseElectronicScrap(scrapReturns[electronicScrapQuantityIndex]);
         }
-        if(scrapReturns[woodScrapQuantityIndex] > 0) {
-            StaticVariables.playerInventory.AddItemToInventory(woodScraps, scrapReturns[woodScrapQuantityIndex]);
+        if(scrapReturns[fabricScrapQuantityIndex] > 0) {
+            Debug.Log("Increasing fab Scrap: " + scrapReturns[fabricScrapQuantityIndex]);
+            StaticVariables.playerInventory.IncreaseFabricScrap(scrapReturns[fabricScrapQuantityIndex]);
+        }
+        if(scrapReturns[foodScrapQuantityIndex] > 0) {
+            Debug.Log("Increasing food Scrap: " + scrapReturns[foodScrapQuantityIndex]);
+            StaticVariables.playerInventory.IncreaseFoodScrap(scrapReturns[foodScrapQuantityIndex]);
+        }
+        if(scrapReturns[glassScrapQuantityIndex] > 0) {
+            Debug.Log("Increasing gl Scrap: " + scrapReturns[glassScrapQuantityIndex]);
+            StaticVariables.playerInventory.IncreaseGlassScrap(scrapReturns[glassScrapQuantityIndex]);
         }
         if(scrapReturns[metalScrapQuantityIndex] > 0) {
-            StaticVariables.playerInventory.AddItemToInventory(metalScraps, scrapReturns[metalScrapQuantityIndex]);
+            Debug.Log("Increasing m Scrap: " + scrapReturns[metalScrapQuantityIndex]);
+            StaticVariables.playerInventory.IncreaseMetalScrap(scrapReturns[metalScrapQuantityIndex]);
         }
+        if(scrapReturns[woodScrapQuantityIndex] > 0) {
+            Debug.Log("Increasing w Scrap: " + scrapReturns[woodScrapQuantityIndex]);
+            StaticVariables.playerInventory.IncreaseMetalScrap(scrapReturns[woodScrapQuantityIndex]);
+        }
+        Debug.Log("You have generated the following scrap: ");
+        Debug.Log("Electronic Scrap: " + StaticVariables.playerInventory.electronicScrap);
+        Debug.Log("Fabric Scrap: " + StaticVariables.playerInventory.fabricScrap);
+        Debug.Log("Food Scrap: " + StaticVariables.playerInventory.foodScrap);
+        Debug.Log("Glass Scrap: " + StaticVariables.playerInventory.glassScrap);
+        Debug.Log("Metal Scrap: " + StaticVariables.playerInventory.metalScrap);
+        Debug.Log("Wood Scrap: " + StaticVariables.playerInventory.woodScrap);
+
         scrapInventory.ClearInventory();
         QuitScrappingUI();
     }
 
     private void DisplayScrapReturnQuantities() {
         List<int> scrapReturns = GetQuantityOfScrapReturn();
-        int metalScrapQuantityIndex = 0;
-        int woodScrapQuantityIndex = 1;
-        int foodScrapQuantityIndex = 2;
         foreach(Transform child in scrapReturnQuantityTransform) {
             if(child.name == "Metal Scrap Container") {
                 child.GetComponentInChildren<Text>().text = (scrapReturns[metalScrapQuantityIndex].ToString()); 
@@ -334,15 +358,30 @@ public class ScrappingHandler : InteractionHandler
     }
 
     private List<int> GetQuantityOfScrapReturn() {
+        int electronicScrapQuantity = 0;
+        int fabricScrapQuantity = 0;
+        int foodScrapQuantity = 0;
+        int glassScrapQuantity = 0;
         int metalScrapQuantity = 0;
         int woodScrapQuantity = 0;
-        int foodScrapQuantity = 0;
+    
+
         List<int> quantityOfScrapReturns = new List<int>();
         List <(Item, int)> remainingItems = scrapInventory.GetListOfAllItemsAndTheirQuantity();
         if(remainingItems.Count > 0) {
             foreach((Item, int) tuple in remainingItems) {
+                // if ScrapReturn of item is > 0, add the item quantity * scrap return to ScrapQuantity
+                if(tuple.Item1.electronicScrapReturn > 0) {
+                    electronicScrapQuantity += tuple.Item2 * tuple.Item1.electronicScrapReturn;
+                }
+                if(tuple.Item1.fabricScrapReturn > 0) {
+                    fabricScrapQuantity += tuple.Item2 * tuple.Item1.fabricScrapReturn;
+                }
                 if(tuple.Item1.foodScrapReturn > 0) {
                     foodScrapQuantity += tuple.Item2 * tuple.Item1.foodScrapReturn;
+                }
+                if(tuple.Item1.glassScrapReturn > 0) {
+                    glassScrapQuantity += tuple.Item2 * tuple.Item1.glassScrapReturn;
                 }
                 if(tuple.Item1.metalScrapReturn > 0) {
                     metalScrapQuantity += tuple.Item2 * tuple.Item1.metalScrapReturn;
@@ -352,9 +391,12 @@ public class ScrappingHandler : InteractionHandler
                 }
             }
         }
+        quantityOfScrapReturns.Add(electronicScrapQuantity);
+        quantityOfScrapReturns.Add(fabricScrapQuantity);
+        quantityOfScrapReturns.Add(foodScrapQuantity);
+        quantityOfScrapReturns.Add(glassScrapQuantity);
         quantityOfScrapReturns.Add(metalScrapQuantity);
         quantityOfScrapReturns.Add(woodScrapQuantity);
-        quantityOfScrapReturns.Add(foodScrapQuantity);
         return quantityOfScrapReturns;
     }
 

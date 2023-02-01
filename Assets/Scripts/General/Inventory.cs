@@ -20,6 +20,14 @@ public class Inventory : ScriptableObject
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallback;
 
+    public int electronicScrap = 0;
+    public int fabricScrap = 0;
+    public int foodScrap = 0;
+    public int glassScrap = 0;
+    public int metalScrap = 0;
+    public int woodScrap = 0;
+
+
     void Start() {
     }
 
@@ -309,6 +317,47 @@ public class Inventory : ScriptableObject
         }
         return null;
     }
+
+    // increase scrap counts
+    public void IncreaseElectronicScrap(int num = 1) {
+        electronicScrap += num;
+    }
+    public void IncreaseFabricScrap(int num = 1) {
+        fabricScrap += num;
+    }
+    public void IncreaseFoodScrap(int num = 1) {
+        foodScrap += num;
+    }
+    public void IncreaseGlassScrap(int num = 1) {
+        glassScrap += num;
+    }
+    public void IncreaseMetalScrap(int num = 1) {
+        metalScrap += num;
+    }
+    public void IncreaseWoodScrap(int num = 1) {
+        woodScrap += num;
+    }
+    
+    // decrease scrap counts
+    public void DecreaseElectronicScrap(int num = 1) {
+        electronicScrap -= num;
+    }
+    public void DecreaseFabricScrap(int num = 1) {
+        fabricScrap -= num;
+    }
+    public void DecreaseFoodScrap(int num = 1) {
+        foodScrap -= num;
+    }
+    public void DecreaseGlassScrap(int num = 1) {
+        glassScrap -= num;
+    }
+    public void DecreaseMetalScrap(int num = 1) {
+        metalScrap -= num;
+    }
+    public void DecreaseWoodScrap(int num = 1) {
+        woodScrap -= num;
+    }
+
 }
 
 [System.Serializable]

@@ -17,10 +17,10 @@ public class Item : ScriptableObject {
 
     [Header("Scrap Returns")]
     public int stackLimit = 1;
-    public int fabricScraps = 0;
-    public int electronicScraps = 0;
+    public int fabricScrapReturn = 0;
+    public int electronicScrapReturn = 0;
     public int foodScrapReturn = 0;
-    public int glassShardScraps = 0;
+    public int glassScrapReturn = 0;
     public int metalScrapReturn  = 0;
     public int woodScrapReturn = 0;
 
