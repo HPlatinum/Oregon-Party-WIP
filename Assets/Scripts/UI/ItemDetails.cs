@@ -19,7 +19,7 @@ public class ItemDetails : MonoBehaviour {
     private Text quantityText;
     private DisplayItem displayItem;
     private GameObject quantityMaskGO;
-    private List<int> quantityOfScrapReturns;
+    private int quantity;
 
     void Start(){
         //declare the gameobject references
@@ -50,6 +50,7 @@ public class ItemDetails : MonoBehaviour {
 
         //set variables
         this.item = item;
+        this.quantity = quantity;
 
         displayItem.AddItemAsChild(item, true);
         displayItem.shouldRotate = true;
@@ -108,14 +109,36 @@ public class ItemDetails : MonoBehaviour {
     }
 
     public void BreakDown() {
-        // item.fabricScraps;
-        // item.electronicScraps;
-        // item.foodScrapReturn;
-        // item.glassShardScraps;
-        // item.metalScrapReturn;
-        // item.woodScrapReturn;
+        // if(quantity > 0) {
+            // PromptForUserConfirmationAndGetQuantity();
+        // }
+        
+        if(item.electronicScrapReturn > 0) {
+            StaticVariables.playerInventory.IncreaseElectronicScrap(item.electronicScrapReturn);
+        }
+        if(item.fabricScrapReturn > 0) {
+            StaticVariables.playerInventory.IncreaseFabricScrap(item.fabricScrapReturn);
+        }
+        if(item.foodScrapReturn > 0) {
+            StaticVariables.playerInventory.IncreaseFoodScrap(item.foodScrapReturn);
+        }
+        if(item.glassScrapReturn > 0) {
+            StaticVariables.playerInventory.IncreaseGlassScrap(item.glassScrapReturn);
+        }
+        if(item.metalScrapReturn > 0) {
+            StaticVariables.playerInventory.IncreaseMetalScrap(item.metalScrapReturn);
+        }
+        if(item.woodScrapReturn > 0) {
+            StaticVariables.playerInventory.IncreaseWoodScrap(item.woodScrapReturn);
+        }
+        StaticVariables.playerInventory.RemoveItemFromInventory(item, 1);
+        if (interactScript.itemInHand == item) {
+            mainActionText.text = "Unequip";
+            MainAction();
+        }
+        Close();
         //prompt the user if they want to break down the item for components
-        print("break down item");
+        print("Item Broken down");
     }
 
     public void MainAction() {
