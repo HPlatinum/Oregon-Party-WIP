@@ -272,26 +272,6 @@ public class Inventory : ScriptableObject
         inventorySlots = new List<InventorySlot>();
     }
 
-    // This may be useful later, but it likely isn't
-
-    // public void UpdateGameObjectForItem(Item item, GameObject updatedGameObject) {
-    //     foreach (InventorySlot slot in inventorySlots) {
-    //         if (slot.item == item) {
-    //             slot.itemGameObject = updatedGameObject;
-    //             break;
-    //         }
-    //     }
-    // }
-
-    // public bool GameObjectExistsForItem(Item item) {
-    //     foreach (InventorySlot slot in inventorySlots) {
-    //         if (slot.item == item && slot.itemGameObject != null) {
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
-
     public ToolStats GetToolScriptFromItem(Item item) {
         ToolStats toolStats;
         foreach (InventorySlot slot in inventorySlots) {

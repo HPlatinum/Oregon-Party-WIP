@@ -12,7 +12,18 @@ public class InventoryUI : MonoBehaviour
 
     public Text bulletQuantity;
 
-    public Text scrapQuantity;
+    public Text totalScrapQuantity;
+
+    public PauseMenu pauseMenu;
+
+    public GameObject scrapListInterface;
+
+    public Text electronicScrapQuantity;
+    public Text fabricScrapQuantity;
+    public Text foodScrapQuantity;
+    public Text glassScrapQuantity;
+    public Text metalScrapQuantity;
+    public Text woodScrapQuantity;
 
     void Start()
     {
@@ -22,6 +33,7 @@ public class InventoryUI : MonoBehaviour
         SetupAllInventorySlotsUI();
         UpdateUI();
         inventoryUI.SetActive(false);
+        scrapListInterface.SetActive(false);
     }
 
     // updates the UI
@@ -44,15 +56,15 @@ public class InventoryUI : MonoBehaviour
             }
         }
         ShowBulletQuantity();
-        ShowScrapQuantity();
+        ShowTotalScrapQuantity();
     }
 
     private void ShowBulletQuantity(){
         bulletQuantity.text = (inventory.bulletCount + "");
     }
 
-    private void ShowScrapQuantity(){
-        scrapQuantity.text = (inventory.GetTotalScrapCount() + "");
+    private void ShowTotalScrapQuantity(){
+        totalScrapQuantity.text = (inventory.GetTotalScrapCount() + "");
     }
     
 
@@ -79,6 +91,74 @@ public class InventoryUI : MonoBehaviour
     }
 
     public void PushScrapButton(){
-        print("you have " + inventory.GetTotalScrapCount() + " total scrap");
+        ShowScrapListInterface();
+    }
+
+    private void ShowScrapListInterface(){
+        pauseMenu.ShowMenu(false);
+        scrapListInterface.SetActive(true);
+        ShowElectronicScrapQuantity();
+        ShowFabricScrapQuantity();
+        ShowFoodScrapQuantity();
+        ShowGlassScrapQuantity();
+        ShowMetalScrapQuantity();
+        ShowWoodScrapQuantity();
+    }
+
+
+
+    //scrap list interface functions
+    private void ShowElectronicScrapQuantity(){
+        electronicScrapQuantity.text = (inventory.electronicScrap + "");
+    }
+
+    public void PushElectronicScrapButton(){
+        print("you have " + inventory.electronicScrap + " electronic scrap");
+    }    
+    
+    private void ShowFabricScrapQuantity(){
+        fabricScrapQuantity.text = (inventory.fabricScrap + "");
+    }
+
+    public void PushFabricScrapButton(){
+        print("you have " + inventory.fabricScrap + " fabric scrap");
+    }
+    
+    private void ShowFoodScrapQuantity(){
+        foodScrapQuantity.text = (inventory.foodScrap + "");
+    }
+
+    public void PushFoodScrapButton(){
+        print("you have " + inventory.foodScrap + " food scrap");
+    }
+    
+    private void ShowGlassScrapQuantity(){
+        glassScrapQuantity.text = (inventory.glassScrap + "");
+    }
+
+    public void PushGlassScrapButton(){
+        print("you have " + inventory.glassScrap + " glass scrap");
+    }
+    
+    private void ShowMetalScrapQuantity(){
+        metalScrapQuantity.text = (inventory.metalScrap + "");
+    }
+
+    public void PushMetalScrapButton(){
+        print("you have " + inventory.metalScrap + " metal scrap");
+    }
+    
+    private void ShowWoodScrapQuantity(){
+        woodScrapQuantity.text = (inventory.woodScrap + "");
+    }
+
+    public void PushWoodScrapButton(){
+        print("you have " + inventory.woodScrap + " wood scrap");
+    }
+
+
+    public void CloseScrapListInterface(){
+        scrapListInterface.SetActive(false);
+        pauseMenu.ShowMenu(true);
     }
 }
