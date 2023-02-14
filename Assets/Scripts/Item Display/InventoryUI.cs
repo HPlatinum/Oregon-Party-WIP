@@ -9,7 +9,11 @@ public class InventoryUI : MonoBehaviour
     public Inventory inventory;
     
     private InventorySlotUI[] slotsUI;
-    // // Start is called before the first frame update
+
+    public Text bulletQuantity;
+
+    public Text scrapQuantity;
+
     void Start()
     {
         // when an item is added or removed, the updateUI function is also called (adds updateUI to onItemChangedCallback function)
@@ -39,8 +43,16 @@ public class InventoryUI : MonoBehaviour
                 slotUI.ClearSlot(); // clear item and remove old game object
             }
         }
-        Debug.Log("Updating UI");
-        
+        ShowBulletQuantity();
+        ShowScrapQuantity();
+    }
+
+    private void ShowBulletQuantity(){
+        bulletQuantity.text = (inventory.bulletCount + "");
+    }
+
+    private void ShowScrapQuantity(){
+        scrapQuantity.text = (inventory.GetTotalScrapCount() + "");
     }
     
 
@@ -60,5 +72,13 @@ public class InventoryUI : MonoBehaviour
         foreach (InventorySlotUI slotUI in slotsUI) {
             slotUI.Setup();
         }
+    }
+
+    public void PushBulletButton(){
+        print("you have " + inventory.bulletCount + " bullets");
+    }
+
+    public void PushScrapButton(){
+        print("you have " + inventory.GetTotalScrapCount() + " total scrap");
     }
 }

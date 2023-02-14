@@ -11,6 +11,7 @@ public class InventorySlotUI : MonoBehaviour {
 
     //public Inventory inventory;
     private GameObject quantityUI;
+    private GameObject quantityMask;
     [HideInInspector]
     public Item item;
     [HideInInspector]
@@ -32,11 +33,9 @@ public class InventorySlotUI : MonoBehaviour {
 
     public void AssignLocalVariables() {
         quantityUI = transform.Find("Quantity").gameObject;
-        //print(quantityUI);
+        quantityMask = transform.Find("Masks").Find("Quantity").gameObject;
         quantityText = quantityUI.transform.Find("Text").GetComponent<Text>();
         displayItem = transform.Find("Display Item").GetComponent<DisplayItem>();
-        //itemModelParent = transform.Find("Object Parent");
-       // originalModelParentPos = new Vector2(itemModelParent.localPosition.x, itemModelParent.localPosition.y);
     }
 
     // adds an item to a slot and sets the quantity active if there is a 
@@ -50,8 +49,12 @@ public class InventorySlotUI : MonoBehaviour {
         this.quantity = quantity;
         quantityText.text = quantity + "";
         quantityUI.SetActive(true);
-        if (quantity <= 1) 
+        quantityMask.SetActive(true);
+        if (quantity <= 1) {
             quantityUI.SetActive(false);
+            quantityMask.SetActive(false);
+        }
+            
         
     }
     
@@ -85,20 +88,6 @@ public class InventorySlotUI : MonoBehaviour {
         if(clickEffect == OnClickEffect.ScrappingInterfaceReturnItem) {
             StaticVariables.scrappingHandler.CommitSelectedBackToSelection(item, quantity);
             return;
-        }
-    }
-
-    private void SetLayerRecursively(GameObject obj, int newLayer) {
-        //sets the object and all children to be in the specified layer
-        if (obj == null) {
-            return;
-        }
-        obj.layer = newLayer;
-        foreach (Transform child in obj.transform) {
-            if (child == null) {
-                continue;
-            }
-            SetLayerRecursively(child.gameObject, newLayer);
         }
     }
 }

@@ -20,6 +20,7 @@ public class Inventory : ScriptableObject
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallback;
 
+    public int bulletCount = 0;
     public int electronicScrap = 0;
     public int fabricScrap = 0;
     public int foodScrap = 0;
@@ -358,6 +359,18 @@ public class Inventory : ScriptableObject
         woodScrap -= num;
     }
 
+    
+    public int GetTotalScrapCount(){
+        int result = 0;
+        result += electronicScrap;
+        result += fabricScrap;
+        result += foodScrap;
+        result += glassScrap;
+        result += metalScrap;
+        result += woodScrap;
+        return result;
+    }
+
 }
 
 [System.Serializable]
@@ -378,4 +391,5 @@ public class InventorySlot {
     public void RemoveQuantity(int value) {
         quantity -= value;
     }
+
 }
