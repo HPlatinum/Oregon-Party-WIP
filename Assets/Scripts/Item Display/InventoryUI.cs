@@ -16,12 +16,9 @@ public class InventoryUI : MonoBehaviour
 
     public PauseMenu pauseMenu;
 
-    public GameObject scrapListInterface;
-
     public Text electronicScrapQuantity;
     public Text fabricScrapQuantity;
     public Text foodScrapQuantity;
-    public Text glassScrapQuantity;
     public Text metalScrapQuantity;
     public Text woodScrapQuantity;
 
@@ -33,7 +30,6 @@ public class InventoryUI : MonoBehaviour
         SetupAllInventorySlotsUI();
         UpdateUI();
         inventoryUI.SetActive(false);
-        scrapListInterface.SetActive(false);
     }
 
     // updates the UI
@@ -56,15 +52,15 @@ public class InventoryUI : MonoBehaviour
             }
         }
         ShowBulletQuantity();
-        ShowTotalScrapQuantity();
+        ShowElectronicScrapQuantity();
+        ShowFabricScrapQuantity();
+        ShowFoodScrapQuantity();
+        ShowMetalScrapQuantity();
+        ShowWoodScrapQuantity();
     }
 
     private void ShowBulletQuantity(){
         bulletQuantity.text = (inventory.bulletCount + "");
-    }
-
-    private void ShowTotalScrapQuantity(){
-        totalScrapQuantity.text = (inventory.GetTotalScrapCount() + "");
     }
     
 
@@ -89,23 +85,6 @@ public class InventoryUI : MonoBehaviour
     public void PushBulletButton(){
         print("you have " + inventory.bulletCount + " bullets");
     }
-
-    public void PushScrapButton(){
-        ShowScrapListInterface();
-    }
-
-    private void ShowScrapListInterface(){
-        pauseMenu.ShowMenu(false);
-        scrapListInterface.SetActive(true);
-        ShowElectronicScrapQuantity();
-        ShowFabricScrapQuantity();
-        ShowFoodScrapQuantity();
-        ShowGlassScrapQuantity();
-        ShowMetalScrapQuantity();
-        ShowWoodScrapQuantity();
-    }
-
-
 
     //scrap list interface functions
     private void ShowElectronicScrapQuantity(){
@@ -132,14 +111,6 @@ public class InventoryUI : MonoBehaviour
         print("you have " + inventory.foodScrap + " food scrap");
     }
     
-    private void ShowGlassScrapQuantity(){
-        glassScrapQuantity.text = (inventory.glassScrap + "");
-    }
-
-    public void PushGlassScrapButton(){
-        print("you have " + inventory.glassScrap + " glass scrap");
-    }
-    
     private void ShowMetalScrapQuantity(){
         metalScrapQuantity.text = (inventory.metalScrap + "");
     }
@@ -156,9 +127,4 @@ public class InventoryUI : MonoBehaviour
         print("you have " + inventory.woodScrap + " wood scrap");
     }
 
-
-    public void CloseScrapListInterface(){
-        scrapListInterface.SetActive(false);
-        pauseMenu.ShowMenu(true);
-    }
 }

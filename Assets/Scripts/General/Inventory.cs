@@ -339,18 +339,6 @@ public class Inventory : ScriptableObject
         woodScrap -= num;
     }
 
-    
-    public int GetTotalScrapCount(){
-        int result = 0;
-        result += electronicScrap;
-        result += fabricScrap;
-        result += foodScrap;
-        result += glassScrap;
-        result += metalScrap;
-        result += woodScrap;
-        return result;
-    }
-
 }
 
 [System.Serializable]
