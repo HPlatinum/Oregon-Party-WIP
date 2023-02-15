@@ -38,7 +38,6 @@ public class CharacterSelection : MonoBehaviour {
 
     [Header("Character Stats Display")]
     public Text nameText;
-    public Text inventorySizeText;
     public Text healthText;
     public Text sanityText;
     public GameObject vehicleParent;
@@ -293,9 +292,8 @@ public class CharacterSelection : MonoBehaviour {
         CharacterStats stats = centerCharacter.GetComponent<CharacterStats>();
 
         nameText.text = stats.characterName;
-        inventorySizeText.text = "Inventory Size: " + stats.inventorySize;
-        healthText.text = "Health: " + stats.maxHealth;
-        sanityText.text = "Sanity: " + stats.maxSanity;
+        healthText.text = stats.maxHealth + " Health";
+        sanityText.text = stats.maxSanity + " Sanity";
 
 
         Destroy(currentVehicle);

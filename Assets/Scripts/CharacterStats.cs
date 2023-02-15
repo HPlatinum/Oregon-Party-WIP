@@ -5,7 +5,6 @@ using UnityEngine;
 public class CharacterStats : MonoBehaviour {
 
     public string characterName;
-    public int inventorySize;
     public int maxHealth;
     public int maxSanity;
     //other stat ideas: movement speed, weapon speed, shop price discount
