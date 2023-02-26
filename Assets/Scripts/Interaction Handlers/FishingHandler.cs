@@ -65,6 +65,10 @@ public class FishingHandler : InteractionHandler {
 
     }
 
+    public void PlayFishingAnimation(){
+        StaticVariables.PlayAnimation("Fishing - Cast");
+    }
+
     public override void ProcessInteractAnimationEnding() {
         if (playerGotFish)
             StaticVariables.interactScript.AddCurrentInteractableItemToInventory();
